@@ -4599,6 +4599,323 @@ $ git show-branch --more=6
 • If you have a branch that uses a pre-rebase commit, you might need to rebase it in turn.
 • If there is a user of a pre-rebase commit in a different repository, he still has a copy of that commit even though it has moved in your repository; the user will now have to fix up his commit history, too.
 
+#### Setup local GIT project and sync it with Git hub repository. Keep changing the code and push them to github repo.
+By default, root users have # prompt, regular users have $ in Linux.
+
+root user:    root@hostname:~#  ← # symbol
+regular user: user@hostname:~$  ← $ symbol
+
+
+Move into the .ssh folder
+(mypyvenv) root@ubundockhost:~/# cd ~/.ssh
+
+## Install Git (if not installed)
+(mypyvenv) root@ubundockhost:~/.ssh# sudo apt install -y git
+Reading package lists... Done
+
+## Configure Git Global Identity
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.name "Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.email "nesan.committer@gmail.com"
+
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_NAME="Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_EMAIL="nesan.committer@gmail.com"
+
+## Set Up Authentication - Use ssh key method with github website for your mail ID registered with github website
+# Generate SSH Key Pair - Uses ed25519 keygen algorithm which is better than RSA
+
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-keygen -t ed25519 -C "nesan.committer@gmail.com"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/root/.ssh/id_ed25519): githubweb
+Enter passphrase (empty for no passphrase): passgithubweb
+Enter same passphrase again: passgithubweb
+Your identification has been saved in githubweb
+Your public key has been saved in githubweb.pub
+The key fingerprint is:
+SHA256:Qlkp7+GgwVRsX4YY1G7nSzEG0q9Pz/FpgIed85f2+kc nesan.committer@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|     ++=.o       |
+|    . *o* o      |
+|   o .o* =       |
+|    o.. * *      |
+|     o.=S* * .   |
+|    .  .+ * B   E|
+|         + = * o.|
+|          o o =oo|
+|             .o+=|
++----[SHA256]-----+
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+#check the files in the path /root/.ssh/
+(mypyvenv) root@ubundockhost:~/.ssh# ll
+total 28
+drwx------ 1 root root 4096 Dec 27 19:41 ./
+drwx------ 1 root root 4096 Dec 27 19:12 ../
+-rw------- 1 root root  464 Dec 27 19:35 githubweb
+-rw-r--r-- 1 root root  107 Dec 27 19:35 githubweb.pub
+-rw------- 1 root root 2240 Dec 21 23:33 known_hosts
+-rw------- 1 root root 1120 Dec 19 12:24 known_hosts.old
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+key generation is successful private key and public key are generated for the githubweb with files githubweb and githubweb.pub respectively
+
+/githubweb          ← PRIVATE KEY (SECRET - never share!)
+/githubweb.pub      ← PUBLIC KEY  (safe to copy to GitHub)
+
+#Copy Public Key
+
+(mypyvenv) root@ubundockhost:~/.ssh# cat githubweb.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQs4f9ZPhCAEoE3COGDT3IKxfDfaleiJnOFpcZWWnL5 nesan.committer@gmail.com
+
+#Add the public key to GitHub website
+GitHub.com → Settings → SSH and GPG keys → New SSH key
+Title: "Key from DE genie Docker"
+Key: [paste cat output]
+Add SSH key
+
+# Run the SSH agent in the docker 
+(mypyvenv) root@ubundockhost:~/.ssh# eval "$(ssh-agent -s)"
+Agent pid 1841
+
+## Add private key to ssh agent in the docker
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-add githubweb
+Enter passphrase for githubweb: passgithubweb
+Identity added: githubweb (nesan.committer@gmail.com)
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+## Test Connection with github.com
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+The authenticity of host 'github.com (20.207.73.82)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+## Test connection again 
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+##GitHub Workflow Now Ready
+##Now push the first set of files to Github
+
+# Enter the folder which you want to push to Github 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# cd /mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# ll
+total 752
+drwxr-xr-x 1 root root    512 Dec 27 20:16 ./
+drwxrwxrwx 1 root root    512 Dec 27 20:16 ../
+-rwxrwxrwx 1 root root  22893 Dec 20 16:54 AWS_CLI_command_bible.xlsx*
+-rwxrwxrwx 1 root root  91683 Dec 26 03:54 AWS_CLI_learn.txt*
+-rwxrwxrwx 1 root root  99750 Dec 27 13:40 AWS_Learn.txt*
+-rwxrwxrwx 1 root root 187958 Dec 27 20:14 AWS_instancetypes_ap-south-1.xlsx*
+drwxr-xr-x 1 root root    512 Dec 17 02:54 All_Data_for_learning/
+-rwxrwxrwx 1 root root  85769 Dec 26 03:53 DE_Docker_setup_full.txt*
+-rwxrwxrwx 1 root root  23779 Dec 16 12:03 Docker_Basics.txt*
+-rwxrwxrwx 1 root root  10154 Dec 27 20:15 Input_data_DE_handson_SQL_handson.xlsx*
+drwxrwxrwx 1 root root    512 Dec 27 16:24 Ref_Books/
+-rwxrwxrwx 1 root root 235439 Dec 16 12:04 Versioning_with_GIT.txt*
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
+
+# Make that git project repository with git inti command 
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share/.git/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
+
+# Stages ALL changes in current directory -- Current folder + all subfolders 
+# Moves files from working directory → staging area (index)
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git add .
+
+# Commits the current stanged/indexed files in the local repository .git/objects/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git commit -m "Initial commit dt_2025_12_27"
+[master (root-commit) 71b3ab8] Initial commit dt_2025_12_27
+ 15 files changed, 133118 insertions(+)
+ create mode 100755 AWS_CLI_command_bible.xlsx
+ create mode 100755 AWS_CLI_learn.txt
+ create mode 100755 AWS_Learn.txt
+ create mode 100755 AWS_instancetypes_ap-south-1.xlsx
+
+# Links your local repo → GitHub repo nesancommitter/All_Notes_to_Share
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git remote add All_Notes_to_Share git@github.com:nesancommitter/All_Notes_to_Share.git
+
+Creates entry in .git/config file
+Links your local repo → GitHub repo nesancommitter/All_Notes_to_Share
+SSH protocol = passwordless (your githubweb key)
+
+# Check the entries in the .git/config file
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# cat .git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "All_Notes_to_Share"]
+        url = git@github.com:nesancommitter/All_Notes_to_Share.git
+        fetch = +refs/heads/*:refs/remotes/All_Notes_to_Share/*
+
+# Verify there is entry to the remote repo
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git remote -v
+All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (fetch)
+All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (push)
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
+
+# Create repository in the github portal
+GitHub.com →  Sign in as nesancommitter → Click "New" (green button) → Repository name: All_Notes_to_Share
+Title: "repo for all notes created from learning"
+
+Once created Copy SSH URL: 
+git@github.com:nesancommitter/All_Notes_to_Share.git
+
+## Set the SSH URL to the remote repo associate it to the remote repo name All_Notes_to_Share configured locally
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git remote set-url All_Notes_to_Share git@github.com:nesancommitter/All_Notes_to_Share.git
+
+## Git push the local branch to the remote github repository
+# Uploads commits to remote - Then push with custom name
+# git push -u <Remote_nickname> <Local_branch_to_push>
+# -u  -- sets upstream tracking (future git push works without branch name - tracks All_Notes_to_Share/master remote/local_branch forever)  
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git push -u All_Notes_to_Share master
+Enumerating objects: 23, done.
+Counting objects: 100% (23/23), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (18/18), done.
+Writing objects: 100% (23/23), 26.30 MiB | 5.52 MiB/s, done.
+Total 23 (delta 0), reused 0 (delta 0), pack-reused 0
+remote:
+remote: Create a pull request for 'master' on GitHub by visiting:
+remote:      https://github.com/nesancommitter/All_Notes_to_Share/pull/new/master
+remote:
+To github.com:nesancommitter/All_Notes_to_Share.git
+ * [new branch]      master -> master
+branch 'master' set up to track 'All_Notes_to_Share/master'.
+
+Behind the scenes (Network Flow):
+Your Docker → SSH (githubweb key) → GitHub Servers → nesancommitter/All_Notes_to_Share
+     ↓
+Creates: master branch + all your files
+
+# Github uses main as the default branch name but git uses master as default branch name 
+# so change the default branch name to master for the github repository in the portal 
+
+visit https://github.com/nesancommitter/All_Notes_to_Share/
+
+https://github.com/nesancommitter/All_Notes_to_Share
+→ Settings tab (top right)
+→ Branches (left sidebar)
+
+1. Current default: main (empty) 
+2. Click **change default branch** (pencil icon next to main)
+3. **Select `master`** from dropdown (your branch with files)
+4. Click **Update**
+5. Confirm warning → **I understand...** → Update
+
+## Delete the main branch permenantly
+Open https://github.com/nesancommitter/All_Notes_to_Share
+Click Branches 
+you can see master and main branch - delete the main branch.
+
+##in local git repo make these changes - Local Docker Commands (Update Tracking)
+# Update remote tracking
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch -u All_Notes_to_Share/master master
+branch 'master' set up to track 'All_Notes_to_Share/master'.
+
+## to test if the changes are working any anyone can pull the repository
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# cd /mnt/hdrive/scrap/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# mkdir gitrep_test
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# cd gitrep_test/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/gitrep_test# git init
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/gitrep_test# git clone --recursive https://github.com/nesancommitter/All_Notes_to_Share.git
+Cloning into 'All_Notes_to_Share'...
+remote: Enumerating objects: 26, done.
+remote: Counting objects: 100% (26/26), done.
+remote: Compressing objects: 100% (20/20), done.
+remote: Total 26 (delta 0), reused 23 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (26/26), 26.30 MiB | 9.33 MiB/s, done.
+
+## Check all files are cloned properly
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/gitrep_test/All_Notes_to_Share# ll
+total 752
+drwxr-xr-x 1 root root    512 Dec 28 00:11 ./
+drwxr-xr-x 1 root root    512 Dec 28 00:11 ../
+drwxr-xr-x 1 root root    512 Dec 28 00:11 .git/
+-rwxr-xr-x 1 root root  22893 Dec 28 00:11 AWS_CLI_command_bible.xlsx*
+-rwxr-xr-x 1 root root  91479 Dec 28 00:11 AWS_CLI_learn.txt*
+-rwxr-xr-x 1 root root  99750 Dec 28 00:11 AWS_Learn.txt*
+-rwxr-xr-x 1 root root 187958 Dec 28 00:11 AWS_instancetypes_ap-south-1.xlsx*
+drwxr-xr-x 1 root root    512 Dec 28 00:11 All_Data_for_learning/
+-rwxr-xr-x 1 root root  85769 Dec 28 00:11 DE_Docker_setup_full.txt*
+-rwxr-xr-x 1 root root  23779 Dec 28 00:11 Docker_Basics.txt*
+-rwxr-xr-x 1 root root  10154 Dec 28 00:11 Input_data_DE_handson_SQL_handson.xlsx*
+drwxr-xr-x 1 root root    512 Dec 28 00:11 Ref_Books/
+-rwxr-xr-x 1 root root 235439 Dec 28 00:11 Versioning_with_GIT.txt*
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/gitrep_test/All_Notes_to_Share# git branch
+* master
+
+## Touch to add new learn file and commit and push the repo to git hub
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# touch AWS_Glue_Learn.txt
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git add .
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git commit -m "start glue"
+[master 8919456] start glue
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 AWS_Glue_Learn.txt
+ 
+## Now push the new changes - new file to github
+## can just use git push or git push All_Notes_to_Share master both are same
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git push
+
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 282 bytes | 31.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To github.com:nesancommitter/All_Notes_to_Share.git
+   23cac7c..8919456  master -> master
+
+## Check in the github repo you can find the new file named AWS_Glue_Learn.txt in below repo
+
+https://github.com/nesancommitter/All_Notes_to_Share
+
+## Check contents of the .git/config file once to understand
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# cat .git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "All_Notes_to_Share"]
+        url = git@github.com:nesancommitter/All_Notes_to_Share.git
+        fetch = +refs/heads/*:refs/remotes/All_Notes_to_Share/*
+[branch "master"]
+        remote = All_Notes_to_Share
+        merge = refs/heads/master
+
+## Your Daily Workflow to update the changes from local into Git repo in github
+## Make any changes to any files in the folder -- add all the files to index, commit the index, the push it to remote repo in this case github
+git add .
+git commit -m "Add new notes"
+git push                            # Just 'push' - tracks master automatically
+
+
+
+
+
+
 
 
 
