@@ -1,0 +1,1287 @@
+break down AWS Cloud Computing into the three critical layers, our applications will run on top of all these three layers 
+
+1. Platform Services (Databases, Analytics, App services, Deployment & Management, Mobile Services, IOT)
+2. Foundation Services (Compute, Networking, Storage, Security and Identity, Applications)
+3. Infrastructure. (Regions, Availability Zones, Edge Locations)
+
+Foundation Services
+Compute       - EC2 (Elastic Compute Cloud), Lamba, EC2 container, Elastic Load Balancing, Elastic Beanstalk, Auto Scaling 
+Networking    - VPC, Route53, Direct connect
+Storage       - S3, Cloud Front, Glacier, Elastic File system, Storage Gateway, Import/export Snowball 
+Security and Identity - IAM, KMS, Directory Services, Cloud HSM, WAF
+Applications  - WorkDocs, Workspaces, WorkMail
+
+Four decicions to Choose Region to host yoru applications
+
+1. Latency - Must be located near to your customers
+2. Regulator & Client Compliance Control
+3. Cost and
+4. Service Availability.
+
+An AWS Region is a geographical location with a collection of Availability Zones (AZs) mapped to physical data centers in that region. Each region has atleast two availability Zones. Availability Zones consist of multiple data centers clustered in a region. Every region is physically isolated from and independent of every other region in terms of location, power, water supply, etc. Inside each region, you will find two or more availability zones with each zone hosted in separate data centers from another zone.
+
+An Availability Zone is a logical data center in a region available for use by any AWS customer. Each zone in a region has redundant and separate power, networking and connectivity to reduce the likelihood of two zones failing simultaneously. Each zone is backed by one or more physical data centers, with the largest backed by five, Also no two zones share a data center. Amazon independently maps zones to identifiers for each account so there is load sharing at account level.
+
+you can run multiple instances of your application across more than one AZ and get added redundancy.
+
+There are 50 plus AWS Edge Locations, These are local points of presence commonly supporting AWS services like Amazon Route 53 which is our DNS service and also Amazon CloudFront with our content distribution network. Edge Locations help reduce latency and improve performance for end users and AWS Edge Location hosts a robust content delivery network that can be used to deliver websites, dynamic & static and streamlining content. Requests for content are automatically routed to the near central location, so the content is delivered with the best possible performance.
+
+To bifurcate the AWS services interms of the Essential and advanced usage below is 3 levels
+
+Layer 1: Essential Services (Foundation - Every AWS account needs these)
+
+Service		Functionality
+EC2			Virtual servers to run applications. Scalable compute capacity across global regions.
+S3			Object storage for files, backups, websites. 99.999999999% durability, unlimited scale.
+VPC			Isolated virtual network for your resources. Controls IP ranges, subnets, security.
+IAM			Manages users, permissions, roles. Controls who/what accesses AWS resources.
+
+Amazon S3 Select         : Query data in-place in S3
+RDS			Managed relational databases (MySQL, PostgreSQL). Automated backups, patching, scaling
+Amazon Aurora            : MySQL/PostgreSQL-compatible relational DB with 5x performance
+Amazon Aurora Serverless : Auto-scaling relational database without provisioning
+
+
+Layer 2: Second Layer (Build Complete Applications)
+
+Service		Functionality
+Lambda		Serverless functions - run code without servers. Pay only for execution time.
+ELB			Distributes traffic across EC2 instances. Health checks, multiple protocols (HTTP/TCP).
+Auto Scaling	Automatically adds/removes EC2 instances. Maintains performance during traffic spikes.
+Route 53	Scalable DNS + traffic routing. Weighted routing, health checks, failover.
+CloudWatch	Monitoring + alarms for all AWS services. Metrics, logs, automated actions.
+EBS			Block storage for EC2. SSD/HDD volumes, snapshots.
+CloudFormation	Infrastructure as code. JSON/YAML templates for resources.
+Elasticache	In-memory caching. Redis/Memcached for app performance.
+SQS			Reliable message queues. Decouples microservices.
+SNS			Pub/sub messaging. Fan-out notifications.
+CloudTrail	API call auditing. Security + compliance logging.
+Secrets Manager	: Encrypted credential storage. Automatic rotation.
+Certificate Manager :	Free SSL/TLS certificates. For ELB, CloudFront.
+Systems Manager	: EC2 patch + config management. Run commands at scale.
+Backup		Centralized backups. Cross-service, compliance-ready.
+
+Layer 3: Third Layer (Advanced/Optimization)
+
+Service		Functionality
+DynamoDB	NoSQL database with single-digit ms latency. Fully managed, auto-scaling.
+Glue		Serverless ETL service for data integration. Discovers schemas, transforms data, populates Data Catalog for Athena/Redshift.
+Glue DataBrew          : Visual data preparation tool
+Glue Data Catalog      : Centralized metadata repository
+AWS Glue Data Quality  : Automated data quality checks
+Athena		Serverless SQL queries on S3 data using standard SQL. No infrastructure, pay per query. 
+Redshift	Petabyte-scale data warehouse. Columnar storage.
+Redshift Serverless	  : Serverless version of Redshift with automatic scaling and no infrastructure management
+Redshift Spectrum     : Query S3 data from Redshift
+DataZone              : Data management and sharing
+Data Exchange         : Data marketplace
+EMR			Hadoop/Spark big data. Managed clusters.
+Amazon EMR Serverless : Serverless Spark/Hive processing without cluster management
+AWS Lake Formation    : Fully managed data lake builder with governance, cataloging, and security
+
+Kinesis		Real-time streaming. Data ingestion/processing.
+Kinesis Data Streams   : Real-time streaming data ingestion
+Kinesis Data Firehose  : Data delivery to warehouses
+Kinesis Data Analytics : Serverless stream processing (SQL, Flink, Spark) 
+MSK			Managed Kafka. Apache Kafka service.
+MSK Connect Kafka connectors
+
+QuickSight	BI dashboards. ML insights, serverless.
+QuickSight Q : ML-powered natural language BI
+SageMaker	ML platform. Build/train/deploy models.
+SageMaker Data Wrangler : Data preparation for ML
+Forecast    Time-series forecasting
+Fraud Detector ML fraud detection
+
+CodeCommit  Amazon's Git-compliant version control service for integrating your source code with AWS resources
+CloudFront	Global CDN for faster content delivery. Caches content at edge locations.
+ECS 		Docker container service. Fargate/serverless option.
+EKS			Managed Kubernetes. Container orchestration.
+SQS/SNS		Message queues + pub/sub messaging. Decouples microservices reliably.
+OpenSearch	Log analytics + search. Elasticsearch successor.
+Bedrock		Foundation models API. GPT/Claude access.
+Step Functions	Workflow orchestration. Serverless state machines.
+AppSync		GraphQL APIs. Real-time data sync.
+API Gateway	REST/HTTP/WebSocket APIs. Throttling, auth.
+Global Accelerator : Network optimization. Static IPs, anycast routing.
+WAF			Web application firewall. SQL injection, XSS protection.
+Shield		DDoS protection. Layer 3/4/7 mitigation.
+GuardDuty	Threat detection. ML-based security monitoring.
+X-Ray		Distributed tracing. App performance debugging.
+Cognito     Can manage authentication and authorization for your public-facing applications.
+
+General usage pattern bases services is as below.
+
+Architecture Progression: 
+   Start with Layer 1 Infrastructure (EC2+S3+VPC = basic app) --> 
+   Add Layer 2 (Lambda+ELB = production-ready Reliable apps)  -->
+   Add Layer 3 (DynamoDB+CloudFront = optimized enterprise solutions). 
+Usage Pattern           : Most companies use 10-25 services; enterprises average 50+.
+
+The core AWS Foundational Services are
+
+1. Compute
+2. Storage and
+3. Networking
+
+AWS networking products enable you to:
+● Isolate and protect your cloud infrastructure.
+● Scale your request handling capacity and
+● Connect your existing physical network to your private virtual network in the cloud.
+
+Amazon's EC2 instance is a virtual server that runs in the AWS data centers. Before creating Ec2 instance choose the region you want that to be and choose the Amazon Machine Image (AMI). AMIs are the templates of a computer’s volumes. AMI can either have a public or private access. Once you have your AMI selected, you are then prompted to select an instance type. You can also create gold master images of your Amazon EC2 infrastructure.
+
+1) Determine AWS Region
+2) Launch EC2 Instance - from preconfigured AMI
+3) Choose instance type - Base on CPU Memory Storage and Networking needs
+4) Configure network, IP, security groups, Storage volume, tags and key pair
+
+An Instance type is a pre-configured hardware specification of your EC2 instances. An AMI is a template that contains a soft configuration such as an operating system, application server and applications.
+
+ami-0043193724c1e7387
+679593333241
+(SupportedImages) - Docker - Ubuntu 24.04 x86_64 - 20250218-prod-l3gkep4g6ul2w
+aws-marketplace/ (SupportedImages) - Docker - Ubuntu 24.04 x86_64 - 20250218-prod-l3gkep4g6ul2w
+marketplace:4q0cw31z6up2wmq0k7vdo7zdv
+ami-09034b68b1093b670
+
+Total AMI - 3815
+AMI platform
+
+Linux - 3188
+Win   -  599
+macOS -   28
+
+AMI Type
+AMI   - 2922
+Docker - 893
+
+AMI includes 
+1) Template : A template for the root volume for the instance (OS, Application server and applications)
+2) Launch permissions : Whish AWS accounts can use the AMI to lauch instances
+3) Block device mapping : specifies volumes to attach when the instance is launched
+
+EC2 Instance type is a pre-configured hardware specification of your instances. EC2 instance, an instance type essentially mines the hardware of the host computer. Each instance type offers different compute and memory capabilities. Instances are deployed in Amazon's EC2 Public Cloud and on the Amazon Virtual Private Cloud in an Availability Zone within a region. You can configure security and network access on your Amazon EC2 instance.
+
+We have studied the building blocks of EC2 instances that are AMI. An AMI is a template that contains a soft configuration such as an operating system, application server and applications. You use an AMI to launch an instance which is a copy of the AMI running as a virtual server on a host computer in the AWS data center. You can launch as many instances as you want from an AMI. You can create your own AMI by customizing the instance that you launch from a public AMI and then saving the conflagration as a custom AMI for your own use.
+
+Select an AMI based on 
+
+1) Region
+2) Operating system
+3) Architecture (32bit or 64bit)
+4) Launch permissions      - determine the availability of an AMI pubic is available to all. it can be explicit (specific accounts) or implicit 
+5) Storage of root device 
+
+Always remember, EC2 Instance keeps running until you stop or terminate it or until it fails. Instances are deployed in Amazon's EC2 Public Cloud and on the Amazon Virtual Private Cloud in an Availability Zone within a region. You can configure security and network access on your Amazon EC2 instance.
+
+EC2 instances leverage elastic blocks to volumes in each Availability Zone. Determine whether you want to run in multiple locations, utilize static IP in points or attach persistent block stores to your instances. Amazon EBS volumes can be saved using snapshot. Additionally, Amazon S3 buckets can be used to store data/objects that are required by EC2 instances. Pay only for what the resources that you're going to actually consume.
+
+Use the local instance store volumes ie.. nothing but the EC2 instance store or the EC2 ephemeral volumes only for storing temporary data. When you typically stop and start an EC2 instance, the underlying host is changed. The EC2 instance store volumes are presented to the EC2 instance via the underlying host. So naturally when you stop and start, the volumes are lost and the data is lost. For data requiring a higher level of durability, use the Amazon Elastic Block Storage (EBS) volumes or backup the data to Amazon S3.
+
+If you are using Amazon EBS volume as your route partition, you need to ensure that you set the need on termination flag to “no”. If you want your Amazon EBS volume to persist outside of the life of theEC2 instance.
+
+AMIs are either EBS-backed or backed by the Instance Store Volumes. When an Amazon AMI is EBS backed, it means that the route device for instance is an EBS volume created from an EBS snapshot. When an AMI is Instance Store-Backed, it means that the route device of the instance was created from a template stored in Amazon S3.
+
+Instance Lifecycle
+
+An Amazon EC2 instance transitions through different states from the moment you launch it through to its termination. Note that you can only stop and start instances that are EBS-Backed. You cant stop and start the Instance store volume backed instances. 
+
+An EC2 instance can be in one of the following states.
+
+Pending    : When you launch an instance, it enters the pending state and the instance moves from the new host computer.
+
+Runnin     : AWS uses the AMI specified at launch to boot the instance. Once your instance is ready for you, it enters the running state. You can connect your running instance and use it as you would do in a typical data center where a computer is sitting in front of you.
+
+Rebooting  : You can reboot your instance to the Amazon EC2 Console,through the EC2 CLI or by making use of an Amazon EC2 API. It is recommended that you reboot your EC2 instance rather than running the operating system reboot from the instance. When an instance is rebooted, it remains on the same host computer and it maintains its public DNS name, its private IP address and any data on its instance to a volume. Rebooting an instance does not start a new instance billing hour. So remember that when you reboot an instance, you are still on the same physical host. But when you stop an instance and start it, you move from one host to another host.
+
+Shutting down : When you decide that you no longer need an instance, you can go ahead and terminate the instance. The instance will enter the shutting down state.
+
+Terminated : A terminated instance remains visible in the console for a while before it is deleted. You cannot connect or recover a terminal instance.
+
+Stopping   : Amazon EBS-backed instances can be stopped. When you stop an instance, it basically enters into the stopping state. And finally stopped. Amazon EBS-backed instances in the “stopped” state are no longer eligible for early usage or data transfer fees. AWS thus charges for the storage of the EBS volumes on stop instances. You can modify certain attributes of the stop instances including the instance time. When you start a “Stopped” Instance, it basically puts it into a pending state and then moves the instance to a new host machine. When you stop and start an instance, you lose any data that you have stored on the instance store or the ephemeral store devices.
+
+Instance reboot : You can reboot your instance using the Amazon EC2 console, a command line tool, and the Amazon EC2 API. We recommend that you use Amazon EC2 to reboot your instance instead of running the operating system reboot command from your instance. Rebooting an instance is equivalent to rebooting an operating system. The instance remains on the same host computer and maintains its public DNS name, private IP address, and any data on its instance store volumes.
+
+Choosing the Right Amazon EC2 Instance
+
+Refer the Family_types in the AWS_instancetypes_ap-south-1.xlsx sheet
+
+Instance Metadata : It is the data about you for instance. For example: if you want to know what is a public IP address of my instance or what is the AMI ID of my instance, I can use the instance metadata. Anyone who can access the instance can view it as metadata therefore you should take suitable
+precautions to protect sensitive data such as Long lived encryption keys.
+
+Instance User Data : Can be passed to instance at lauch, can be used to perform common automated configuration tasks in instance, Runs scripts after instance starts.
+
+You should also not store any sensitive data such as passwords as user data. To access the Instance Metadata, you connect to a unique URL: http://169.254.169.254/latest/meta-data/. On a Windows machine you can open up the Internet Explorer as you can see in the image or on a Linux machine you can use either the curl or the GET command to connect to that URL. 
+$ curl http://169.254.169.254/latest/meta-data/
+$ GET http://169.254.169.254/latest/meta-data/
+
+You can specify user data to configure an instance during launch or to run a configuration script. To attach a file, select as the file option or browse for file to attach. User data can be Linux script - executed by cloud-inti or windows batch or Powershell scripts executed by EC2Config service. User data scripts run once per instance ID by default. User data is limited to 16 KB. 
+
+AWS EC2 user data, accessible via instance metadata service (IMDS) at http://169.254.169.254/latest/user-data, has a strict size limit of 16 KB in raw (unencoded) form before base64-encoding during launch. This cap applies when passing scripts or configuration via the --user-data parameter in APIs, CLI, or console; after base64-encoding (which expands size by ~33%), the effective raw limit remains 16 KB to fit API constraints.
+
+The Amazon EC2 command line tools perform the base 64 encoding for you. The data is decoded before being presented to the instance. User data is executed only at the launch time. If you stop an instance, then modify the user data and start an instance, the new user data is not executed automatically by default.
+
+Sample User Data
+
+#!/bin/sh       -- user data shell scripts must start with #! and the path to the interpreter you want to read the script
+yum -y install httpd chkconfig httpd on /etc/init.d/httpd start   -- Install apache webserver and enable it and start the web server
+
+Sample Windows User Data
+
+<powershell>
+Import-Module ServerManager                          -- Import servermanager module for windows powershell
+Install-WindowsFeature web-server, web-webserver     -- Install IIS webserver
+Install-WindowsFeature web-mgmt-tools                -- Install web management tools
+</powershell>
+
+This example above shows you how we can configure user data in a Linux machine to install a patch of web server, enable the web server and then finally start the web server.
+
+EC2 instance purchase options 
+On Demand Instance  : Pay by the Hour 
+
+Reserved Instance   : Purchanse at significant discount - Always available (1 year to 3 years term)
+
+Scheduled Instance  : Purchanse a 1 year RI for recurring period of time, purchase capacity reservations that are recurring on a daily, weekly or monthly basis with specified duration for one year term. Scheduled Instances are a great choice for workloads that do not run continuously but do run on a regular schedule and take finite time to complete.
+
+Spot Instance       : Highest bidder uses instance at significant discount, enable you to build on unused EC2 instances which can lower your Amazon EC2 cost significantly. The hourly price for a Spot Instance is set by Amazon EC2 and fluctuates depending upon the supply of a demand for Spot Instances. Your Spot Instance runs whenever your bid exceeds the current market price. Spot Instances are a great cost effective solution if you are flexible about when your applications run and if the applications can be interrupted. Amazon EC2 does not terminate Spot Instances with a specific
+duration known as Spot blocks when the spot price changes. This makes them ideal for jobs that have a finite amount of time to complete such as batch processing, encoding, rendering, modeling and continuous integration.
+
+Dedicated Instance  : Amazon EC2 dedicated host is a physical server with EC2 instance capacity, Physical Host is fully dedicated to run your instance. Can use your Software licenses, per-socket, and per-code licenses reuse existing licenses you have puchased and reduce the cost. 
+
+Organizing EC2 instances systematically enhances security, scalability, performance, and cost efficiency in AWS environments. These 10 best practices provide a structured approach to management.
+
+Tagging Strategy : Apply consistent tags to all instances, such as "Environment:prod", "Owner:teamA", "Project:webapp", and "CostCenter:1234", for tracking, billing allocation, and automation. Review and enforce tagging policies via AWS Organizations or Config rules.
+
+Naming Conventions          : Use descriptive, standardized names like "prod-webapp-01-us-east-1" to indicate role, environment, sequence, and region. Automate naming through CloudFormation or user data scripts for consistency.
+
+Auto Scaling Groups         : Launch instances within Auto Scaling Groups (ASGs) to handle demand fluctuations automatically, ensuring high availability across multiple Availability Zones. Configure scaling policies based on CPU, memory, or custom metrics
+
+Right-Sizing Instances      : Regularly analyze CloudWatch metrics to match instance types to workloads, resizing overprovisioned ones (e.g., from m5.xlarge to t3.medium) to cut costs without impacting performance. Use AWS Compute Optimizer for recommendations.
+
+Security Groups and IAM Roles : Restrict security groups to least-privilege inbound/outbound rules, avoiding 0.0.0.0/0 where possible. Attach IAM instance profiles instead of embedding credentials for secure AWS service
+
+Enable Detailed Monitoring  : Activate detailed CloudWatch monitoring on production instances for 1-minute metric granularity, enabling proactive alerts on CPU, network, and disk usage. Integrate with alarms for automated remediation.
+
+Use Latest Generation Instances : Prefer current-generation instance families (e.g., t4g over t3 for ARM-based Graviton) for better price-performance and features like hibernation support. Plan migrations from older types like m4.
+
+Termination Protection and Hibernation : Enable termination protection on non-ASG instances to prevent accidental deletes. Configure hibernation for stateful workloads to resume quickly without data loss on instance store volumes.
+
+Centralized Logging and Auditing : Forward logs to CloudWatch Logs or S3 via agents like CloudWatch agent or SSM. Enable VPC Flow Logs and AWS Config for compliance tracking and troubleshooting.
+
+Automation with Infrastructure as Code : Provision instances using CloudFormation, Terraform, or CDK instead of console to ensure reproducibility and version control. Integrate SSM for patch management and configuration drift detection. CloudFormation templates can represent complex resource stacks that can be used to launch precisely defined environments involving the full range of AWS resources.
+
+Amazon Storage Services - S3
+
+Key Features:
+● Storage for the Internet
+● Natively online, HTTP access
+● Storage that allows you to store and retrieve any amount of data, any time, from anywhere on the web
+● Highly scalable, reliable, fast and durable Amazon S3
+
+● S3 can store an unlimited number of objects in a bucket
+● An object is composed of a file and optionally any metadata that describes that file
+● You can control access to the bucket and its objects Amazon S3 Bucket with Objects Bucket Object
+● S3 objects can be up to 5 TB (terabytes); no bucket size limit
+● It can use HTTP and HTTPS endpoints to store and retrieve any amount of data from anywhere on the web
+● Can use optional server-side encryption using AWS or customer-managed provided client-side encryption
+● Auditing is provided by access logs S3 provides standards-based REST and SOAP interfaces
+● There is a 100 bucket limit per account.
+
+To store an object in Amazon S3, you upload the file you want to store into the bucket. When you upload a file, you can set permissions on the object as well as any metadata.
+
+Buckets are logical containers for your objects. Buckets you create in a region is only in that region, all objects in that bucket will be stored in that region only. You can have one or more buckets in your account. For each object you can control access. You can also view access logs for the bucket and its objects.
+
+Basically what happens with S3 is, when you upload an object, we replicate this object to multiple facilities within that region which means this object is there and it could replicate it to multiple facilities. It is highly durable. However, since S3 is accessed over the rest APIs, there
+might be a case where the endpoint is down ie.. the API endpoint, which is taking a request that may be down.
+
+Amazon S3 bucket names must be globally unique across all AWS accounts and all regions, so if you create a bucket named "XYZ" in any region, no other AWS user worldwide can create another bucket with that exact name. Means bucket name : learn-glue-csv-etl-bucket cant by used by any AWS user globally. S3 operates under a single global namespace for bucket names, regardless of the region where the bucket is created, Even though buckets are region-specific for data storage, the name itself is checked globally at creation time to avoid conflicts.
+​
+This uniqueness applies across all AWS partitions (e.g., commercial aws, aws-cn [china], aws-us-gov [US govt only]), preventing duplicates even between different accounts or organizations. Deleted buckets names may take up to 48 hours to become reusable.
+
+AWS partitions act as hard fault isolation boundaries — services, endpoints, and ARNs differ for each partition (e.g., s3.amazonaws.com vs s3.cn-north-1.amazonaws.com.cn), and resources like S3 bucket names remain globally unique across all partitions. When scripting or using SDKs, specify the partition (e.g., via --region us-gov-west-1 or partition metadata) for correct endpoint resolution. Cross-partition operations require separate accounts and explicit configurations, impacting global services like S3 naming.
+
+while your enable server-side encryption on a S3 which has two options. You can use the S3 encryption or the Amazon Key Management Service (KMS) encryptions. You can also use your own keys to encrypt data which is stored into S3. These are called Customer-Managed or Customer Provided keys.
+
+The Common Use Case scenarios for Amazon S3 includes:
+1. Storage and backups
+2. Application File Hosting
+3. Media Hosting
+4. Software Delivery
+5. Store AMIs and Snapshots
+
+For example: You can use Amazon Dev pay with Amazon S3. Amazon Dev pay enables you to charge customers for using your Amazon S3 products through Amazon's authentication and billing infrastructure. You can charge any amount for your product including the usage charges such as: storage,
+transactions and bandwidth, monthly fixed charges and a 1 time charge.
+
+You can direct your clients to torrent accessible objects by giving them a torrent file directly or publishing a link to the bittorrent URL of your object. You can host a static website on Amazon S3 by configuring a bucket for web site hosting and then uploading your website content to the bucket.
+
+Amazon S3 pricing is based on the capacity and bandwidth actually used. All bandwidth into Amazon S3 is free but AWS charges a rate on bandwidth out. Prices are based on a prorated GB per month. 
+
+Object Keys
+An object key is the unique identifier for an object in a bucket. Because the combination of a bucket key and version ID uniquely identify each object, Amazon S3 can be thought of as a basic data map between a bucket + key + version and the object itself. Every object in Amazon S3 can be uniquely addressed to the combination of the web service endpoint, bucket name, the key and a version (optionally if you have enabled the versioning on the bucket).
+
+
+When you upload mydata.txt inside a folder called AllMyData in bucket my-unique-bucket:
+
+Bucket       : my-unique-bucket
+Object Key   : AllMyData/mydata.txt (Object key is the full "path" including simulated folder)
+Version ID   : Auto-generated if versioning enabled (e.g., ABC123def456)
+
+Full Unique Identifier: my-unique-bucket + AllMyData/mydata.txt + ABC123def456
+
+https://my-unique-bucket.s3.us-east-1.amazonaws.com/AllMyData/mydata.txt 
+
+You can control access to buckets and objects with:
+
+● Access Control Lists (ACLs) - you can only grant other AWS accounts, not specific users to access your Amazon S3 resources. 
+● Identity and Access Management (IAM) policies - you can only grant users within your own AWS account permission to access your Amazon resources
+● Bucket policies  - can be used to add or deny permissions across some or all of the objects within a single bucket. To any AWS user not only for users in your account.
+● You can upload or download data to Amazon S3 via SSL encrypted endpoints.
+● You can encrypt data using AWS SDKs.
+
+Policies can be attached to users, groups or Amazon S3 buckets enabling centralized management of permissions.
+
+Data Trasnser : 
+For maximum security, you can securely upload or download data to Amazon S3 via the SSL encrypted endpoints. The encrypted endpoints are accessible from both - the Internet and from within the Amazon EC2.
+
+S3 provides multiple options for pertinent data addressed. Customers who prefer to manage their own encryption keys can use glide encryption libraries like the Amazon S3 encryption client to encrypt data before uploading to Amazon S3. Alternatively, you can also use the S3 server-side encryption if you prefer to have Amazon S3 to manage encryption keys for you. With Amazon S3 server-side encryption, you can encrypt data on upload simply by enabling and adding an additional request header when writing the armchair. Decryption happens automatically when the data is retrieved.Amazon S3 server-side encryption uses one of the strongest block ciphers available AES 256 advanced encryption. 
+ 
+With Amazon S3 server-side encryption, every protected object is encrypted with a unique and commission key. This object itself is then encrypted with a regularly rotated Master key. Amazon S3 server-side encryption provides additional security by storing the encrypted data and encryption keys in different hosts. The server-side encryption also makes it possible for you to enforce encryption requirements. For example: You can create an apply bucket policy that requires only encrypted data which can be uploaded to your buckets.
+
+Now instead of using the Amazon S3 server-side encryption, you also have the option of encrypting your data before sending it to Amazon S3. You can build your own library that encrypts Object data on the client’s side before uploading to Amazon S3. you can also use SDK such as Darton SDK or Java SDK to automatically encrypt your data before uploading it to Amazon S3.
+
+Amazon S3 Versioning
+
+Versioning is a means of keeping multiple variants of an object in the same bucket. You can use versioning to preserve, retrieve, restore every version of every object stored in Amazon S3 bucket. useful in case of application failures. 
+
+● Versioning is enabled at bucket level, No granular control per object or folder. Once enabled (or suspended), it applies uniformly to all objects in that bucket.
+● Generates a new version with every upload.
+● Allows easy retrieval of deleted objects or roll back to previous versions. 
+● Once your version enables a bucket, it can never return to an unversioned state. You can however suspend the versioning on that bucket. 
+● Storage Costs: All versions consume space until lifecycle cleanup
+● as best practice create different buckets to keep your files requiring versioning (versioned bucket) and for files not requiring versioning (normal bucket). 
+● There's no default expiration period for noncurrent versions—they persist indefinitely until lifecycle rules remove them.
+
+● Three states of an Amazon S3 bucket:
+   ○ Un-versioned (default)
+   ○ Versioning-enabled
+   ○ Versioning-suspended Versioning Enabled Key:
+
+Version enabled S3 object, Generates a new version with every upload.
+
+Key : photo.gif
+ID  : 111111
+
+Key : photo.gif
+ID  : 121212
+
+aws s3api put-bucket-versioning --bucket my-bucket --versioning-configuration Status=Enabled   ## Enable versioning for S3 bucket.
+
+All new uploads get version IDs automatically
+Existing objects retain null version ID until modified (then get versioned with new upload for the object)
+
+list_objects_v2 SDK function returns all versions unless filtered
+
+import boto3
+s3 = boto3.client('s3')
+
+# Lists ALL versions (messy output)
+response = s3.list_objects_v2(Bucket='my-bucket', Prefix='data.txt')
+for obj in response.get('Contents', []):
+    print(f"Key: {obj['Key']}, Version: {obj['VersionId']}, IsLatest: {obj.get('IsLatest', False)}")
+
+Key: data.txt, Version: ABC123, IsLatest: True    ### Current version
+Key: data.txt, Version: XYZ789, IsLatest: False   # Non-current
+Key: data.txt, Version: DEF456, IsLatest: False   # Non-current  
+Key: data.txt, Version: null,   IsLatest: False   # Original (pre-versioning)
+
+AWS CLI to delete older versions of objects in next 30 days time 
+
+aws s3api put-bucket-lifecycle-configuration \
+  --bucket my-bucket \
+  --lifecycle-configuration '{
+    "Rules": [{
+      "ID": "ExpireOldVersions30Days",
+      "Prefix": "",
+      "Status": "Enabled",
+      "NoncurrentVersionExpiration": {"NoncurrentDays": 30}
+    }]
+  }'
+
+Amazon S3 Storage Classes
+
+Each object in S3 has a storage class associated with it. In the same S3 bucket, you can have objects with different storage classes—storage class is configured at the object level, not bucket level. We can Mix storage class freely for each object to achive cost optimization.
+
+S3 standard is ideal for performance sensitive use cases and frequently used data. Standard is the default storage class in S3.
+
+Standard (Hot) : Millisecond access for frequent reads/writes, Highest storage cost (~$0.023/GB/month), ideal for web apps, analytics, Overkill for rarely accessed data
+
+Glacier (Cold) : Retrieval takes minutes to hours, Retrieval fees ($0.01-$0.09/GB), 3 to 5 hours retrieval time, Very low cost (~$0.004/GB/month), ideal for backups/archives accessed 1-2x/year, 90-day minimum storage charge 
+
+One Zone-IA Infrequent Access - IA  (Recreatable) : data loss risk if AZ fails, Millisecond access, Cheaper than Standard-IA (~$0.01/GB/month), ideal for non-critical recreatable data (thumbnails, temp files), 30-day minimum storage
+
+Same bucket my-bucket can contains:
+
+data/hot.txt    → STANDARD
+data/cold.txt   → GLACIER
+logs/app.log    → STANDARD (default)
+backup/2025.zip → ONEZONE_IA
+
+​Use lifecycle policies to auto-transition: hot.txt → Standard-IA (30d) → Glacier (90d).
+Set bucket lifecycle policies to change classes over time: Objects transition automatically without code changes.
+Rule: After 30 days → STANDARD_IA
+      After 90 days → GLACIER
+
+response = s3.head_object(Bucket='my-bucket', Key='data/cold.txt')
+print(response['StorageClass'])  # Outputs: GLACIER
+
+Lifecycle management defines how Amazon S3 manages objects during the lifetime. Eg. some logs may be just needed for weeks or max 2 months then its of no use. When you configure a lifecycle rule, you specify the storage class you want to transition the object to and a number of days and the object creation to transition it or permanently delete the object.
+
+● Pricing is available as:
+ ○ Storage Pricing
+ ○ Request Pricing
+ ○ Data Transfer Pricing: data transferred out of Amazon S3
+
+To store an object in Amazon S3, you upload the file you want to store into the bucket. When you upload a file, you can set permissions on the object as well as any metadata.
+
+Organizing an S3 bucket effectively improves manageability, security, performance, and cost control. Follow these 10 best practices for optimal structure.
+
+Naming Conventions : Use clear, descriptive bucket names that indicate purpose, environment, and region, like "prod-marketing-data-us-east-1". Avoid sequential or generic names to prevent hotspots and ensure global uniqueness.
+
+Folder Hierarchy   : Implement a logical hierarchical folder structure, such as "year/month/day/" or "team/project/version/", to mimic directories and simplify navigation. Limit nesting depth to avoid performance issues with prefix listings.
+
+Consistent Object Naming : Adopt uniform object key naming with prefixes, dates, and delimiters (e.g., "logs/2025/12/21/app-error.log") for easy filtering and partitioning. Introduce randomness in high-throughput prefixes to distribute requests evenly.
+
+Lifecycle Policies : Set up lifecycle rules to transition objects to cheaper classes like Glacier or delete old files automatically, reducing storage costs. Apply rules at the prefix level for targeted management.
+
+Enable Versioning  : Turn on versioning for buckets holding critical data to protect against accidental deletions or overwrites, but monitor storage growth. Combine with lifecycle policies to expire old versions.
+
+Security Controls  : Block public access by default, use IAM policies with least privilege, and enable server-side encryption (SSE-S3 or SSE-KMS). Regularly audit permissions via S3 Access Analyzer.
+
+Tagging Strategy   : Apply consistent tags to objects and buckets (e.g., "Environment:prod", "Owner:teamA") for cost allocation, access control, and automated management.
+
+Performance Optimization : Group small objects into larger files or use Amazon S3 Select for querying, minimizing GET requests. Choose storage classes based on access patterns, like Intelligent-Tiering for variable usage.
+
+Monitoring and Logging : Enable S3 server access logging to another bucket for auditing, and use CloudWatch metrics with S3 Storage Lens for insights into usage trends and top consumers.
+
+Cost Management   : Regularly review storage with S3 Inventory reports, delete unused objects, and avoid frequent cross-region transfers. Use Requester Pays for shared buckets to control expenses.
+
+
+Amazon EBS - Elastic Block Store
+
+Amazon EBS are persistent block level storage volumes for use with Amazon EC2 instances. It offers consistent and low latency performance. Amazon EBS is exceptionally suited for applications that require a database, file system or access to roll block level storage. Amazon EBS snapshots are durable and are automatically replicated within their Availability Zone. Snapshots are stored durably in Amazon S3. Amazon EBS provides block level storage volumes for use with Amazon EC2 instances.
+
+Amazon EBS volumes are highly available and reliable storage volumes that can be attached to any running instance in the same Availability Zone. The Amazon EBS volumes attached to an EC2 instance are exposed as storage volumes that persist independently from the life of the instance. When the volumes are not attached to an EC2 instance, you only pay for the cost of the storage.
+
+A single EBS volume cannot be attached to multiple EC2 instances simultaneously—each volume attaches to exactly one instance at a time within the same Availability Zone. 
+
+● Persistent block level storage volumes offer consistent and low-latency performance.
+● Stored data is automatically replicated within its Availability Zone.
+● Snapshots are stored durably in Amazon S3.
+
+The typical lifecycle of an EBS volume starts with the creation of the volume which you can then attach to an EC2 instance. You can create snapshots which are nothing but a point in time photograph of the EBS volume and then you can detach the EBS volume and maybe attach it to a different EC2 instance in the same Availability Zone. And finally you can always go ahead and delete the EBS volume.
+
+● You can create :
+  ○ EBS Magnetic volumes from 125 GB to 1 TB in size.
+  ○ EBS General Purpose (SSD) volumes up to 16 TB in size.
+● You can also use encrypted EBS volumes to meet a wide range of data at-rest encryption requirements for regulated/audited data and applications.
+● You can create point-in-time snapshots of EBS volumes, which are persisted to Amazon S3.
+
+Amazon EBS is recommended when data changes frequently and requires a long term persistence. EBS volumes are particularly well suited for use as primary storage for file systems, databases or for any applications that require fine granular updates. An access to the raw and formatted block level storage, EBS is particularly helpful for database style applications that frequently encounter many random reads and rise across the datasets.
+
+So, a great use case for EBS is when you want the hard drive to persist past the life of the EC2 instance. Before EBS existed as a service, AWS only used physical locally attached drives called ‘ephemeral storage’ or instance store volumes.
+
+EBS pricing is based on allocated storage. Whether you use it or not. This is very unlike Amazon S3 who's pricing is based on the space actually used. Prizes may vary depending upon the region or for IOPS that you provision. Amazon EBC volumes are designed to be highly available and reliable. EBS volume data is replicated across multiple servers in an Availability Zone to prevent loss of data from failure of any single competent.
+
+Amazon EBS volumes are network attached hard drives that can be written to or read from at a block level. its a block storage with filesystem. EBS volumes are only accessed from withint the EC2 instance it cant be access directly from internet. 
+
+S3 is an object level storage medium. This means that you must write whole objects at a time. If you change one small part of the file. For example: A character in a Word document, you must still re-write the entire file in order to commit the change to Amazon S3. This can be very time consuming if you frequently write to the same object. S3 is optimized for writing once, reading many use cases.
+
+The other major difference is cost. With Amazon S3, you pay for what you use and with Amazon EBS, you always pay for what you provision.
+
+EC2 Instance Store
+
+Your current ubuntu instance likely has instance store if lsblk shows nvmeXn1 or xvdb devices beyond root (/). 
+
+Check this in cloud shell
+~ $ lsblk
+NAME          MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+loop0           7:0    0   1G  0 loop /home/cloudshell-user
+nvme0n1       259:0    0  30G  0 disk 
+├─nvme0n1p1   259:1    0  30G  0 part /aws/mde/.mde_env_api_auth_token
+│                                     /aws/mde/credential-helper
+│                                     /aws/mde/mde
+│                                     /aws/mde/ide-runtimes
+├─nvme0n1p127 259:2    0   1M  0 part 
+└─nvme0n1p128 259:3    0  10M  0 part 
+nvme1n1       259:4    0  16G  0 disk /aws/mde/logs      ## This is instance store 16GB is provisioned by in cloudshell only /home/cloudshell-user is only 1GB 
+                                      /etc/hosts
+                                      /etc/hostname
+                                      /etc/resolv.conf
+                                      /home
+                                      /root
+									  
+An Instance Store provides temporary block level stories for their instance. This storage is located on disks that are physically attached to the host computer. Instance Store is ideal for temporary storage or information that changes frequently. Such as buffers, caches, scratch data and other temporary content or data that is replicated across a fleet of instances such as a load balanced pool of observers.
+
+● Local, complimentary direct attached block storage resource.
+● Availability, number of disks, and size is based on EC2 instance type.
+● Storage optimized instance for up to 365,000 Read IOPS and 315,000 First Write IOPS.
+● SSD or magnetic.
+● No persistence.
+● All data is automatically deleted when an EC2 instance stops, fails or is terminated.
+
+EC2 instance when
+Reboot     - Instance stay in same host computer, same public and private IP, EIP elastic IP remains associated with instance, store volume data is preserved, EBS volume is preserved
+Stop/Start - Runs on new host computer, same private IP and new public IP, EIP elastic IP remains associated with instance, store volume data is Erased, EBS volume is preserved
+Terminated - No more host requried, no more IP required, elastic IP is disassociated from instance, store volume data is Erased, EBS volume is deleted by default.
+
+##**## Always remember to take Snapshot of the EBS volume before you Terminate of Delete the EC2 instance 
+
+Neworking in the EC2 instance
+
+Amazon’s Virtual Private Cloud (VPC), can be defined as a virtual network topology that closely resembles a traditional network that you might operate in your data center. You have complete control over your virtual networking environment and you can easily customize the network configuration of your Amazon VPC such as the :
+
+● Selection of IP address ranges
+● Creation of subnets
+● Configuration of route tables and
+● Network gateways
+
+AWS assigns a unique ID to each subnet. A subnet can be defined as a range of IP addresses in your VPC. Regardless of the type of the subnet, whether they are public or private. The internal IP address range of the subnet is always private.
+
+A public subnet is a subject that has a route to the internet gateway. That is for a web server accessible from the Internet. Whereas a private subnet has no route to the internet gateway. For example: A banking device like a database server or a batch processing dont need to be access from internet they can be accessed via VPC this can be in private subnet. When you create a subnet you have to choose another Availability Zone a subnet cannot span multiple Availability Zones.
+
+In a typical architecture you will have 3 different availability zones
+
+1) with public subnet   - runs NAT and web server which can be accessed from internet
+2) with private subnet  - runs app server, DB Server which is access via NAT by your webserver in above availability zone
+3) with VPN only subnet - runs DB server which can be access by your customers with VPN 
+
+in point 3 above  you can create a hardware virtual private network connection between your corporate and your VPC allowing you to leverage the cloud as an extension of your corporate data center. You can connect your VPC to a remote network by using a VPN connection.
+
+The Amazon Virtual Private Cloud (VPC) allows you to provision a logically isolated section of the tablas cloud where you can launch AWS resources in a virtual network that you define.
+
+You have complete control over your virtual networking environment including:
+● Selection of your IP address range
+● Creation of subnets
+● Configuration of route tables
+● Network Access Control List which allows you to define which plot you want to block or allow and
+● Network gateways.
+
+Amazon VPC provides three features that you can use to increase and monitor the security of your Virtual Private Cloud.
+
+● Security groups act as a firewall for the associate and Amazon EC2 instances, controlling both inbound and outbound traffic at the instance level.
+● Network access control lists (ACLs) act as a firewall for associated sublets controlling from both inbound and outbound traffic at the subnet level.
+
+"Use IAM Identity Center (SSO) for interactive CLI access"
+"Long-term access keys only for automated systems (CI/CD)"
+
+Security and Identity & Access Management
+
+AWS Identity and Access Management (IAM) enables you to securely control access to AWS services and resources for your users.
+
+● Create and manage AWS users in groups
+● Use permissions to selectively and precisely grant or deny access to resources.
+
+Security is shared responsibility as defined below in each layer its called For and In model
+Security responsibility of AWS        (For - AWS FOR the cloud)
+AWS    : AWS Global infrastructure : Regions, Availability zones, Edge locations
+AWS    : Foundation services       : Compute, Storage, Database, Network 
+Security responsibility of Customer   (In  - Customer what they put IN the cloud.)
+Client : Base : Client-side Data encryption(Datainegrity/Authentication), Server-side encryption (Filesystem/data), network traffic protection(Encryption/integrity/identity)
+Client : OS, Network and Firewall configuration
+Client : Platform, Applications, Identity and Access management
+Client : Customer Data 
+
+● Automated change-control process                - For any changes in the AWS region or services
+● Bastion servers that record all access attempts - All access to AWS is recorded 
+● Firewall and other boundary devices           
+● AWS monitoring tools                            - Monitoring tools watch of any port scaning or any other security breach.
+
+AWS provides you with customer access points also called APIN points that will allow HTTPS access so that you can establish secure communication sessions with your AWS services. SSL/TLS encrypts the transmission, protecting each request and all responses from being viewed in transit.
+
+Security Groups can be used by a wide variety of services such as Amazon RDX (Relational Database Service), Amazon Redshift Data Warehousing Service, Amazon Elastic Map Reduce and Amazon Elasticache. Always very important when engineering security is that you think about that terminology minimizing blast radius. Only expose required ports for each tire of application such as webserver / Application / Database tires. Webserver alone requires 80 and 443 ports exposed for internet access from outside. Application is only managed by IT Staff they can access using SSH/RDP only open that port, Database tire may require data to be backup with on-perm database server so only open that port. Apply all these security rules with proper security groups and assign them to users and EC2 instances running these three tiers. Also there could be communication between three tires that is also managed with security groups.
+
+By using Security Groups is one of the ways that we can start to minimize blast radius by reducing the domain of conversation that it can have with other elements or other resources in that AWS environment or in the applications stack.
+
+We have Amazon Virtual Private Cloud (VPC) service which allows us to add another layer of security to our instances by applying network security groups with network access control lists. You can also define your own network topology including the IP address range, the number of subnets that you declare and the IP address range for each of those subnets. You can declare how that VPC is connected with Internet gateways, routing tables, virtual private gateway, VPN connections and the PC pairing. There are lots of different ways that we can control how traffic flows within our network.
+
+Think of AWS VPC as your private apartment building in the cloud where you control who enters/exits and how rooms connect. For a 3-tier app (Web → App → Database), you design it layer-by-layer with traffic controls.
+
+Layer 1: VPC (Your Building)
+
+Your isolated network space. Choose IP range like 10.0.0.0/16 (65k addresses). Everything lives here. Like picking your building's address range.
+
+Layer 2: Subnets (Rooms in Building)
+
+Divide into Public/Private rooms across 2 floors (AZs):
+
+Public Subnets (10.0.1.0/24, 10.0.2.0/24): Web servers live here (face internet)
+Private Subnets (10.0.3.0/24, 10.0.4.0/24): App servers + Database (hidden from internet)
+
+Tier	Subnet Type 	Purpose	        Example IPs
+Web	    Public          Serve   users	10.0.1.10
+App	    Private	        Business logic	10.0.3.20
+DB	    Private	        Store data	    10.0.4.30
+
+Layer 3: Gateways (Doors)
+Internet Gateway (IGW) : Front door for public subnets. Web servers enter/exit internet freely.
+NAT Gateway            : Back door in public subnet. Private app/DB servers sneak out for updates (egress only, no one enters).
+
+Layer 4: Route Tables (Hallway Signs)
+
+Traffic directions:
+
+Public Route Table   : 0.0.0.0/0 → IGW (Internet both ways)
+Private Route Table  : 0.0.0.0/0 → NAT (Outbound only)
+Internal             : 10.0.0.0/16 → Local (Tier communication)
+
+Layer 5: Security (Door Locks)
+
+1) Security Groups: Instance-level firewalls
+     Web : Allow HTTP(80)/HTTPS(443) ingress from world
+     App : Allow port 8080 ingress from Web only
+     DB  : Allow port 3306 ingress from App only
+
+2) NACLs: Subnet-level bouncers (extra layer)
+
+Traffic flow picture
+~~~~~~~~~~~~~~~~~~~~~~~~
+Internet ↔ IGW ↔ Public(Web) ↔ Private(App) ↔ Private(DB)
+          ↑                    ↓ (updates)
+       NAT Gateway ←───────────┘
+
+First flow : Users reach web, web talks to app, app talks to DB. DB stays invisible.  App/DB can download patches but can't be hacked directly.
+
+Second Flow : 
+App Server (Private Subnet) 
+     ↓ "I need patches from updates.example.com"
+Private Route Table → NAT Gateway (in Public Subnet)
+     ↓ NAT "translates" private IP 10.0.3.20 → public IP 18.2.x.x
+Internet Gateway (IGW)
+     ↓ Response travels back: Internet → IGW → NAT → Private Route Table → App
+
+IAM -> Identity and Access Management
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using IAM, you can create and manage users in groups and use permissions to allow and deny their access to AWS resources. You can also use existing corporate identities, something like Active Directory to grant secure access to AWS resources such as Amazon S3 buckets without creating new AWS identities. It is referred to as Identity Federation.
+
+1) Manage AWS users and their Access
+2) Manage IAM roles and their permissions
+3) Manage federated users and their permissions
+
+AWS services and resources can be accessed using the AWS management console, the AWS command line interface or through SDKs and API from a wide range of supported platforms users. If you are the account owner, you can sign into the console directly using the root account. Root account carries permissions to do everything. There is no charge for creating and managing and maintaining users through the IAM interface. IAM users are like administrators. 
+
+Always Users are authenticated with Access key and Security Key, for the CLI and SDK API accesses. Console uses UserID password and MFA(mandated). It is highly recommended that when assigning permissions, we should assign permissions to groups and we put users in those groups. One user can belong to multiple groups.
+
+IAM Policies
+To assign permission to a user, a group, a role or a resource, you create a policy which is a document that explicitly lists ermissions. An IAM role is like an AWS identity with permission policies that determine what the identity (role) can and cannot do in AWS. Users can be assinged roles so they can do whatever permission is given to the role. 
+
+The good news is that we have a policy generator that can help you build these policies. We have something called the policy simulator which will help you test the policies that you write. And also we have a number of policies that are preexisting in your AWS account. So these are referred to as AWS managed policies. You can create your own customer management policies or even use another form of policy called in line policy.
+
+With an in line policy it is tied to a resource, user or group. If you delete that resource user or group, the policy document also gets deleted as well. So once we have created an IAM policy, we can assign that to either a user, a group or a role. But the important element here is that a single IAM policy could be assigned in multiple different places. All through our best practice here, when we are looking at users and groups is to assign policies to groups and put the user in the relevant group.
+
+Users, Groups, and Roles are three ways to assign the same IAM policy (permissions). Groups manage people, Roles manage machines/services.
+
+User   : Human employees | login with Username + Password/API Keys | Individual developers, admins
+Group  : Multiple Users  | Inherits from group    | Dev Team, Admin team
+role   : EC2 instances, Lambda, apps | No permanent credentials (temporary tokens) | Servers, services, cross-account access
+
+Roles = Temporary costumes that anyone/anything can "wear" for specific tasks:
+
+User "Alice"    → assumes Role "EC2Admin"       → gets S3 access for 1 hour
+EC2 Instance    → assumes Role "DatabaseReader" → reads RDS automatically
+Lambda Function → assumes Role "S3Uploader"     → uploads files
+  
+Users → belong to → Groups (manage people permissions)
+              ↓
+       Users assume → Roles (for temporary elevated access)
+Resources assume → Roles (servers/services get permissions)
+
+you can say that we have got a single policy that is assigned to a user that is assigned to a group and it is assigned to a role.
+
+one Policy can be 
+Assigned to Role (x)
+Assigned to User
+Assinged to Group 
+
+Inturn the Role  (x) can be 
+Assumed by User 
+Assumed by AWS resource (S3, EC2)
+
+Power of Roles being Assumed by Resources
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here is a really significant benefit of the role and the ability for AWS resources to assume that role.
+A Python application that we are running on an Amazon EC2 instance and that Python application can interact with Amazon S3 by assuming Role. 
+
+So traditionally, we could just write our Python application and store that access ID and secret key in our Python script. But obviously that has some potential security issues.  Maybe we accidentally publish our Python script to other people. They will lead other people to view that and they would be able to get our access ID in a secret key.
+Instead we can assign a role to the EC2 instance that has the necessary permissions to interact with S3. Now we no longer have to embed credentials in code. Now the code inherits or assumes the set of policy permissions that have been assigned to the role that the EC2 instances is running under. We can create an Amazon EC2 instance. And during that process of creating the instance, we can assign the instance role called "Python EC2 access S3".
+
+This is very important because you can only assign an IAM role at the time that you create the instance. You cannot go back and add a roll to an existing EC2 instance. When we launch the python app on the EC2 instance, it will interact with the EC2 metadata service which will give it the ability to obtain temporary security credentials which is used to access S3.
+
+Once the python application is inherited, the permissions from the Python EC2 access S3 role, then it has the ability to interact with and carry out whatever that gets and puts all that it needs to work correctly with our Amerson S3 bucket.
+
+Power of Roles being Assumed by Users
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A user called Bob and he has a very limited set of permissions only allowing him to access a restricted number of AWS resources. But occasionally, Bob needs to carry out some administrative duties.
+
+What we have done here is we have created a role called the IAM admin role. We have also given Bob the permission to assume that role explicitly. So when he has to carry out those admin functions, he can assume the IAM admin role which gives him a temporary set of credentials. He then drops his  normally restricted set of credentials and uses the new assumed credentials to access the rules resources that he needs.
+
+One other benefit of the IAM assume role capability is that you can enable cross account trust relationships. So I could have a user called Fred in another AWS account. And I can explicitly declare that Fred has the permission to assume this role and then when he goes through that assume roll process he then also has the ability to access the resources in the first AWS account.
+
+Security Credentials and IAM Authorization
+
+So as we just saw in the previous two examples temporary security credentials are required. And these are generated by the AWS Security Token Service or STS service. These credentials are short term but work identically to long term access key credentials. The credentials are generated dynamically and provided to the user when requested.
+
+Temporary security credentials (AWS STS)
+
+Session (container)
+  Access key ID
+  Secret Access key
+  Session Token
+  Exipration (Duration of validity)
+
+So a session established with AWS STS consists of an Access Key ID, Secret Access Key, a Session Token and has an Expiration time. The Expiration time could last between 15 minutes all the way up to 36 hours.
+
+The keys are used to sign API requests and pass in the token as an additional parameter which AWS uses to verify that the Temporary Access Keys are valid. There is lots of use cases for Temporary Security Credentials (STS) such as :
+
+● Cross account access
+● Mobile Users
+● Key rotation for Amazon EC2 based applications but also very importantly for
+● Account Federation.
+
+So if you are an existing active directory customer, you already have a very large AD built with all of your users and groups. You can use roles and STS to do Federated access for your AD users to use and inherit permissions inside of your AWS account.
+
+Security Best Practices
+
+IAM best practices
+
+❏ Delete AWS account (root) access keys
+❏ Create individual IAM users
+❏ Use groups to assign permissions to IAM users
+❏ Grant least privilege
+❏ Configure a strong password policy
+❏ Enable MFA for privileged users
+❏ Use roles for applications that run on Amazon EC2 instances
+❏ Delegate by using roles instead of by sharing credentials
+❏ Rotate credentials regularly
+❏ Remove unnecessary users and credentials
+❏ Use policy conditions for extra security
+❏ Monitor activity in your AWS account
+
+It is very important to delete AWS account root access keys. We really do not want anyone to interact with our AWS account programmatically with the root account. Remember the ability to use roles for applications that run on top of Amazon EC2 instances. This means that you no longer have to put credentials inside your code and run the risk of getting those exposed.
+
+We have a service called AWS Cloud Trail that will give you who has made what changes ? Was it successful ? Where were they logged in from ? Look at that information on a regular basis and monitoring is done with AWS Cloud Trial.
+
+AWS Resource-Based Policies
+
+But one thing to remember is that there is an alternative to IAM, some services give you the ability to assign a policy directly to the service. This can be very useful if you are trying to grant cross-current access to their resources or if you are trying to create a more granular set of permissions for an application. Many of the AWS services support policies (S3, EC2, Lambda, Glacier, SNS, SQS, Opswork, etc).
+
+Introduction to AWS Databases
+
+AWS offers a wide range of database services to fit your application requirements. These database services are fully managed and can be launched in minutes with just a few clicks. AWS provides fully managed relational and no SQL database services as well as in-memory caching as a service and a petabyte scale data warehouse solution.
+
+Amazon RDS         - RDS provides cost-efficient and resizable capacity while managing time-consuming database administration tasks. RDS provides you 6 familiar database engines to choose from. Amason Aurora, MySQL, MariaDB, MS SQL Server, Oracle and PostgresSQL 
+Amason Aurora      - Part of RDS engine
+Amason DynamoDB    - fast and flexible nonsequel database service for all applications that need consistent single digit no second latency at any scale. supports both document and key values store models.
+Amazon ElastiCache - 
+Amazon Redshift    - 
+AWS Database Migration Service - 
+
+
+Data Storage Considerations
+
+When it comes to picking our database, there really is no one size fits all solution. different factors play a role in that : 
+● The format of the data to be stored.
+● How much data do we need to hold in our database.
+● What kind of frequency are we going to be querying the database
+● How quickly do we need those results to be returned back and
+● How long do we need to hold on to the data that's being stored in the database.
+
+SQL and NoSQL Databases
+
+SQL   : Rows and cols, Fixed schemas, Query using SQL, Vertically Scalable (by increasing the amount of hardware power).
+NoSQL : Key-value|Documents|Graphs, Dynamic schemas, query based on collection of documents, Horizontally scalable. 
+
+Amazon RDS 
+
+RDS makes it really easy to set up, operate and scale relational databases in AWS. RDS provides cost -efficient and resizable capacity, very easy to administor. RDS has some additional replication features available. These features include multiple AZ deployments, read replicas and cross region replication.
+
+The service also automatically patches the database software and backs up our database. Those backups can be used for point in time recovery of our database. The basic building block for Amazon RDS is the database instance. The Database instance is an isolated database environment in the cloud. A database instance can contain multiple user created databases and you can access it by using the same tools and applications that you would use with a standalone database.
+
+You can create and modify a database instance using the AWS Management Console, AWS Command Line interface or the Amazon RDS APIs. When automated backups are turned on for your database instance, Amazon RDS automatically performs a full daily snapshot of your data. This snapshot is taken during a backup window that you configure. The backup will also contain the transaction logs. When you initiate a point in time recovery, those transaction logs are applied to the most appropriate daily backup in order to restore the database to the specific time you requested.
+
+Automatic backups are only retained for a limited period of time. By default, they are set to only be held for one day but you can configure this retention period for anything up to 35 days.
+
+Manual Snapshots
+Amazon RDS already provides the option for manual snapshots. Manual database snapshots are user initiated and enable you to back up your database as frequently as you want. You are then able to restore to that specific snapshot at any time. Unlike automatic backups which have a limited retention period, manual database snapshots will be held until you explicitly delete them. The snapshots that you take will be stored in S3. 
+
+Cross Region Snapshots 
+Cross region snapshots are available for all supported Amazon RDS engines. These copies can be moved between any of the public AWS regions and you can copy the same snapshot to multiple regions simultaneously. Using one of these copies, we can restore our database in a different region.
+
+Database Security
+
+RDS provides us many options for managing access to not only the service but the databases as well. The method you use to manage that access is going to depend on that task that needs to be performed in RDS. For managing network access, running our database instance in a VPC will provide the greatest possible control. We can use IAM policies to determine who is allowed to manage RDS resources. For example, you can use IAM to determine who is allowed to create, describe, modify or delete database instances.
+
+Security groups are going to control which IP addresses or EC2 Instances can connect to your database. When you first create a database instance, its firewall prevents any database access except through rules specified in the security group. To protect your communications with your database instances, you can use SSL connections to encrypt all of the traffic.  
+
+Amazon RDS provides us the option to encrypt our databases. When you enable encryption, all data at rest for not only the database, but any snapshots taken from that database will be encrypted. And finally, we can use the security features of the database engine to control who can log into the database on the database instance. Just like you would if the database was running on your local network.
+
+Amazon RDS multi AZ deployments provide enhanced availability and durability for your database instances, making it a natural fit for any production database workloads. When you provision a multi-AZ database instance, RDS automatically creates a primary database instance and then synchronously replicates the data to a standby instance in a different Availability Zone.
+
+Advantage is When it comes time for patching or applying upgrades, any planned maintenance activities are performed on our standby instance first.
+
+Each AZ runs on its own physically distinct and independent infrastructure and is engineered to be highly reliable. In the case of an infrastructure failure, things like the underlying instance hardware fails or storage failure or even network disruption.
+
+Amazon RTX performs an automatic failover to the standby so that you can resume database operations as soon as the failover is complete. Since the end point for your database instance remains the same after failover, your application can resume database operations without the need for any manual intervention. Amazon RDS (and Aurora) uses a logical, DNS-based endpoint that points to whichever physical DB instance is currently the primary, so when failover happens AWS just repoints the endpoint’s DNS to the standby’s IP while keeping the endpoint string unchanged.
+
+- You connect to a DB endpoint name like myapp-prod.c9xyzabc1234.ap-south-1.rds.amazonaws.com, this Application endpoint (what you configure in your app), this is what AWS calls the “DB instance endpoint.
+    # DNS mapping is myapp-prod.c9xyzabc1234.ap-south-1.rds.amazonaws.com → IP 10.0.1.11 → db-prod-1 (present in ap-south-1a)
+	# Your app connection string postgresql://dbuser:dbpass@myapp-prod.c9xyzabc1234.ap-south-1.rds.amazonaws.com:5432/mydb
+- Behind that, AWS maps the endpoint to the current primary instance (e.g., db-prod-1.ap-south-1.rds.amazonaws.com) via DNS.
+- On failover, AWS promotes the standby (e.g., db-prod-2.ap-south-1.rds.amazonaws.com) and updates the DNS record for the same endpoint to now point at db-prod-2’s IP.
+    # Update DNS mapping myapp-prod.c9xyzabc1234.ap-south-1.rds.amazonaws.com → IP 10.0.2.22 → db-prod-2 (present in ap-south-1b)
+	# Your app uses SAME connection string postgresql://dbuser:dbpass@myapp-prod.c9xyzabc1234.ap-south-1.rds.amazonaws.com:5432/mydb
+- RDS will then launch a new standby instance to replace the old one.
+
+The endpoint is logical, not tied to a specific instance, Your app always uses the same endpoint string, so it doesn’t need to know which instance is primary. AWS controls the DNS mapping and updates it on failover; you never reference the instance hostname directly in your app. This works across AZs in the same Region because all RDS instances in a Multi-AZ setup share the same VPC and subnets, and DNS just points to the currently active one.
+
+Database Parameters
+We do not have direct access to the engine running under RDS, we do have the capability of customizing the configuration that it is using. The first of these options is parameter groups.
+
+The Parameter Groups will contain many of the options that we might find if we were standing up the database on our own. Each supported engine and its available versions will contain its own set of available parameters. When we create a parameter group, that group can be reused with any other  RDS instances that are leveraging the same engine and version of that engine.
+
+➔ Contains engine configuration values that can be applied to one or more DB instances of the same instance type.
+➔ Amazon RDS applies a default DB parameter group when you create a DB instance, which contains defaults for the specific database engine and instance class of the DB instance.
+
+Some engines support a second method of customizing the configuration leveraging what are called option groups. These options can contain things like enabling and configuring mem-cache D for our MySQL instance or enabling transparent data encryption for our Oracle instances. Each supported engine will have its own set of available options.
+
+➔ Tools that simplify database management.
+➔ Currently available for Oracle, Microsoft SQL Server and MySQL 5.6 DB instances.
+
+RDS best practices 
+~~~~~~~~~~~~~~~~~~~~~
+● We always want to be monitoring our memory, CPU and storage usage of the service to make sure that our databases are operating efficiently.
+● By using multi AZ deployments, we are adding in that high availability and automatic failover in the event that any problems occur.
+● We want to make sure that automatic backups have been enabled.
+● The backup window for those automatic backups is set to occur during a low period in the right volume to our database.
+● When it comes time to scale the I/O capacity of our database, there are a couple of options that we can go through.
+   ➔ The first is to migrate our database instance to a class with higher I/O capacity.
+   ➔ We can convert from standard storage to provisioned IOPS volume and
+   ➔ If we are already using provisioned IOPS volumes, we can provision it for even greater throughput capacity
+● If our clients are doing any DNS caching or holding onto the IP addresses for DNS entries, we need to make sure that we have a TTL of less than 30 seconds set. This is going to come into play when we have a failover event from a master to a standby as these changes are made at a DNS level.
+● Finally, it is very important to test the failover of your database instance. without testing, you are running the risk that it fails over if the event might not happen the way you have planned it to.
+
+Amazon DynamoDB -- Refer page number 166 
+
+Elasticity and Management Tools
+AWS provides you with services to help with the deployment and management of your applications. This tool includes:
+
+➔ Scaling your Compute capacity automatically and dynamically
+➔ Monitoring your applications and 
+➔ Running status checks to optimize the performance security costs and fault tolerance of your resources.
+
+Auto Scaling, Elastic Load Balancing and Amazon CloudWatch and TrustedAdvisor are the services available for elastic balancing. 
+
+Sample Architecture : 
+
+Two EC2 instances are registered with Elastic Load Balancer. The Load Balancer and EC2 Instances [these instances belog to autoscaling group] will be sending data in the form of metrics down to Amazon CloudWatch. In CloudWatch, we can set up alarms to be triggered. If any of these metrics exceed asset value, our alarm is going to trigger an Auto Scaling Policy.
+
+This Auto Scaling Policy will tell auto scaling that we need an additional instance to be created. Once those instances come online, Auto Scaling will add it to our Auto Scaling Group. Once the instance has been added to our group, Auto Scaling will register with the Load Balancer, so new EC2 instance will share the load along with 2 already running EC2 instances.
+
+Auto Scaling service
+~~~~~~~~~~~~~~~~~~~~~~~
+This service helps us to automatically scale our EC2 capacity and make sure that we always have the right number of instances running to meet our current workload demands. Auto Scaling works really well when we have workloads that tend to experience weekly, daily or even hourly fluctuations in how much capacity they need. One of the best parts is that the Auto Scaling service doesn't have any additional charges.
+
+The Benefits of Auto scaling :
+➔ Better Fault Tolerance 
+   -- Auto Scaling can detect if one of our instances will become unhealthy. It can then terminate it and launch a new Instance to replace it. We can even configure Auto Scaling to use multiple Availability Zones. In the event when one of those Availability Zones goes down, Auto Scaling will automatically launch instances in the other to compensate.
+➔ Better Availability    -- our application has the right number of instances running to meet whatever our current workload demands are.
+➔ Better Cost Management -- Auto Scaling can dynamically increase and decrease the number of instances we have running. It saves cost.
+
+When we are dealing with Auto Scaling there are three questions we have to answer. We need to know: WHAT? WHERE? And WHEN?
+
+● What is going to be a Launch Configuration.
+● Where In which Auto Scaling Group and
+● When is going to be part of the Auto Scaling Lifecycle.
+
+Whenever we create an Auto Scaling group, we have to specify a Launch Configuration. Launch Configuration is just a template that the Auto Scaling service will use whenever it launches a new EC2 Instance for us. The launch config templates are going to have the values we would typically set when launching a new EC2 Instance. Things like
+
+➔ AMI ID
+➔ Instance type
+➔ Key Pairs
+➔ Security Groups we want associated with,
+➔ Any Block device mapping for EBS volumes and
+➔ User data (if we want to do bootstrapping)
+
+Once we have created a launch config, we are not going to be able to modify it. If we want to change the Launch Configuration used with our Auto Scaling Group, we will need to create a new one and then associate it with the group. If we update our Auto Scaling Group with the new Launch Configuration, it is not going to modify any of our existing EC2 Instances but what will happen is any new instance Auto Scaling launches, will use the new configuration.
+
+Auto Scaling Groups are made up of a collection of EC2 Instances. All of the instances (each of the instance) in our group are going to be treated as one logical unit when it comes to Scaling and Management. There are a few values that we can set when dealing with our Auto Scaling groups. They are:
+
+➔ Minimum Size         -- 2 (Never go below) Auto Scaling will ensure that we never have fewer instances in the group than that number.
+➔ Maximum Size         -- 10 (Never exceed) max number of instances that a group can ever have inside despite any Scaling operations taking place.
+➔ Desired Capacity     -- 4 (starts/runs with 4) Auto scaling will start or stop instances will try to maintain this number of EC2 instances in group
+➔ Scale out / Scale in -- as needed these events are triggered by Amazon cloud watch or Scheduled event by admin
+    Scale Out Policy - Add instances when - CPU > 70% for 5 min
+	Scale In Policy  - Remove when?       - CPU < 30% for 10 min
+
+9:50 AM  : Current: 4 instances, CPU=45%
+9:55 AM  : Traffic spikes → CPU=82% (alarm triggers)
+10:00 AM : Scale Out Policy → "Add 2 instances"      - Now 6 instances
+11:00 AM : CPU=75% again → Add 3 more (step scaling) - Now 9 instances
+2:00 PM  : CPU=25% for 10 min → Scale In Policy triggers
+2:10 PM  : "Remove 1 instance" → Terminates oldest (instance-1) - Now 8 instances    -- Termination Policy: OldestInstance first (cost-effective)
+2:20 PM  : CPU=28% → Remove another (now 7 total)     - Now 7 instances
+10:00 PM : CPU=15% → Keep removing until Desired=4   - Terminates 3 instances → Back to 4 total
+
+
+OldestInstance termination policy prioritizes terminating the instance that's been running the longest during scale-in events. Here are the key benefits:
+
+1. Automatic Rolling Updates (Primary Benefit) - Terminates 2 oldest (unpatched) instances over the time all instance will be new
+2. Cost Optimization - Stop Wasted Spend as the instance age increases
+  1-7 days  -- Optimized 
+  30+ days  -- Fragmented memory, full logs
+  90+ days  -- 	No patches, zombie processes
+3. Predictable Lifecycle Management
+
+There are other lauch policies like 
+
+OldestInstance      -- used for Production, upgrades | AZ balancing may override
+NewestInstance      -- used for Testing new AMIs     | Keeps old (potentially broken) running
+OldestLaunchConfig  -- Multi-launch config           | Ignores instance age
+
+OldestLaunchConfiguration termination policy terminates instances using the oldest Launch Configuration (LC) or Launch Template version first, regardless of individual instance age. Perfect for rolling deployments when you update AMIs/configs. Phases out Launch template version v1→v2→v3 systematically. 
+
+AZ balancing means AWS first picks AZ with "excess" instances, THEN applies OldestInstance within that AZ. Multi-AZ setups cycle through all old instances over time. Best Practice: Combine OldestInstance, OldestLaunchConfiguration for maximum refresh + upgrade automation.
+
+Using Lifecycle hooks, we can tie into any one of these steps in the process.So maybe when we initially launched an instance on a scale out event, we want to trigger some additional configuration actions or maybe we want to notify an administrator that that scaling event is taking place. When we go to pull an instance out of the group and decommission it, maybe we want to take all of the logs off of that instance and ship them to my S3 bucket. 
+
+Elastic Load Balancing service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By using Elastic Load Balancing service in conjunction with Auto Scaling which we just covered, we are able to evenly distribute the incoming requests among all of the members of the Auto Scaling group. Elastic Load balancing is able to operate in a single Availability Zone or span multiple Availability Zones. When it comes to handling traffic, our Elastic Load Balancers are able to handle incoming requests in the form of HTTP, HTTPS and TCP traffic toAmazon EC2 instances.
+
+AWS Elastic Load Balancers (ELBs) support multiple types beyond basic HTTP/HTTPS/TCP to EC2, handling diverse traffic patterns across 4 Load Balancer types: Load balancer types and protocols
+
+Application (ALB) : Layer 7   | HTTP, HTTPS, gRPC, WebSocket, HTTP/2, HTTP/3  | REST APIs, microservices, path-based routing
+Network (NLB)     : Layer 4   | TCP, UDP, TLS, TCP_UDP, QUIC                  | Gaming, VoIP, IoT, DNS, high-performance apps
+Gateway (GWLB)    : Layer 3   | IP (any protocol)                             | Firewalls, IDS/IPS, network appliances
+Classic (CLB)     : Layer 7/4 | TCP, SSL, HTTP, HTTPS                         | Legacy apps (being phased out)
+
+1. UDP Load Balancing (NLB)  -- Internet → NLB:UDP/53 → EC2 instances across AZs
+2. gRPC (ALB)                -- Microservices communication            : Client → ALB:gRPC/50051 → App servers (HTTP/2 multiplexed)
+3. WebSocket (ALB)           -- Real-time chat, stock tickers          : Browser → ALB:WS/wss → Persistent WebSocket connections
+4. IP Protocol (Gateway LB)  -- Third-party firewalls (Palo Alto, Check Point): Internet → GWLB:IP → Firewall appliances → Internal apps
+5. QUIC/HTTP3 (NLB)          -- Modern web (Google Chrome, YouTube)    : Client → NLB:QUIC/443 → Reduced latency, connection migration
+
+Traffic Distribution Features - Based on what we can distribute traffic
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Path-based routing (ALB)   : /api/* → App servers, /static/* → CDN
+Host-based routing         : api.example.com → Service A, www.example.com → Web
+Source IP routing          : Corporate IPs → Internal NLB
+Priority rules             : Authenticate → Forward → Redirect → Fixed response
+
+One ELB handles web (HTTP), real-time chat (WebSocket), API calls (gRPC), and even game servers (UDP) simultaneously across your Auto Scaling Groups. Yes, one ELB can manage multiple ASGs via Target Groups (industry standard approach). Here's how it scales:
+
+One ELB → Multiple ASGs (Standard Pattern)
+ALB (1 Load Balancer)
+├── Target Group "Web-TG" → ASG-Web (10 instances)
+├── Target Group "API-TG" → ASG-API (8 instances) 
+├── Target Group "Static-TG" → ASG-Static (4 instances)
+└── Listener Rules route traffic:
+    /web/* → Web-TG
+    /api/* → API-TG  
+    /static/* → Static-TG
+
+ELB Capacity Limits (Per Load Balancer)
+
+Metric				ALB				NLB			Gateway LB
+New Connections/sec	100,000			800,000		100,000
+Active Connections	1 Million		50 Million	100,000
+RPS (HTTP)			10,000-50,000	N/A (L4)	N/A
+Concurrent TCP		100,000			3.2 Million	100,000
+Bandwidth			10 Gbps			100 Gbps	10 Gbps
+
+Industry Standards by Traffic Level
+
+Traffic 			Volume		ELBs Needed	Architecture
+< 10k users/day		1 ALB		Single ALB + 1-3 Target Groups
+10k-100k users/day	1-2 ALBs	ALB + Global Accelerator
+100k-1M users/day	3-5 ALBs	ALB per service + Route 53 weighted
+1M+ users/day		10+ ALBs	Regional deployment + CloudFront
+
+LCUs (Load Balancer Capacity Units) measure ALB capacity across 3 dimensions. ALB scales automatically but has soft limits monitored via LCUs.
+
+LCU Calculation (Whichever is Highest)
+Dimension			Formula						Example
+New Connections		New connections/second		3,000 = 3 LCUs (1 LCU = 1,000/sec)
+Active Connections	Active connections/minute	100,000 = 1 LCU (1 LCU = 100,000/min)
+Processed Bytes	GB 	processed/second			2.5 GB/s = 2.5 LCUs (1 LCU = 1 GB/s)
+
+Total LCU = MAX(of 3 dimensions). Example: 3k connections + 50k active + 1 GB/s = 3 LCUs
+
+Route 53 + Multiple ALBs Scaling Pattern
+
+High Traffic → Route 53 splits → Multiple ALBs → ASGs
+
+Scenario: 500k Concurrent Users (Peak LCU=5,000 per ALB) Route 53 definition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+500k Users → DNS Query: app.example.com
+  ↓  **Route 53 receives query → Looks at weights** (DNS Layer) -- Splits DNS user requests:
+ Route 53 Hosted Zone
+ ├── 40% → ALB-1 → 200k users → Web ASG (80 instances) (ap-south-1a, LCU=2,000)
+ ├── 30% → ALB-2 → 150k users → Web ASG (60 instances) (ap-south-1b, LCU=1,500)  
+ ├── 20% → ALB-3 → 100k users → Web ASG (40 instances) (ap-south-1c, LCU=1,000)
+ └── 10% → ALB-4 → 50k  users → Web ASG (20 instances) (backup, LCU=500)
+
+1. User types: app.example.com (DNS Query)
+2. Route 53 receives query → **Looks at weights**:
+   - ALB-1 DNS: Weight=40
+   - ALB-2 DNS: Weight=30  
+   - ALB-3 DNS: Weight=20
+   - ALB-4 DNS: Weight=10 (Total=100)
+3. Route 53 responds: "Go to ALB-1" (40% chance)
+4. User → (based on Route 53 response) ALB-1 → ASG instances in ap-south-1a.
+
+ALB Capacity Limits Table (AWS Official Quotas)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quota Name				Default		Adjustable?				Notes
+Reserved LCUs per ALB	15,000 LCUs	Yes (request increase)	Primary scaling limit
+ALBs per Region			50			Yes						Account limit
+Targets per ALB			1,000		Yes (up to 10,000+)		EC2/Lambda/Fargate
+Listeners per ALB		50			Yes	HTTP/HTTPS/TCP 		rules
+Target Groups per ALB	100			No						Per ALB limit
+New Connections/sec		~100,000	Scales with LCU			Derived from 15k LCUs
+
+We cant have more than 100 Target groups for one ALB. And By default we cant have more than 50 ALB per account for more we need to request AWS support.
+
+100 TGs/ALB Limit this means → Max 100 services/microservices per ALB with one account
+50 ALBs/Region can manage    → Max 5,000 TGs total (100 × 50) with one account
+
+Route 53 has 7 major responsibilities beyond just splitting DNS responses. It's AWS's full-featured DNS + Traffic Management service.
+
+Route 53's Complete Role Portfolio
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function				Description				Example in Your ALB Scaling
+1. DNS Resolution		Converts domain → IP	app.example.com → ALB-1 DNS
+2. Weighted Routing		Splits traffic %		40% ALB-1, 30% ALB-2, 20% ALB-3, 10% ALB-4
+3. Health Checks		Monitors ALB/ASG health	ALB-1 down → 0% weight automatically
+4. Latency Routing		Lowest latency region	Mumbai users → ap-south-1 ALB, Hyderabad users → ap-south-2 ALB
+5. Geolocation			Location-based			India → Mumbai ALB, US → us-east-1
+6. Failover				Active/Passive DR		Primary ALB fails → Mumbai → Hyderabad (0-second failover)
+7. Domain Registration	Buy/manage domains		Purchase example.com directly
+
+If we choose, we can use this health status from the Load Balancer regarding the backend instances in conjunction with Auto Scaling service. If an instance remains in an unhealthy state beyond a set grace period, Auto Scaling service can automatically terminate that instance and replace it with a new one.
+
+By taking advantage of the combination of services in this way, we can get closer to that goal of a self-healing architecture
+
+When it comes time to select the Load Balancer type, we have a few options for how to configure and locate that Load Balancer in our environment. There are 3 types:
+
+➔ Internet-Facing  -- Load Balancer accepts incoming requests directly from clients over the Internet
+➔ Internal         -- all incoming requests for our load balancer are being generated from within our VPC.
+➔ HTTPS            -- In both internet or internal we can enabling HTTPS load Balancing, it starts using SSL TLS protocol for encrypting all incoming connections.
+
+The first scenario is referred to as Internet Facing. In this scenario, our  and then routes those requests to our Backend Instances.
+
+Amazon CloudWatch
+
+CloudWatch is monitoring service in near real time. It is a centralized location where we can collect and track metrics, collect and monitor log files, set alarms and take actions based upon changes that we see in our AWS resources. Amazon CloudWatch will give us visibility into a large set of default metrics. These default metrics include things like:
+
+● CPU utilization for EC2 instances
+● The number of read and write operations occurring on our EBS volumes and
+● The number of simultaneous connections to our RTX databases
+
+By default, CloudWatch is not capable of collecting metrics from our operating systems or customer applications. If we want we can push metrics from those sources in the form of customer metrics to CloudWatch to be monitored. We can do this by using the API or the CLI. All of this metric data being collected by CloudWatch is accessible to us through the AWS Management Console directly on the web, through the APIs, SDKs or CLIs.
+
+With basic monitoring, CloudWatch collection reports metric data once every 5 minutes. If we need even greater frequency, we can enable CloudWatch, a detailed monitoring which provides the same metrics but at a 1 minute interval. In CloudWatch, we can set alarms based on these metrics to do things like :
+
+◆ Send an email to an administrator or
+◆ Send a text message to another user or
+◆ Trigger an Auto Scaling Policy.
+
+The action is a notification sent to an Amazon SNS topic or an Auto Scaling Policy. The alarm's invoke actions for sustained state changes only. CloudWatch alarms will not invoke actions simply because they are in a particular state. The state must have changed and be maintained for a specified time period. In the figure, the alarm threshold is set to 3, and the minimum breach is 3 periods. The alarm invokes its action only when the threshold is breached for 3 consecutive periods.
+
+AWS Trusted Advisor service
+
+AWS Trusted Advisor is a recommendation engine for best practices. The service is going to perform checks in four categories. Which are:
+
+➔ Cost Optimization
+➔ Security
+➔ Fault tolerance and
+➔ Performance improvements
+
+The checks that are performed by Trusted Advisor are reported on a dashboard in an easy to understand, 3 color scheme.
+
+● Red    - some type of action is recommended.
+● Yellow - might want to investigate that finding
+● Green  - no problem was found
+
+For each of the checks, we can go and review a detailed description of the recommended best practice, a set of the alert criteria meaning: what was Trusted Advisor looking for that check. The guidelines for taking action and a list of useful resources that you can use to find additional information.
+
+1) Cost Optimization
+
+Trusted Advisor can help us save money on AWS by checking for unused and idle resources. Following are the cost optimization checks are available with Trusted Advisor.
+
+◆ Amazon EC2 reserved Instance optimization 
+     This check reviews your previous month’s Hour by hour usage aggregated across all of your consolidated billing accounts and calculates an optimal number of partial upfront reserved instances
+
+◆ Low Utilization Amazon EC2 Instances
+     look through your account for any instances that in the last 14 days have under 10% of CPU utilization.
+
+◆ Idle Load Balancers
+     check for any Load Balancers in your account that are not actively being used
+
+◆ Underutilized Amazon EBS Volumes
+◆ Unassociated Elastic IP addresses  - look for any elastic IP addresses that are not associated with an instance that is currently online.
+◆ Amazon RDS Idle Database Instances - RDS instance that has not had a connection in an extended period of time.
+
+2) Security
+
+Trusted Advisor can help us improve the security of our applications by closing gaps, enabling various AWS security features and examining the sets of permissions that you have in place.
+
+◆ Security Groups
+    look for any specific ports that are totally unrestricted.
+	check security groups for rules that allow unrestricted access.
+	The ports with the highest risk are going to get flagged Red.
+	
+◆ S3 Bucket Permissions - looking for any buckets that have open access permissions allowing access from anywhere in the world.
+◆ MFA on Root Account
+◆ IAM Password Policy   - Password must for IAM users
+◆ RDS Security Group Access Risk   - check if RDS security group rule might be granting overly permissive access
+
+3) Fault Tolerance   
+   helps to increase the availability and redundancy of our applications by taking advantage of things like Auto Scaling, Health Checks, Multi-AZ deployments and backup capabilities, Trusted Advisors going to be performing the following checks:
+
+➔ Checking to make sure we have recent Amazon EBS Snapshots of our volumes
+➔ Making sure that our load balancers are set to balance across Availability Zones
+➔ Ensuring that our Auto Scaling group resources are also set to move across Availability Zones
+➔ Checking to make sure our audience is set to multi AZ 
+➔ Amazon Route 53 name server delegations (This check is just validating that we are pointing to the correct DNS servers for Route 53)
+➔ ELB Connection Draining (This check is looking for any load balancers that do not have connection draining enabled)
+
+4) Performance Improvements
+    help us improve the performance of our services by checking for things like service limits, ensuring that we take advantage of provisioned throughput where possible and monitoring for overutilized instances.
+  
+◆ High Utilization of Amazon EC2 Instances -- check any instance in the last 14 days has maintained higher than 90% CPU utilization for more than
+four days.
+◆ Service Limits   -- warn us when we exceed 80% of that current limit.
+◆ Large Number of Rules in EC2 Security Group  -- If an EC2 Security Group has an excessive number of rules, network performance can be degraded.
+◆ Over Utilized Amazon EBS Magnetic Volumes -- any Magnetic EBS volumes that might benefit by being moved to either a general purpose or provisioned IO volume.
+◆ Amazon EC2 to EBS Throughput Optimization -- looking for any EBS volume that may be impacting the throughput capabilities of an EC2 instance
+
+Amazon Services related to Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Layer 1: Essential Services (Foundation - Every AWS account needs these)
+
+Service		Functionality
+EC2			Virtual servers to run applications. Scalable compute capacity across global regions.
+S3			Object storage for files, backups, websites. 99.999999999% durability, unlimited scale.
+IAM			Manages users, permissions, roles. Controls who/what accesses AWS resources.
+
+Amazon S3 Select         : Query data in-place in S3
+RDS			Managed relational databases (MySQL, PostgreSQL). Automated backups, patching, scaling
+Amazon Aurora            : MySQL/PostgreSQL-compatible relational DB with 5x performance
+Amazon Aurora Serverless : Auto-scaling relational database without provisioning
+
+
+Layer 2: Second Layer (Build Complete Applications)
+
+Service		Functionality
+Lambda		Serverless functions - run code without servers. Pay only for execution time.
+
+Secrets Manager	: Encrypted credential storage. Automatic rotation.
+EBS			Block storage for EC2. SSD/HDD volumes, snapshots.
+CloudFormation	Infrastructure as code. JSON/YAML templates for resources.
+Elasticache	In-memory caching. Redis/Memcached for app performance.
+Auto Scaling	Automatically adds/removes EC2 instances. Maintains performance during traffic spikes.
+Route 53	Scalable DNS + traffic routing. Weighted routing, health checks, failover.
+SNS			Pub/sub messaging. Fan-out notifications.
+Certificate Manager :	Free SSL/TLS certificates. For ELB, CloudFront.
+
+Layer 3: Third Layer (Advanced/Optimization)
+
+Service		Functionality
+DynamoDB	NoSQL database with single-digit ms latency. Fully managed, auto-scaling.
+Glue		Serverless ETL service for data integration. Discovers schemas, transforms data, populates Data Catalog for Athena/Redshift.
+Glue DataBrew          : Visual data preparation tool
+Glue Data Catalog      : Centralized metadata repository
+AWS Glue Data Quality  : Automated data quality checks
+Athena		Serverless SQL queries on S3 data using standard SQL. No infrastructure, pay per query. 
+Redshift	Petabyte-scale data warehouse. Columnar storage.
+Redshift Serverless	  : Serverless version of Redshift with automatic scaling and no infrastructure management
+Redshift Spectrum     : Query S3 data from Redshift
+DataZone              : Data management and sharing
+Data Exchange         : Data marketplace
+EMR			Hadoop/Spark big data. Managed clusters.
+Amazon EMR Serverless : Serverless Spark/Hive processing without cluster management
+AWS Lake Formation    : Fully managed data lake builder with governance, cataloging, and security
+OpenSearch	Log analytics + search. Elasticsearch successor.
+AppSync		GraphQL APIs. Real-time data sync.
+
+Kinesis		Real-time streaming. Data ingestion/processing.
+Kinesis Data Streams   : Real-time streaming data ingestion
+Kinesis Data Firehose  : Data delivery to warehouses
+Kinesis Data Analytics : Serverless stream processing (SQL, Flink, Spark) 
+MSK			Managed Kafka. Apache Kafka service.
+MSK Connect Kafka connectors
+
+QuickSight	BI dashboards. ML insights, serverless.
+QuickSight Q : ML-powered natural language BI
+SageMaker	ML platform. Build/train/deploy models.
+SageMaker Data Wrangler : Data preparation for ML
+Forecast    Time-series forecasting
+Fraud Detector ML fraud detection
+
+CodeCommit  Amazon's Git-compliant version control service for integrating your source code with AWS resources
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
