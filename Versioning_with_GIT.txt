@@ -4806,10 +4806,18 @@ Your Docker → SSH (githubweb key) → GitHub Servers → nesancommitter/All_No
      ↓
 Creates: master branch + all your files
 
-# Github uses main as the default branch name but git uses master as default branch name 
+# Github uses main as the default branch name but git uses master as default branch name - To fix this set set global default branch as main in git
 # so change the default branch name to master for the github repository in the portal 
 
 visit https://github.com/nesancommitter/All_Notes_to_Share/
+
+# Set GitHub's default branch globally
+# Verify GitHub's branch is set to main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch
+main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
+
 
 https://github.com/nesancommitter/All_Notes_to_Share
 → Settings tab (top right)
@@ -4831,7 +4839,7 @@ you can see master and main branch - delete the main branch.
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch -u All_Notes_to_Share/master master
 branch 'master' set up to track 'All_Notes_to_Share/master'.
 
-## to test if the changes are working any anyone can pull the repository
+## to test if the changes are working any anyone can clone the repository
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# cd /mnt/hdrive/scrap/
 (mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# mkdir gitrep_test
 (mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# cd gitrep_test/
@@ -4910,7 +4918,6 @@ https://github.com/nesancommitter/All_Notes_to_Share
 git add .
 git commit -m "Add new notes"
 git push                            # Just 'push' - tracks master automatically
-
 
 
 
