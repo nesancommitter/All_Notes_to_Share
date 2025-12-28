@@ -4780,36 +4780,31 @@ All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (fe
 All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (push)
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
-# Set GitHub's default branch globally
+# Set Git's default branch globally for this user as main With Git configuration manager Apply to ALL repositories for this user Controls git init default branch name and set it to main as New default branch name
 # Verify GitHub's branch is set to main
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch main
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch 
 main
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
-## Git push the local branch to the remote github repository
-# Push local master → creates remote main + sets tracking
-git push -u All_Notes_to_Share master:main
+## check what happened to the current repository - branch is set to main which is in sync with Github portal
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch
+* main
 
-
-
-# git push -u <Remote_nickname> <Local_branch_to_push>:<remote_branch_to_use>
+## Git push the local branch (main) to the remote github repository
 # -u  -- sets upstream tracking (future git push works without branch name - tracks All_Notes_to_Share/main remote/local_branch forever)  
-
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git push -u All_Notes_to_Share master
-Enumerating objects: 23, done.
-Counting objects: 100% (23/23), done.
+# git push -u <Remote_nickname> <remote_branch_to_use>
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git push -u All_Notes_to_Share main
+Enumerating objects: 41, done.
+Counting objects: 100% (41/41), done.
 Delta compression using up to 6 threads
-Compressing objects: 100% (18/18), done.
-Writing objects: 100% (23/23), 26.30 MiB | 5.52 MiB/s, done.
-Total 23 (delta 0), reused 0 (delta 0), pack-reused 0
-remote:
-remote: Create a pull request for 'master' on GitHub by visiting:
-remote:      https://github.com/nesancommitter/All_Notes_to_Share/pull/new/master
-remote:
+Compressing objects: 100% (35/35), done.
+Writing objects: 100% (41/41), 27.61 MiB | 4.44 MiB/s, done.
+Total 41 (delta 10), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (10/10), done.
 To github.com:nesancommitter/All_Notes_to_Share.git
- * [new branch]      master -> master
-branch 'master' set up to track 'All_Notes_to_Share/master'.
+ * [new branch]      main -> main
+branch 'main' set up to track 'All_Notes_to_Share/main'.
 
 Behind the scenes (Network Flow):
 Your Docker → SSH (githubweb key) → GitHub Servers → nesancommitter/All_Notes_to_Share
