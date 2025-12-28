@@ -4746,7 +4746,16 @@ Initialized empty Git repository in /mnt/hdrive/All_Notes_from_learning/All_Note
  create mode 100755 AWS_Learn.txt
  create mode 100755 AWS_instancetypes_ap-south-1.xlsx
 
-# Links your local repo → GitHub repo nesancommitter/All_Notes_to_Share
+# Create repository in the github portal
+GitHub.com →  Sign in as nesancommitter → Click "New" (green button) → Repository name: All_Notes_to_Share
+Title: "repo for all notes created from learning"
+
+Once created Copy SSH URL: 
+git@github.com:nesancommitter/All_Notes_to_Share.git
+
+
+# Add remote -- Links your local repo → GitHub repo nesancommitter/All_Notes_to_Share
+## Set the SSH URL to the remote repo associate it to the remote repo name All_Notes_to_Share configured locally
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git remote add All_Notes_to_Share git@github.com:nesancommitter/All_Notes_to_Share.git
 
 Creates entry in .git/config file
@@ -4771,20 +4780,21 @@ All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (fe
 All_Notes_to_Share      git@github.com:nesancommitter/All_Notes_to_Share.git (push)
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
-# Create repository in the github portal
-GitHub.com →  Sign in as nesancommitter → Click "New" (green button) → Repository name: All_Notes_to_Share
-Title: "repo for all notes created from learning"
-
-Once created Copy SSH URL: 
-git@github.com:nesancommitter/All_Notes_to_Share.git
-
-## Set the SSH URL to the remote repo associate it to the remote repo name All_Notes_to_Share configured locally
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git remote set-url All_Notes_to_Share git@github.com:nesancommitter/All_Notes_to_Share.git
+# Set GitHub's default branch globally
+# Verify GitHub's branch is set to main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch 
+main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
 ## Git push the local branch to the remote github repository
-# Uploads commits to remote - Then push with custom name
-# git push -u <Remote_nickname> <Local_branch_to_push>
-# -u  -- sets upstream tracking (future git push works without branch name - tracks All_Notes_to_Share/master remote/local_branch forever)  
+# Push local master → creates remote main + sets tracking
+git push -u All_Notes_to_Share master:main
+
+
+
+# git push -u <Remote_nickname> <Local_branch_to_push>:<remote_branch_to_use>
+# -u  -- sets upstream tracking (future git push works without branch name - tracks All_Notes_to_Share/main remote/local_branch forever)  
 
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git push -u All_Notes_to_Share master
 Enumerating objects: 23, done.
@@ -4811,32 +4821,35 @@ Creates: master branch + all your files
 
 visit https://github.com/nesancommitter/All_Notes_to_Share/
 
-# Set GitHub's default branch globally
-# Verify GitHub's branch is set to main
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch main
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git config --global init.defaultBranch
-main
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
 
-https://github.com/nesancommitter/All_Notes_to_Share
-→ Settings tab (top right)
-→ Branches (left sidebar)
 
-1. Current default: main (empty) 
-2. Click **change default branch** (pencil icon next to main)
-3. **Select `master`** from dropdown (your branch with files)
-4. Click **Update**
-5. Confirm warning → **I understand...** → Update
 
-## Delete the main branch permenantly
-Open https://github.com/nesancommitter/All_Notes_to_Share
-Click Branches 
-you can see master and main branch - delete the main branch.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##in local git repo make these changes - Local Docker Commands (Update Tracking)
 # Update remote tracking
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch -u All_Notes_to_Share/master master
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch -u All_Notes_to_Share/main master
 branch 'master' set up to track 'All_Notes_to_Share/master'.
 
 ## to test if the changes are working any anyone can clone the repository
@@ -4931,6 +4944,21 @@ git push                            # Just 'push' - tracks master automatically
 
 
 
+https://github.com/nesancommitter/All_Notes_to_Share
+→ Settings tab (top right)
+→ Branches (left sidebar)
+
+1. Current default: main (empty) 
+2. Click **change default branch** (pencil icon next to main)
+3. **Select `master`** from dropdown (your branch with files)
+4. Click **Update**
+5. Confirm warning → **I understand...** → Update
+
+## Delete the main branch permenantly
+Open https://github.com/nesancommitter/All_Notes_to_Share
+Click Branches 
+you can see master and main branch - delete the main branch.
+
 
 
 
@@ -4945,6 +4973,16 @@ git push                            # Just 'push' - tracks master automatically
 git clone --recursive https://github.com/torvalds/linux.git
 
 
+
+The default branch has been renamed!
+
+master is now named main
+If you have a local clone, you can update it by running the following commands.
+
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
 
 
 
