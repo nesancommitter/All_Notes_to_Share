@@ -246,6 +246,11 @@ histdelstwith() {
     echo -e "${BOLD}${GREEN}Done! All '$word' commands removed from history.${NC}"
 }
 
+## Function to setup git repo in the current folder also set repo for github push
+setgit() {
+
+}
+
 
 ## Function to commit and push any git repo from local and to github 
 cnpush() {
