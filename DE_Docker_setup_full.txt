@@ -1133,9 +1133,311 @@ H:\Docker_sharedfiles\images>docker inspect ubuntu_cont_DE | findstr IPAddress
             "IPAddress": "",
                     "IPAddress": "172.17.0.2",
 
-## Get the IP address of the container with docket exec command so you get that right from inside the running conntainer
+## Get the IP address of the container with docker exec command so you get that right from inside the running conntainer
 H:\Docker_sharedfiles\images>docker exec ubuntu_cont_DE ip addr show eth0 | findstr inet
     inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+
+##Full output of the ip addr show from inside the Docker container
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# ip addr show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 6e:90:3b:96:b3:31 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+## Inspect all the parameters of Docker container 
+PS C:\WINDOWS\system32> docker inspect ubuntu_cont_DE
+[
+    {
+        "Id": "c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f",
+        "Created": "2025-12-23T08:07:08.922989521Z",
+        "Path": "bash",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 4756,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2025-12-23T08:07:09.020319312Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13",
+        "ResolvConfPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/hostname",
+        "HostsPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/hosts",
+        "LogPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f-json.log",
+        "Name": "/ubuntu_cont_DE",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "H:\\:/mnt/hdrive",
+                "C:\\Users\\ADMIN\\.aws:/host_aws"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "22/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "2222"
+                    }
+                ],
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3306"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                54,
+                190
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": null,
+            "Name": ""
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "H:\\",
+                "Destination": "/mnt/hdrive",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "C:\\Users\\ADMIN\\.aws",
+                "Destination": "/host_aws",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "ubundockhost",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "22/tcp": {},
+                "3306/tcp": {},
+                "80/tcp": {}
+            },
+            "Tty": true,
+            "OpenStdin": true,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "AWS_CONFIG_FILE=/host_aws/config",
+                "dockerenv=thisisdockerenvval"
+            ],
+            "Cmd": [
+                "bash"
+            ],
+            "Image": "nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "'for.DataEngg.built.on.ubuntu'": "",
+                "'org.opencontainers.image.ref.name": "ubuntu'",
+                "'org.opencontainers.image.version": "24.04'",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            },
+            "StopTimeout": 1
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "5d3b6e50907df92b4d448040f9f160a97dc86ea7aaa0dc38ba688be5d747d45d",
+            "SandboxKey": "/var/run/docker/netns/5d3b6e50907d",
+            "Ports": {
+                "22/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "2222"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "2222"
+                    }
+                ],
+                "3306/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "3306"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "3306"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8080"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "6e:90:3b:96:b3:31",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "def41c931c392f1364510253714e7735d63875c90657a1181a9b2981eaf7175f",
+                    "EndpointID": "f22eb4484235b4039bb95d4acec76e3602415a43d66463ad03eb061081c5d5d6",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13",
+            "size": 1409,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]
 
 ######## Take backup of all the work till now 
 
@@ -1629,8 +1931,320 @@ Flag	Purpose	Real-World Use
 
 scriptreplay file.log    -- Plays back session it requires timing file also -t timing.tim without timing file scriptreplay cant work
 
+## Install pyspark python library
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# pip install pyspark==3.3.0
+Collecting pyspark==3.3.0
 
+## install aws-glue-libs python library
+## Download from git
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# git clone https://github.com/awslabs/aws-glue-libs.git
+Cloning into 'aws-glue-libs'...
+remote: Enumerating objects: 321, done.
+remote: Counting objects: 100% (104/104), done.
+remote: Compressing objects: 100% (54/54), done.
+remote: Total 321 (delta 67), reused 68 (delta 50), pack-reused 217 (from 1)
+Receiving objects: 100% (321/321), 160.42 KiB | 3.27 MiB/s, done.
+Resolving deltas: 100% (205/205), done.
 
+## check the files
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# cd aws-glue-libs/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/aws-glue-libs# ll
+total 200
+drwxr-xr-x 1 root root    512 Dec 29 21:59 ./
+drwxrwxrwx 1 root root    512 Dec 29 21:59 ../
+drwxr-xr-x 1 root root    512 Dec 29 21:59 .git/
+-rw-r--r-- 1 root root     73 Dec 29 21:59 .gitignore
+-rw-r--r-- 1 root root   4845 Dec 29 21:59 LICENSE.txt
+-rw-r--r-- 1 root root     92 Dec 29 21:59 NOTICE.txt
+-rw-r--r-- 1 root root   4273 Dec 29 21:59 README.md
+-rw-r--r-- 1 root root 181604 Dec 29 21:59 THIRD-PARTY-LICENSES
+drwxr-xr-x 1 root root    512 Dec 29 21:59 awsglue/
+drwxr-xr-x 1 root root    512 Dec 29 21:59 bin/
+-rw-r--r-- 1 root root   1671 Dec 29 21:59 pom.xml
+-rw-r--r-- 1 root root    255 Dec 29 21:59 setup.py
+
+## Install with pip 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/aws-glue-libs# pip install .
+Processing /mnt/hdrive/scrap/aws-glue-libs
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: aws-glue-libs
+  DEPRECATION: Building 'aws-glue-libs' using the legacy setup.py bdist_wheel mechanism, which will be removed in a future version. pip 25.3 will enforce this behaviour change. A possible replacement is to use the standardized build interface by setting the `--use-pep517` option, (possibly combined with `--no-build-isolation`), or adding a `pyproject.toml` file to the source tree of 'aws-glue-libs'. Discussion can be found at https://github.com/pypa/pip/issues/6334
+  Building wheel for aws-glue-libs (setup.py) ... done
+  Created wheel for aws-glue-libs: filename=aws_glue_libs-4.0.0-py3-none-any.whl size=67321 sha256=b572dfed351337b5afd4987a81b77547504c74d6e4a9efba409ea64835c5f0c2
+  Stored in directory: /root/.cache/pip/wheels/08/f8/88/3fa15d522b7f5583431cdada54c1b475b1c777af9e7e17fbb1
+Successfully built aws-glue-libs
+Installing collected packages: aws-glue-libs
+Successfully installed aws-glue-libs-4.0.0
+
+##SSH (Secure Shell) - Complete Explanation with Architecture & Real Use Case
+
+SSH is a cryptographic network protocol for secure remote login, command execution, and file transfer over insecure networks. It replaces insecure protocols like Telnet/FTP.
+
+SSH Architecture (3-Layer Protocol Stack)
+
+┌─────────────────────────────────────┐
+│ 1. Connection Protocol (RFC 4254)   │ ← Multiple channels (shell, SFTP, tunnels)
+├─────────────────────────────────────┤
+│ 2. User Authentication (RFC 4252)   │ ← Password, Public Key, Kerberos
+├─────────────────────────────────────┤
+│ 3. Transport Layer (RFC 4253)       │ ← Encryption, Key Exchange, TCP/22
+└─────────────────────────────────────┘
+       ↑ Runs over TCP (default port 22)
+
+Layer 1: Transport Layer
+
+- Server authentication (host keys)
+- Diffie-Hellman key exchange → Session keys
+- Symmetric encryption (AES) + MAC (integrity)
+- Perfect Forward Secrecy
+
+Layer 2: User Authentication
+
+Methods (client → server):
+✅ Public Key (RSA/Ed25519) ← Most secure
+✅ Password
+✅ Keyboard-Interactive
+✅ GSSAPI (Kerberos)
+
+Layer 3: Connection Protocol 
+
+Multiplexes 1 TCP connection → Multiple channels:
+- Channel 1: Interactive shell
+- Channel 2: SFTP file transfer  
+- Channel 3: Port forwarding (VPN tunnel)
+- Channel 4: X11 forwarding
+
+## How SSH Works (Step-by-Step)
+
+1. Client: ssh user@192.168.1.100
+2. TCP handshake (port 22)
+3. Version exchange: "SSH-2.0-OpenSSH_9.3"
+4. Transport Layer:
+   a. Server sends host key (Ed25519)
+   b. Diffie-Hellman: Generate shared session key
+   c. AES-256 encryption established
+5. User Auth: Client offers public key → Server verifies
+6. Connection: Shell channel opened → "$ " prompt
+7. Commands encrypted → Executed remotely
+8. Exit → Connection closed
+
+REAL USE CASE: Your Docker + GitHub Workflow
+
+YOUR LAPTOP ──SSH──→ Docker Container ──SSH──→ GitHub/EC2
+    │                    │                    │
+Windows CMD        ubuntu_cont_de       git@github.com
+H:\> ssh root@172.17.0.2  (container IP)
+(mypyvenv) root@ubundockhost# git push All_Notes_to_Share master:main
+
+## Step-by-Step Your Scenario:
+
+1. docker inspect       → Get container IP: 172.17.0.2
+2. ssh root@172.17.0.2  ← Enters container securely
+3. Inside container     : pip install boto3 aws-glue-libs
+4. git remote add origin git@github.com:nesancommitter/repo.git
+5. git push -u origin master:main  ← SSH to GitHub (passwordless)
+
+## SSH Key Setup (Your GitHub Success)
+
+1. Generate key pair
+ssh-keygen -t ed25519 -C "nesancommitter@gmail.com"
+-- Saves: ~/.ssh/id_ed25519 (private), ~/.ssh/id_ed25519.pub (public)
+
+2. Copy to GitHub
+cat ~/.ssh/id_ed25519.pub | clip  # Copy to GitHub SSH keys
+
+3. Test
+ssh -T git@github.com
+-- Hi nesancommitter! You've successfully authenticated
+
+## Common SSH Commands
+ssh user@host                    # Interactive shell
+ssh user@host "df -h"            # Single command
+scp file user@host:/path         # File copy (SFTP)
+ssh -L 8080:localhost:80 host    # Port forwarding
+rsync -avz -e ssh local/ host:   # Directory sync
+
+#### Setup local GIT project and sync it with Git hub repository. Keep changing the code and push them to github repo.
+
+Move into the .ssh folder
+(mypyvenv) root@ubundockhost:~/# cd ~/.ssh
+
+## Install Git (if not installed)
+(mypyvenv) root@ubundockhost:~/.ssh# sudo apt install -y git
+Reading package lists... Done
+
+## Configure Git Global Identity
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.name "Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.email "nesan.committer@gmail.com"
+
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_NAME="Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_EMAIL="nesan.committer@gmail.com"
+
+## Set Up Authentication - Use ssh key method with github website for your mail ID registered with github website
+
+git@github
+
+# Generate SSH Key Pair - Uses ed25519 keygen algorithm which is better than RSA, Elliptic Curve math creates mathematically linked key pair.
+
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-keygen -t ed25519 -C "nesan.committer@gmail.com"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/root/.ssh/id_ed25519): githubweb
+Enter passphrase (empty for no passphrase): passgithubweb
+Enter same passphrase again: passgithubweb
+Your identification has been saved in githubweb
+Your public key has been saved in githubweb.pub
+The key fingerprint is:
+SHA256:Qlkp7+GgwVRsX4YY1G7nSzEG0q9Pz/FpgIed85f2+kc nesan.committer@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|     ++=.o       |
+|    . *o* o      |
+|   o .o* =       |
+|    o.. * *      |
+|     o.=S* * .   |
+|    .  .+ * B   E|
+|         + = * o.|
+|          o o =oo|
+|             .o+=|
++----[SHA256]-----+
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+#check the files in the path /root/.ssh/
+(mypyvenv) root@ubundockhost:~/.ssh# ll
+total 28
+drwx------ 1 root root 4096 Dec 27 19:41 ./
+drwx------ 1 root root 4096 Dec 27 19:12 ../
+-rw------- 1 root root  464 Dec 27 19:35 githubweb
+-rw-r--r-- 1 root root  107 Dec 27 19:35 githubweb.pub
+-rw------- 1 root root 2240 Dec 21 23:33 known_hosts
+-rw------- 1 root root 1120 Dec 19 12:24 known_hosts.old
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+key generation is successful private key and public key are generated for the githubweb with files githubweb and githubweb.pub respectively
+
+/githubweb          ← PRIVATE KEY (SECRET - never share!)
+/githubweb.pub      ← PUBLIC KEY  (safe to copy to GitHub)
+
+#Copy Public Key
+
+(mypyvenv) root@ubundockhost:~/.ssh# cat githubweb.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQs4f9ZPhCAEoE3COGDT3IKxfDfaleiJnOFpcZWWnL5 nesan.committer@gmail.com
+
+#Add the public key to GitHub website
+GitHub.com → Settings → SSH and GPG keys → New SSH key
+Title: "Key from DE genie Docker"
+Key: [paste cat output]
+Add SSH key
+
+# Run the SSH agent in the docker 
+(mypyvenv) root@ubundockhost:~/.ssh# eval "$(ssh-agent -s)"
+Agent pid 1841
+
+## Add private key to ssh agent in the docker - SSH Agent Loads Private Key
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-add githubweb
+Enter passphrase for githubweb: passgithubweb
+Identity added: githubweb (nesan.committer@gmail.com)
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+## Test Connection with github.com - ssh -T <user@hostname_or_IP>
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+The authenticity of host 'github.com (20.207.73.82)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+## Test connection again 
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+## How SSH works securly - Two keys mechanism
+Others use your public key to encrypt the message they are sending. That message can be decrypted only with your private key. So any message sent to you from any host or program is encrypted and only your SSH client can decrypt it with your private key. 
+
+1) - Anyone can encrypt data/message with your public Key
+2) - They Send the encrypted message to your SSH client
+3) - You (SSH client): Open the encrypted message with private key 🔑 → Read data/message
+
+## SSH Key Pair Math: Asymmetric Cryptography - How Different Keys Encrypt/Decrypt
+
+You're right about symmetric encryption (AES): same key encrypts/decrypts. SSH uses ASYMMETRIC (public-key crypto) - different keys with mathematical relationship.
+
+Public Operation:     EASY (anyone)
+Private Operation:    HARD (only key holder)
+
+SSH: Public key encrypts → Private key decrypts
+     OR Private signs → Public verifies
+
+There are multiple key algorithm we can use new Ed25519 Algorithm (Modern SSH Default) - Simplified Math it works as explained below
+
+1. Elliptic Curve Point Multiplication
+
+Elliptic Curve y² = x³ + ax + b (mod p)
+Point G (generator) on curve
+
+Private Key:   Random scalar k (256 random bits)
+Public Key:    k × G  (scalar multiply point G by k)
+
+"Easy": Anyone computes 2G, 3G (double/add points)
+"Hard": Reverse engineer k from k×G (Elliptic Curve Discrete Log Problem)
+
+2. Key Generation (ssh-keygen -t ed25519)
+
+ssh-keygen:
+1. Generate random k (private key): 1d4f5a2b... (256 bits)
+2. Compute Q = k × G              (public key point)
+3. Save: ~/.ssh/id_ed25519     ← k
+         ~/.ssh/id_ed25519.pub ← Q
+
+GitHub Authentication Flow (Math Visualized)
+
+Your Docker:                    GitHub:
+Private: k = 1d4f5a2b...       Public: Q = k×G
+
+1. git push
+2. GitHub: "Challenge: Random message M = abc123"
+3. Your Docker: 
+   Signature S = Sign(M, k) = H(M) × k
+4. Send: M + S to GitHub
+5. GitHub verifies:
+   Verify(S, M, Q) = Check if S × G == H(M) × Q
+                   = H(M) × k×G == H(M) × k×G ✓
+
+Math Proof: Both sides compute same value → authentication succeeds!
+
+## Why "Different Keys" Work Together
+
+Private signs:  S = H(message) × private_key
+Public verifies: Check S × G == H(message) × public_key
+
+Since public_key = private_key × G:
+S × G = H(msg) × private × G = H(msg) × public ✓
+
+## Encryption mechanism
+
+Public encrypts   :  Ciphertext = message + random × public_key
+Private decrypts  : message = Ciphertext - random × private_key
+
+## Real Numbers Example (Tiny Ed25519)
+
+G = Generator point (1, 2) on curve
+
+Private k = 7
+Public Q = 7 × G = (x: 15, y: 23)
+
+Sign message "hi":
+1. Hash("hi") = h = 42
+2. Signature S = 42 × 7 = 294
+3. Verify: 294 × G =? 42 × (7×G)
+   294 × G = 42 × 7 × G ✓ Equal!
+
+## Why Computationally Secure
+
+Given Q = k × G, find k:
+- Brute force: Try 1G, 2G, ... until Q (2^256 attempts)
+- Best attacks: 2^128 operations (NASA supercomputer = 10^15 sec)
+- Your SSH key = safer than US nuclear codes
 
 
 

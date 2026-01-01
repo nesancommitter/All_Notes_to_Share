@@ -684,7 +684,7 @@ Like many tools, Git supports a hierarchy of configuration files. In decreasing 
 /etc/gitconfig
  System-wide configuration settings manipulated with the --system option if you have proper Unix file write permissions on it. These settings have the lowest precedence. Depending on your actual installation, the system settings file might be somewhere else (perhaps in /usr/local/etc/gitconfig), or may be entirely absent.
 
-For example, to establish an author name and email address that will be used on all the commits you make for all of your repositories, configure values for user.name and user.email in your $HOME/.gitconfig file using git config --global
+For example, to establish an author name and email address that will be used on all the commits you make for all of your repositories, configure values for user.name and user.email in your $HOME/.gitconfig file using git config --global. [--global → Applies to YOUR USER ACCOUNT + ALL] REPOSITORIES
 
 git config --global user.name "Sivanesan G"
 git config --global user.email "nesan.committer@gmail.com"
@@ -701,6 +701,61 @@ $ cat .gitconfig
         email = nesan.committer@gmail.com
 		
 Or, to set a repository-specific name and email address that would override a --global setting, simply omit the --global flag: you must be in repo folder to use this commands
+
+## Git Config Hierarchy (Precedence Order)
+1. LOCAL (--local or repo .git/config) → Current repo ONLY
+2. GLOBAL (--global) 	               → Your user + ALL your repos  
+3. SYSTEM (--system)                   → All users/system-wide
+
+git config user.email "local@repo.com"    → THIS repo only
+git config --global user.email "you@global.com" → ALL your repos
+git config --system user.email "admin@org.com" → All users (rare)
+
+## check all the different scope settings 
+ADMIN@DESKTOP-O8I6CUH MINGW64 ~
+$ git config --list --show-origin
+file:C:/Program Files/Git/etc/gitconfig diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig http.sslbackend=openssl
+file:C:/Program Files/Git/etc/gitconfig http.sslcainfo=C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/etc/gitconfig core.autocrlf=false
+file:C:/Program Files/Git/etc/gitconfig core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig core.editor="C:\\Program Files\\Notepad++\\notepad++.exe" -multiInst -notabbar -nosession -noPlugin
+file:C:/Program Files/Git/etc/gitconfig pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig init.defaultbranch=master
+file:C:/Users/ADMIN/.gitconfig  filter.lfs.clean=git-lfs clean -- %f
+file:C:/Users/ADMIN/.gitconfig  filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Users/ADMIN/.gitconfig  filter.lfs.process=git-lfs filter-process
+file:C:/Users/ADMIN/.gitconfig  filter.lfs.required=true
+file:C:/Users/ADMIN/.gitconfig  user.name=Sivanesan G
+file:C:/Users/ADMIN/.gitconfig  user.email=nesan.committer@gmail.com
+file:C:/Users/ADMIN/.gitconfig  alias.show-graph=log --graph --abbrev-commit --pretty=oneline
+file:C:/Users/ADMIN/.gitconfig  http.sslbackend=schannel
+file:C:/Users/ADMIN/.gitconfig  http.sslverify=true
+
+# Your global only configurations 
+ADMIN@DESKTOP-O8I6CUH MINGW64 ~
+$ git config --global --list
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+user.name=Sivanesan G
+user.email=nesan.committer@gmail.com
+alias.show-graph=log --graph --abbrev-commit --pretty=oneline
+http.sslbackend=schannel
+http.sslverify=true
+
+# Current repo only
+ADMIN@DESKTOP-O8I6CUH MINGW64 ~
+$ git config --local --list
+fatal: --local can only be used inside a git repository
 
 ADMIN@DESKTOP-O8I6CUH MINGW64 ~
 $ cd git_repo/local_web
@@ -826,10 +881,9 @@ follows these steps, in order:
 
 Configuring an Alias
 
-If there is a common but complex Git command that you type frequently, consider setting up a simple Git alias for it.		
+If there is a common but complex Git command that you type frequently, consider setting up a simple Git alias for it.
 
-$ git config --global alias.show-graph \
-'log --graph --abbrev-commit --pretty=oneline'
+$ git config --global alias.show-graph 'log --graph --abbrev-commit --pretty=oneline'
 
 $ cd ../local_web
 
@@ -4599,12 +4653,12 @@ $ git show-branch --more=6
 • If you have a branch that uses a pre-rebase commit, you might need to rebase it in turn.
 • If there is a user of a pre-rebase commit in a different repository, he still has a copy of that commit even though it has moved in your repository; the user will now have to fix up his commit history, too.
 
-#### Setup local GIT project and sync it with Git hub repository. Keep changing the code and push them to github repo.
 By default, root users have # prompt, regular users have $ in Linux.
 
 root user:    root@hostname:~#  ← # symbol
 regular user: user@hostname:~$  ← $ symbol
 
+#### Setup local GIT project and sync it with Git hub repository. Keep changing the code and push them to github repo.
 
 Move into the .ssh folder
 (mypyvenv) root@ubundockhost:~/# cd ~/.ssh
@@ -4621,7 +4675,8 @@ Reading package lists... Done
 (mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_EMAIL="nesan.committer@gmail.com"
 
 ## Set Up Authentication - Use ssh key method with github website for your mail ID registered with github website
-# Generate SSH Key Pair - Uses ed25519 keygen algorithm which is better than RSA
+
+# Generate SSH Key Pair - Uses ed25519 keygen algorithm which is better than RSA, Elliptic Curve math creates mathematically linked key pair.
 
 (mypyvenv) root@ubundockhost:~/.ssh# ssh-keygen -t ed25519 -C "nesan.committer@gmail.com"
 Generating public/private ed25519 key pair.
@@ -4677,14 +4732,14 @@ Add SSH key
 (mypyvenv) root@ubundockhost:~/.ssh# eval "$(ssh-agent -s)"
 Agent pid 1841
 
-## Add private key to ssh agent in the docker
+## Add private key to ssh agent in the docker - SSH Agent Loads Private Key
 (mypyvenv) root@ubundockhost:~/.ssh# ssh-add githubweb
 Enter passphrase for githubweb: passgithubweb
 Identity added: githubweb (nesan.committer@gmail.com)
 (mypyvenv) root@ubundockhost:~/.ssh#
 
-## Test Connection with github.com
-(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+## Test Connection with github.com -- ssh -T <user@hostname_or_IP>
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com 
 The authenticity of host 'github.com (20.207.73.82)' can't be established.
 ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
 This key is not known by any other names.
@@ -4692,7 +4747,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
 Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
 
-## Test connection again 
+## Test connection again   -- ssh -T <user@hostname_or_IP>
 (mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
 Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
 
@@ -4811,41 +4866,14 @@ Your Docker → SSH (githubweb key) → GitHub Servers → nesancommitter/All_No
      ↓
 Creates: master branch + all your files
 
-# Github uses main as the default branch name but git uses master as default branch name - To fix this set set global default branch as main in git
-# so change the default branch name to master for the github repository in the portal 
-
+## Check all the files are uploaded 
 visit https://github.com/nesancommitter/All_Notes_to_Share/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##in local git repo make these changes - Local Docker Commands (Update Tracking)
-# Update remote tracking
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch -u All_Notes_to_Share/main master
-branch 'master' set up to track 'All_Notes_to_Share/master'.
+## Your Daily Workflow to update the changes from local into Git repo in github
+## Make any changes to any files in the folder -- add all the files to index, commit the index, the push it to remote repo in this case github
+git add .
+git commit -m "Add new notes"
+git push                            # Just 'push' - tracks master automatically
 
 ## to test if the changes are working any anyone can clone the repository
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# cd /mnt/hdrive/scrap/
@@ -4876,9 +4904,6 @@ drwxr-xr-x 1 root root    512 Dec 28 00:11 All_Data_for_learning/
 -rwxr-xr-x 1 root root  10154 Dec 28 00:11 Input_data_DE_handson_SQL_handson.xlsx*
 drwxr-xr-x 1 root root    512 Dec 28 00:11 Ref_Books/
 -rwxr-xr-x 1 root root 235439 Dec 28 00:11 Versioning_with_GIT.txt*
-
-(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/gitrep_test/All_Notes_to_Share# git branch
-* master
 
 ## Touch to add new learn file and commit and push the repo to git hub
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# touch AWS_Glue_Learn.txt
@@ -4917,15 +4942,9 @@ https://github.com/nesancommitter/All_Notes_to_Share
 [remote "All_Notes_to_Share"]
         url = git@github.com:nesancommitter/All_Notes_to_Share.git
         fetch = +refs/heads/*:refs/remotes/All_Notes_to_Share/*
-[branch "master"]
+[branch "main"]
         remote = All_Notes_to_Share
-        merge = refs/heads/master
-
-## Your Daily Workflow to update the changes from local into Git repo in github
-## Make any changes to any files in the folder -- add all the files to index, commit the index, the push it to remote repo in this case github
-git add .
-git commit -m "Add new notes"
-git push                            # Just 'push' - tracks master automatically
+        merge = refs/heads/main
 
 
 
@@ -4936,23 +4955,6 @@ git push                            # Just 'push' - tracks master automatically
 
 
 
-
-
-
-https://github.com/nesancommitter/All_Notes_to_Share
-→ Settings tab (top right)
-→ Branches (left sidebar)
-
-1. Current default: main (empty) 
-2. Click **change default branch** (pencil icon next to main)
-3. **Select `master`** from dropdown (your branch with files)
-4. Click **Update**
-5. Confirm warning → **I understand...** → Update
-
-## Delete the main branch permenantly
-Open https://github.com/nesancommitter/All_Notes_to_Share
-Click Branches 
-you can see master and main branch - delete the main branch.
 
 
 
