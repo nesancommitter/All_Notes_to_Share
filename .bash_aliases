@@ -248,9 +248,8 @@ histdelstwith() {
 
 ## Function to setup git repo in the current folder also set repo for github push
 setgit() {
-
+    return 1
 }
-
 
 ## Function to commit and push any git repo from local and to github 
 cnpush() {
@@ -266,7 +265,7 @@ cnpush() {
             *)
                 echo -e "${BOLD}${RED}Unknown option: $1${NC}"
                 echo -e "${BOLD}${YELLOW}Usage: cnpush [-m 'your message']${NC}"
-				echo
+				echo ""
                 return 1
                 ;;
         esac
@@ -275,7 +274,7 @@ cnpush() {
     # Check if pwd has Git repository .git folder
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
         echo -e "${BOLD}${RED}ERROR: Not a Git repository!${NC}"
-		echo
+		echo ""
         return 1
     fi
 
@@ -283,17 +282,17 @@ cnpush() {
     if ! git add .; then
         echo -e "${BOLD}${RED}ERROR: git add failed (check file permissions/locks)${NC}"
         echo -e "${BOLD}${YELLOW}Close Excel/Office apps or add '~$*' to .gitignore${NC}"
-		echo
+		echo ""
         return 1
     fi
     
     # Check for changes in the modules
     if ! git diff --quiet || ! git diff --cached --quiet; then
         echo -e "${BOLD}${YELLOW}Changes detected - proceeding...${NC}"
-		echo
+		echo ""
     else
         echo -e "${BOLD}${YELLOW}No changes to commit!${NC}"
-		echo
+		echo ""
         return 0
     fi
     
@@ -313,10 +312,10 @@ cnpush() {
     # Commit
     if git commit -m "$commit_msg"; then
         echo -e "Commit Successful: ${dtvar}_${time_hm}${NC}"
-		echo
+		echo ""
     else
         echo -e "${BOLD}${RED}ERROR: Commit failed${NC}"
-		echo
+		echo ""
         return 1
     fi
 	
@@ -324,7 +323,7 @@ cnpush() {
 	REMOTE_NAME=$(git remote | head -1)  # First remote name
 	if [[ -z "$REMOTE_NAME" ]]; then
 	    echo -e "${BOLD}${RED}ERROR: No remotes found! (run: git remote -v)${NC}"
-		echo
+		echo ""
     	return 1
 	fi
     
@@ -339,10 +338,10 @@ cnpush() {
     if git push -u "$repo_name" main; then
         echo -e "${BOLD}${GREEN}Pushed: ${dtvar}_${time_hm} → $repo_name${NC}"
         echo -e "${BOLD}${YELLOW}Remote: $remote_url${NC}"
-		echo
+		echo ""
     else
         echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Push failed (check internet/permissions)${NC}"
-		echo
+		echo ""
         return 1
     fi
 }

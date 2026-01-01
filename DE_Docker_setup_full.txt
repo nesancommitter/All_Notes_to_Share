@@ -360,6 +360,11 @@ To activate the new configuration, you need to run:
 
 visit http://localhost:8080/phpmyadmin
 
+Two users 
+
+phpmyadmin:letmego
+root:root
+
 ## Make config changes to the mysql config file
 ## Add the bind-address details in the mysql config file also which is in /etc/mysql/mysql.conf.d/mysqld.cnf
 vi /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -2246,19 +2251,266 @@ Given Q = k × G, find k:
 - Best attacks: 2^128 operations (NASA supercomputer = 10^15 sec)
 - Your SSH key = safer than US nuclear codes
 
+#### Setup the gitbub CLI in the container - Needed for creation of the repository in github automatically
+## Install Dependencies for gh github CLI
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# apt install -y gnupg ca-certificates software-properties-common
+Reading package lists... Done
+Building dependency tree... Done
+
+## Add GitHub CLI Repository
+# 1. Download GitHub CLI GPG key
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+4+1 records in
+4+1 records out
+2270 bytes (2.3 kB, 2.2 KiB) copied, 0.323552 s, 7.0 kB/s
+
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# ll
+total 36
+drwxr-xr-x 1 root root 4096 Jan  1 19:05 ./
+drwxr-xr-x 1 root root 4096 Jan  1 18:59 ../
+-rw-r--r-- 1 root root 2270 Jan  1 19:05 githubcli-archive-keyring.gpg
+-rw-r--r-- 1 root root  640 Dec 16 03:27 microsoft-archive-keyring.gpg
+-rw-r--r-- 1 root root 3607 Nov 26  2023 ubuntu-archive-keyring.gpg
+-rw-r--r-- 1 root root 1227 Nov 26  2023 ubuntu-archive-removed-keys.gpg
+-rw-r--r-- 1 root root 2444 Nov 26  2023 ubuntu-cloudimage-keyring.gpg
+-rw-r--r-- 1 root root    0 Nov 26  2023 ubuntu-cloudimage-removed-keys.gpg
+-rw-r--r-- 1 root root 1191 Nov 26  2023 ubuntu-master-keyring.gpg
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+# 2. Set read permissions for group/other
+chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+# 3. Generate repo line (dynamic arch)
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# REPO_LINE="deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "$REPO_LINE"
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+
+# 4. Write to sources file
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "$REPO_LINE" | tee /etc/apt/sources.list.d/github-cli.list
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cat /etc/apt/sources.list.d/github-cli.list
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+
+# 5. Update package list
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt update
+Hit:1 https://packages.microsoft.com/repos/azure-cli noble InRelease
+Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+
+# 6. Install GitHub CLI
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt install -y gh
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  gh
+
+# 7. Check GitHub CLI version
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh --version
+gh version 2.83.2 (2025-12-10)
+https://github.com/cli/cli/releases/tag/v2.83.2
+
+## Authenticate GitHub for Passwordless Access
+
+Open in browser to generate token and enter below https://github.com/settings/tokens
+
+Token Name  : tkngenie_ghCLI
+Description : this token is for using in Genie gh CLI 
+Expiration  : No expiration
+Repo Access : All repositories
+
+Under Account      : select all permissions : mark read & write where all its applicable
+Under Repositories : select all permissions : mark read & write where all its applicable
+
+Token is below : 
+xyzgithub_pat_xyz
+
+in the Docker DNS mapping is defaulted so fix that to reach and use right DNS 
+Root Cause: Docker DNS Hijacked → Google Public DNS
+
+Fix 1: Force Correct DNS (Immediate)
+## Take backup of the default /etc/resolv.conf DNS reslove file.
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cp /etc/resolv.conf /etc/old_resolv.conf
+## Force Correct DNS
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "nameserver 1.1.1.1" > /etc/resolv.conf
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "nameserver 1.0.0.1" >> /etc/resolv.conf
+
+## Install dnsutils to check nslookup
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt install dnsutils
+Reading package lists... Done
+Building dependency tree... Done
+
+## Check nslookup is able to resolve api.github.com
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# nslookup api.github.com
+Server:         1.1.1.1
+Address:        1.1.1.1#53
+
+Non-authoritative answer:
+Name:   api.github.com
+Address: 20.207.73.85
+
+## check API.github.com is reachable with response 200
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# curl -I https://api.github.com
+HTTP/2 200
+
+## Now perform gh auth login
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh auth login
+? Where do you use GitHub? GitHub.com
+? What is your preferred protocol for Git operations on this host? SSH
+? Upload your SSH public key to your GitHub account? /root/.ssh/githubweb.pub
+? Title for your SSH key: githubwebsshtit
+? How would you like to authenticate GitHub CLI? Paste an authentication token
+Tip: you can generate a Personal Access Token here https://github.com/settings/tokens
+The minimum required scopes are 'repo', 'read:org', 'admin:public_key'.
+? Paste your authentication token: *********************************************************************************************
+- gh config set -h github.com git_protocol ssh
+✓ Configured git protocol
+! Authentication credentials saved in plain text
+✓ SSH key already existed on your GitHub account: /root/.ssh/githubweb.pub
+✓ Logged in as nesancommitter
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+## Check the Authentication status for password less access
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh auth status
+github.com
+  ✓ Logged in to github.com account nesancommitter (/root/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: ssh
+  - Token: github_pat_11AF4IOTI0oxyH5RYkR4tR_***********************************************************
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+#### Now gh github is installed and configured so try to create a new repository in github portal using gh command
+
+## Create a project and create local git repo for the project
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cd /mnt/hdrive/git_repo/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo# mkdir geniebot
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo# cd geniebot/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# touch geniebot.py
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git init
+Initialized empty Git repository in /mnt/hdrive/git_repo/geniebot/.git/
+
+## Add certain files in the .gitignore file so those files are always ignored from commit/push into the repository
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "~*" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "*~" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "~\$*" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat .gitignore
+~*
+*~
+~$*
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot#
+
+## Check git status and commit in local repo
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git add .
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   .gitignore
+        new file:   geniebot.py
+
+## commit to local repo
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git commit -m "first version dt_2025_01_01"
+[main (root-commit) 536671c] first version dt_2025_01_01
+ 2 files changed, 3 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 geniebot.py
+
+## Check the branch name - it must be main (default for github) it must not be master (defalut for git)
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git branch
+* main
+
+## Create a remote repository in github 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# gh repo create geniebot --public --description "Bot for telegram group management"
+✓ Created repository nesancommitter/geniebot on github.com
+  https://github.com/nesancommitter/geniebot
+
+## Check if any remote repo is configured and connected to local repo -- nothing is connected yet
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote -v
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot#
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat ./.git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+
+# Add remote -- Links your local repo → GitHub repo nesancommitter/geniebot
+# Add remote with your preferred remote name which is same as repo name geniebot
+## Set the SSH URL to the remote repo associate it to the remote repo name geniebot configured locally
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote add geniebot git@github.com:nesancommitter/geniebot.git
+
+## Check if any remote repo is configured and connected to local repo -- nothing is connected yet
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote -v
+geniebot        git@github.com:nesancommitter/geniebot.git (fetch)
+geniebot        git@github.com:nesancommitter/geniebot.git (push)
+
+## Check the config file also once 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat ./.git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "geniebot"]
+        url = git@github.com:nesancommitter/geniebot.git
+        fetch = +refs/heads/*:refs/remotes/geniebot/*
+[branch "main"]
+        remote = geniebot
+        merge = refs/heads/main
+
+## Push local main to that remote and set tracking
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push -u geniebot main
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (4/4), 285 bytes | 14.00 KiB/s, done.
+Total 4 (delta 0), reused 0 (delta 0), pack-reused 0
+To github.com:nesancommitter/geniebot.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'geniebot/main'.
+
+## Going forward just below commands will work for remote push
+git push        # after the first time
+git pull
+
+## Try push immeditaly it says upto date
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push
+Everything up-to-date
+
+## Make changes to geniebot.py then add and commit locally before pushing again
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git add .
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git commit -m "v2 dt_2025_01_01"
+[main 523c1a7] v2 dt_2025_01_01
+ 1 file changed, 2 insertions(+)
+
+## push new changes to github 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 305 bytes | 25.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To github.com:nesancommitter/geniebot.git
+   536671c..523c1a7  main -> main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# 
+
+## What happens when you git push
+if there are multiple commits in the local repository without push for each commit, when git push is issued All the commits on your local branch that are not yet on the remote will be pushed; nothing is lost or merged automatically. When you run git push, Git compares your local branch with the remote branch and sends all commits that the remote does not yet have, in the same order of commit.
+
+https://github.com/nesancommitter/geniebot/commits/main/  - to check all the commits on the branch main in remote github
 
 
 
 
 
-
-
-
-
-
-
-
-
+  
 
 
 

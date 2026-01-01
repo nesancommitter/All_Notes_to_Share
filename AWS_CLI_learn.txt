@@ -1767,16 +1767,6 @@ nvme1n1       259:4    0  16G  0 disk /aws/mde/logs     ## This is instance stor
                                       /etc/resolv.conf
                                       /home
                                       /root
-									  
-
-
-
-
-
-
-
-
-
 
 
 ## Create a folder with some files in the EC2 instance and then backup the entire folder in an S3 bucket folder use the existing S3 bucket arn:aws:s3:::learn-glue-csv-etl-bucket

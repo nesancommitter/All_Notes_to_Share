@@ -4792,6 +4792,19 @@ Initialized empty Git repository in /mnt/hdrive/All_Notes_from_learning/All_Note
 # Moves files from working directory → staging area (index)
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git add .
 
+## Add certain files in the .gitignore file so those files are always ignored from commit/push into the repository
+# Create/edit .gitignore 
+ADMIN@DESKTOP-O8I6CUH MINGW64 /h/All_Notes_from_learning/All_Notes_to_Share (main)
+$ echo "~*" >> .gitignore
+
+ADMIN@DESKTOP-O8I6CUH MINGW64 /h/All_Notes_from_learning/All_Notes_to_Share (main)
+$ echo "*~" >> .gitignore
+
+ADMIN@DESKTOP-O8I6CUH MINGW64 /h/All_Notes_from_learning/All_Notes_to_Share (main)
+$ echo "~$*" >> .gitignore
+
+
+
 # Commits the current stanged/indexed files in the local repository .git/objects/
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git commit -m "Initial commit dt_2025_12_27"
 [master (root-commit) 71b3ab8] Initial commit dt_2025_12_27
@@ -4843,7 +4856,7 @@ main
 (mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share#
 
 ## check what happened to the current repository - branch is set to main which is in sync with Github portal
-(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# git branch   
 * main
 
 ## Git push the local branch (main) to the remote github repository
@@ -4945,6 +4958,21 @@ https://github.com/nesancommitter/All_Notes_to_Share
 [branch "main"]
         remote = All_Notes_to_Share
         merge = refs/heads/main
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

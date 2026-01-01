@@ -590,8 +590,11 @@ Viewing a usage profile assigned for jobs
 
 To view the profile assigned to your jobs (that will be used at runtime with scheduled AWS Glue workflows or AWS Glue triggers), you may look at the job Details tab. You may also look at the profile used in past runs in the job runs details tab.
 
+Getting started with the AWS Glue Data Catalog
 
+The AWS Glue Data Catalog is your persistent technical metadata store. It is a managed service that you can use to store, annotate, and share metadata in the AWS Cloud. 
 
+Step 1: Create a database
 
 
 
