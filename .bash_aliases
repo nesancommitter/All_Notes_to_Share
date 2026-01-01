@@ -173,9 +173,10 @@ alias claptcache='apt-get clean'
 ## Trigger awinstgetpip just in case the instance was running already but IP is not fetched
 ##awinstgetpip     -- not required because before ssh we fetch the Public IP if its missing
 
-## Run certain commands to so the env is all set to use
+### Run certain commands to so the env is all set to use
 ## Check if there is active tmux session newsess2 if not active then create the session and detach from that if there is session already do nothing
 tmux has-session -t newsess2 2>/dev/null || tmux new-session -d -s newsess2
+
 ## Start the SSH agent Do this only if the agent is not active already
 # SSH Agent: Start only if not already running (PS check)
 if ! ps -ef | grep -q '[s]sh-agent'; then
@@ -184,6 +185,29 @@ if ! ps -ef | grep -q '[s]sh-agent'; then
 else
     echo "SSH agent already running"
 fi
+
+### Function definitions start
+## Function to Load the private and public key for github web
+load_sshkey_github() {
+## Load the private and public key for github web
+# Load SSH key only if connection fails
+if ssh -T git@github.com 2>&1 | grep -q "Hi nesancommitter! You've successfully"; then
+    echo -e "${BOLD}${GREEN} SSH already working (github key loaded)${NC}"
+else
+    echo -e "${BOLD}${WHITE}Pass is : ${BOLD}${YELLOW}passgithubweb${NC}"
+	# Add private key
+    ssh-add ~/.ssh/githubweb
+
+    # Verify after loading keys
+    if ssh -T git@github.com 2>&1 | grep -q "Hi nesancommitter! You've successfully"; then
+        echo -e "${BOLD}${GREEN} SSH key loaded successfully!${NC}"
+    else
+        echo -e "${BOLD}${RED}ERROR : ${BOLD}${YELLOW}SSH still failing after key load${NC}"
+        return 1
+    fi
+fi
+}
+
 
 ## Function to delete last n commands and clean .bash_history file 
 truncate_n_history() {
@@ -248,7 +272,214 @@ histdelstwith() {
 
 ## Function to setup git repo in the current folder also set repo for github push
 setgit() {
-    return 1
+
+	# Call the function to load the github ssh keys
+	load_sshkey_github
+
+	echo ""
+    # Parse -des parameter for commit message
+    CUSTOM_MSG=""
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -des)
+                CUSTOM_MSG="$2"
+                shift 2
+                ;;
+            *)
+                echo -e "${BOLD}${RED} Unknown option: $1${NC}"
+                echo -e "${BOLD}${YELLOW} Usage: cnpush [-des 'your description for github']${NC}"
+				echo ""
+                return 1
+                ;;
+        esac
+    done
+
+    # Check if pwd has Git repository .git folder if not ask and create local repo
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Not a Git repository!${NC}"
+		echo ""
+		echo -e "${BOLD}${YELLOW}INFO: No .git folder found. Create local Git repository? (y/N)${NC}"
+		echo ""    
+		read -r -p "Enter Y to proceed [y/N]: " response
+		response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+		
+		# Create local git repo in the current folder
+		if [[ "$response" =~ ^(y|yes)$ ]]; then
+			echo -e "${BOLD}${GREEN}INFO: Creating local Git repository...${NC}"
+			echo ""
+			if ! git init; then
+				echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}git init failed${NC}"
+				echo ""
+				return 1
+			fi
+			
+			echo -e "${BOLD}${GREEN} Git repository initialized!${NC}"
+		    echo ""	
+		else
+			echo -e "${BOLD}${RED}ERROR: Git Repo is not created.${NC}"
+			echo -e "${BOLD}${YELLOW}INFO: Git initialization skipped by user.${NC}"
+			echo ""
+			return 1
+		fi
+	else
+		echo -e "${BOLD}${YELLOW}INFO: Git Repo already present.${NC}"
+		echo -e "${BOLD}${YELLOW}INFO: Git initialization skipped.${NC}"
+		echo ""
+    fi
+
+    # Create the default .gitignore file
+	if [[ ! -f .gitignore ]]; then	
+		echo "~*" >> .gitignore
+		echo "*~" >> .gitignore
+		echo "~\$*" >> .gitignore
+		echo "*.log" >> .gitignore
+	else 
+		echo -e "${BOLD}${YELLOW}INFO: .gitignore present.${NC}"
+		echo ""
+	fi
+	
+    # Add all files (handle permission errors)
+    if ! git add .; then
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}git add failed (check file permissions/locks)${NC}"
+        echo -e "${BOLD}${YELLOW} Close Excel/Office apps or add '~$*' to .gitignore${NC}"
+		echo ""
+        return 1
+	else
+		echo -e "${BOLD}${GREEN} Git add successful${NC}"
+		echo ""	
+    fi
+
+    # Check for changes in the modules
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        echo -e "${BOLD}${YELLOW} Changes detected - proceeding to commit${NC}"
+		echo ""
+    else
+        echo -e "${BOLD}${YELLOW} No changes to commit!${NC}"
+		echo ""
+        return 0
+    fi
+	
+	# Generate timestamp
+    dtvar="dt_$(date +%Y_%m_%d)"
+    repo_name=$(basename "$PWD")
+    time_hm=$(date +%H_%m)
+
+    # Validate inputs
+    if [[ -z "$repo_name" ]]; then
+        echo -e "${BOLD}${RED}ERROR: repo_name is required${NC}"
+		echo ""		
+        return 1
+    fi
+
+    # Build commit message
+    BASE_MSG="Commit on ${dtvar}_${time_hm}"
+    if [[ -n "$CUSTOM_MSG" ]]; then
+        commit_msg="${BASE_MSG} - ${CUSTOM_MSG}"
+    else
+        commit_msg="$BASE_MSG"
+    fi
+    
+    # Commit
+    if git commit -m "$commit_msg"; then
+		echo ""
+		echo -e "${BOLD}${GREEN} Commit Successful: ${dtvar}_${time_hm}${NC}"
+		echo ""
+    else
+		echo ""
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Commit failed${NC}"
+		echo ""
+        return 1
+    fi
+
+	# Check if current branch is main
+	CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+	if [[ "$CURRENT_BRANCH" == "main" ]]; then
+		echo -e "${BOLD}${GREEN} Current branch is main${NC}"
+		echo ""
+	else
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Current branch is NOT main${NC}"
+		echo -e "${BOLD}${YELLOW}Current branch is: $CURRENT_BRANCH ${BOLD}${GREEN}(expected: main)${NC}"
+		echo -e "${BOLD}${YELLOW}Fix this and proceed with github push${NC}"
+		echo ""
+		return 1
+	fi
+	
+	# Check github auth status -- gh authentication
+    if ! gh auth status > /dev/null 2>&1; then
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Not authenticated with GitHub CLI. Run: gh auth login${NC}"
+		echo ""		
+        return 1
+	else
+		echo -e "${BOLD}${YELLOW} gh auth status is ACTIVE${NC}"
+		echo ""		
+    fi	
+
+	echo ""	
+	# Create a public repo in github
+    if ! gh repo create "$repo_name" --public --description "$commit_msg"; then
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Failed to create GitHub repo '$repo_name'${NC}"
+        echo -e "${BOLD}${YELLOW}Check if repo already exists or name is valid${NC}"
+		echo ""		
+        echo -e "${BOLD}${YELLOW}Try to use cnpush when repo already exists${NC}"
+		echo ""		
+        return 1
+	else
+		echo -e "${BOLD}${GREEN} GitHub repo created: $repo_name${NC}"	
+		echo ""		
+    fi
+
+    # # Add remote repository in github 
+    # if ! git remote add "$repo_name" "git@github.com:nesancommitter/$repo_name.git"; then
+        # echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Failed to add remote '$repo_name'${NC}"
+        # echo -e "${BOLD}${YELLOW}Check: git remote remove $repo_name && retry${NC}"
+		# echo ""		
+        # return 1
+    # fi
+	
+	# Check the remote -v has right configuration
+	# Check if git remote -v matches exact expected output
+	EXPECTED_REMOTE=$repo_name
+	EXPECTED_URL="git@github.com:nesancommitter/$repo_name.git"
+
+	REMOTE_OUTPUT=$(git remote -v 2>/dev/null)
+
+	if [[ $? -ne 0 ]]; then
+		echo -e "${BOLD}${RED}ERROR: git remote -v failed (not a git repo?)${NC}"
+		echo ""			
+		return 1
+	fi
+
+	# Extract remote name and URL from output
+	ACTUAL_REMOTE=$(echo "$REMOTE_OUTPUT" | awk '{print $1}' | head -1)
+	ACTUAL_URL=$(echo "$REMOTE_OUTPUT" | awk '{print $2}' | head -1)
+
+	if [[ "$ACTUAL_REMOTE" == "$EXPECTED_REMOTE" && "$ACTUAL_URL" == "$EXPECTED_URL" ]]; then
+		echo -e "${BOLD}${GREEN} Remote matches expected:${NC}"
+		echo -e "   $ACTUAL_REMOTE $ACTUAL_URL (fetch)${NC}"
+		echo -e "   $ACTUAL_REMOTE $ACTUAL_URL (push)${NC}"
+		echo ""			
+	else
+		echo -e "${BOLD}${RED} Remote mismatch:${NC}"
+		echo -e "   Expected: $EXPECTED_REMOTE $EXPECTED_URL${NC}"
+		echo -e "   Actual:   $ACTUAL_REMOTE $ACTUAL_URL${NC}"
+		echo ""	
+		return 1
+	fi
+	
+    # Push the local repo to remote github repo that is created now
+    echo -e "${BOLD}${GREEN}Pushing to GitHub...${NC}"
+	echo ""			
+    if ! git push -u "$repo_name" main; then
+        echo "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}git push failed${NC}"
+        echo "${BOLD}${YELLOW}Check SSH keys: ssh -T git@github.com${NC}"
+		echo ""			
+        return 1
+    fi
+    
+    echo "${BOLD}${GREEN}SUCCESS: Repo '$repo_name' created and pushed!${NC}"
+    echo "${BOLD}${BLUE}https://github.com/nesancommitter/$repo_name${NC}"
+	echo ""		
 }
 
 ## Function to commit and push any git repo from local and to github 
@@ -273,17 +504,23 @@ cnpush() {
 
     # Check if pwd has Git repository .git folder
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
-        echo -e "${BOLD}${RED}ERROR: Not a Git repository!${NC}"
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Not a Git repository!${NC}"
 		echo ""
         return 1
+	else
+        echo -e "${BOLD}${YELLOW}This folder has .git repo${NC}"
+		echo ""			
     fi
 
     # Add all files (handle permission errors)
     if ! git add .; then
-        echo -e "${BOLD}${RED}ERROR: git add failed (check file permissions/locks)${NC}"
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}git add failed (check file permissions/locks)${NC}"
         echo -e "${BOLD}${YELLOW}Close Excel/Office apps or add '~$*' to .gitignore${NC}"
 		echo ""
         return 1
+	else
+        echo -e "${BOLD}${YELLOW}git add successful${NC}"
+		echo ""	
     fi
     
     # Check for changes in the modules
@@ -300,6 +537,13 @@ cnpush() {
     dtvar="dt_$(date +%Y_%m_%d)"
     repo_name=$(basename "$PWD")
     time_hm=$(date +%H_%m)
+
+    # Validate inputs
+    if [[ -z "$repo_name" ]]; then
+        echo -e "${BOLD}${RED}ERROR: repo_name is required${NC}"
+		echo ""		
+        return 1
+    fi
 	
     # Build commit message
     BASE_MSG="Commit on ${dtvar}_${time_hm}"
@@ -311,10 +555,10 @@ cnpush() {
     
     # Commit
     if git commit -m "$commit_msg"; then
-        echo -e "Commit Successful: ${dtvar}_${time_hm}${NC}"
+        echo -e "${BOLD}${GREEN}Commit Successful: ${dtvar}_${time_hm}${NC}"
 		echo ""
     else
-        echo -e "${BOLD}${RED}ERROR: Commit failed${NC}"
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Commit failed${NC}"
 		echo ""
         return 1
     fi
@@ -322,7 +566,7 @@ cnpush() {
 	# Fetch the remote name used for this git repo 
 	REMOTE_NAME=$(git remote | head -1)  # First remote name
 	if [[ -z "$REMOTE_NAME" ]]; then
-	    echo -e "${BOLD}${RED}ERROR: No remotes found! (run: git remote -v)${NC}"
+	    echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}No remotes found! (run: git remote -v)${NC}"
 		echo ""
     	return 1
 	fi
@@ -330,7 +574,7 @@ cnpush() {
     # Push (with remote check)
     local remote_url=$(git remote get-url "$REMOTE_NAME" 2>/dev/null || echo "")
     if [[ -z "$remote_url" ]]; then
-        echo -e "${BOLD}${RED}ERROR: Cannot get Remote URL for '$REMOTE_NAME'${NC}"
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Cannot get Remote URL for '$REMOTE_NAME'${NC}"
 		echo
         return 1
     fi

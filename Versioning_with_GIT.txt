@@ -4959,7 +4959,16 @@ https://github.com/nesancommitter/All_Notes_to_Share
         remote = All_Notes_to_Share
         merge = refs/heads/main
 
+## Git command to just reverse the last commit 
+## Remove last commit but KEEP the changes (as untracked/unstaged)
+## This uncommits and keeps the changes in your working directory, not staged: so you can stage it and recommit differently.
+git reset --mixed HEAD~1   # or simply: git reset HEAD~1
 
+#Make required changes in issue file save the changes and trigger git add again
+git add . 
+
+#Then you can git commit again to commit the new changes 
+git commit -m "revert last commit and commit again"
 
 
 

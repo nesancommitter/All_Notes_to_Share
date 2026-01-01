@@ -2506,9 +2506,135 @@ if there are multiple commits in the local repository without push for each comm
 
 https://github.com/nesancommitter/geniebot/commits/main/  - to check all the commits on the branch main in remote github
 
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## cd to images folder
+H:\Docker_sharedfiles\images>cd \Docker_sharedfiles\images
+
+H:\Docker_sharedfiles\images>
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                                                                            COMMAND                  CREATED       STATUS                     PORTS                                                                                                                           NAMES
+c3d718fcbe4f   nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws            "bash"                   9 days ago    Up 9 days                  0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:2222->22/tcp, [::]:2222->22/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+abd820d82472   hello-world                                                                      "/hello"                 12 days ago   Exited (0) 12 days ago                                                                                                                                     serene_mclean
+b3daff9e5b27   nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22                  "bash"                   13 days ago   Exited (137) 9 days ago                                                                                                                                    ubuntu_cont_DE_old_v4
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"                   2 weeks ago   Exited (137) 13 days ago                                                                                                                                   ubuntu_cont_DE_old_v3
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin             "bash"                   2 weeks ago   Exited (137) 2 weeks ago                                                                                                                                   ubuntu_cont_DE_old_v2_1
+4da93d1f8bb8   ubuntu                                                                           "bash"                   2 weeks ago   Exited (137) 2 weeks ago                                                                                                                                   ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                                  "/docker-entrypoint.…"   3 weeks ago   Exited (255) 3 weeks ago   0.0.0.0:8080->80/tcp                                                                                                            helloworld
+
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+ubuntu_cont_DE  - c3d718fcbe4f
+
+## ubuntu_cont_DE container is present with container ID c3d718fcbe4f so commit that container into an image
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V6 of DE image version with pyspark github config" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v6]
+ecfa15f73da0: Pushed
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+f5528e7232ea: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+13b8b174407e: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+cf789a38f3f6: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+v6-github-pyspark: digest: sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09 size: 1630
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+v6-github-pyspark: Pulling from nesancommitter/img_ubuntu_cont_de_v6
+Digest: sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+docker.io/nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v6 > img_ubuntu_cont_de_v6.tar
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v5.tar 
+
+######### Continue to build the docker image #########
+nesancommitter/img_ubuntu_cont_de_v6
+nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v6
+###### stop the container and rename it so we can run new image with same name
+
+## Stop the container with name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v5
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v5
+
+## Stop the previous version container with ubuntu_cont_DE_old_v5
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE_old_v5
+
+## run it again with below command which mounts C:\Users\ADMIN\.aws\sso\cache host folder as /host_aws inside of container so SSO token for AWS is raised in host windows and used inside docker container. Mount the host's AWS directory inside the docker containers as /host_aws with (-v C:\Users\ADMIN\.aws:/host_aws/config) then set the environment variable AWS_CONFIG_FILE=/host_aws/config
+
+Then run the sso login first in the host which creates tokens
+Again if you run the sso login inside container, it skips browser prompts since tokens are shared.
+
+aws sso login --profile AWS-Mumbai-dev-SSO
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark bash
+91ff9ba9f59f4fe20c1ee413df204223d790737d02936d972f8413eaeb6184db
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/# 
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Check the SSH service is running in the container
+(mypyvenv) root@ubundockhost:/# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ + ]  ssh
+ [ - ]  unattended-upgrades
+ [ - ]  x11-common
+(mypyvenv) root@ubundockhost:/#
+
+## Fix the DNS resolution issue in the Container 
+
+# Kill container + recreate with proper DNS
+C:\WINDOWS\system32>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+C:\WINDOWS\system32>docker rm ubuntu_cont_DE
+ubuntu_cont_DE
+
+C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc --dns 1.1.1.1 --dns 1.0.0.1 nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark bash
+
+
+docker run [your original command] \
+  --dns 1.1.1.1 --dns 1.0.0.1 \
+  nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
 
 
 
+docker stop ubuntu_cont_DE_test
+docker rm ubuntu_cont_DE_test
 
   
 
