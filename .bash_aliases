@@ -734,19 +734,19 @@ cnpush() {
 	# Check if any key in SSH agent contains "nesan.committer@gmail.com (ED25519)"
 	if ! ssh-add -l | grep -q "nesan.committer@gmail.com (ED25519)"; then
 	    echo ""
-	    echo "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
+	    echo -e "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
 		echo ""
 		ssh-add ~/.ssh/githubweb
 	fi	
 
 	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
 	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
-		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"
 	    echo ""
-	else
         echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
 		echo ""
 		return 1
+	else
+		echo -e "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
 	fi
     
     if git push -u "$repo_name" main; then
