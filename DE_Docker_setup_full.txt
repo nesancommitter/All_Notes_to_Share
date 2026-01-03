@@ -360,10 +360,10 @@ To activate the new configuration, you need to run:
 
 visit http://localhost:8080/phpmyadmin
 
-Two users 
+username:password
 
 phpmyadmin:letmego
-root:root
+
 
 ## Make config changes to the mysql config file
 ## Add the bind-address details in the mysql config file also which is in /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -2626,15 +2626,12 @@ ubuntu_cont_DE
 
 C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc --dns 1.1.1.1 --dns 1.0.0.1 nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark bash
 
-
-docker run [your original command] \
-  --dns 1.1.1.1 --dns 1.0.0.1 \
-  nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
-
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/#
 
 
-docker stop ubuntu_cont_DE_test
-docker rm ubuntu_cont_DE_test
+
 
   
 

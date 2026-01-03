@@ -13,7 +13,6 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export HISTIGNORE="ls:ll:pwd:exit:date:xyz"
 
 ## Define Certain colors to make echo for important details
-
 export BOLD='\033[1m'
 export NC='\033[0m'   # No Color (Reset)
 
@@ -95,6 +94,9 @@ echo -e "${BOLD}${BLUE}**************************************************${NC}"
 echo
 echo
 
+## Invoke ssh-agent if its not active already
+start_ssh_agent
+
 ## Global Variables and settings
 export EC2_INST_ID='i-0ca210a013f899c31'
 export S3_BUKT_ID='learn-glue-csv-etl-bucket'
@@ -168,7 +170,7 @@ alias vpyd='deactivate'
 alias clpdgcache='rm -rf /var/lib/apt/lists/*'
 alias clpipcache='pip cache purge && rm -rf ~/.cache/pip/*'
 alias cltmpcache='rm -rf /tmp/* /var/tmp/*'
-alias claptcache='apt-get clean'
+alias claptcache='sudo apt-get clean'
 
 ## Trigger awinstgetpip just in case the instance was running already but IP is not fetched
 ##awinstgetpip     -- not required because before ssh we fetch the Public IP if its missing
@@ -178,6 +180,10 @@ alias claptcache='apt-get clean'
 tmux has-session -t newsess2 2>/dev/null || tmux new-session -d -s newsess2
 
 ## Start the SSH agent Do this only if the agent is not active already
+
+### Function definitions start
+## Function to start ssh-agent if there is no active ssh-agent
+start_ssh_agent () {
 # SSH Agent: Start only if not already running (PS check)
 if ! ps -ef | grep -q '[s]sh-agent'; then
     eval "$(ssh-agent -s)"      ## Start the ssh agent
@@ -185,8 +191,45 @@ if ! ps -ef | grep -q '[s]sh-agent'; then
 else
     echo "SSH agent already running"
 fi
+}
 
-### Function definitions start
+## Function to trim image/container remove unwanted files
+trim_img () {
+
+# 1. Remove unused dependencies (autoremove)
+	echo -e "${BOLD}${YELLOW} Remove unused dependencies - apt autoremove${NC}"
+	echo ""
+	sudo apt autoremove -y
+
+# 2. Remove unused dependencies + config files (purge)
+	echo -e "${BOLD}${YELLOW} Remove unused dependencies + config files - apt autoremove --purge${NC}"
+	echo ""
+	sudo apt autoremove --purge -y
+
+# 3. Clean package cache
+	echo -e "${BOLD}${YELLOW} Clean package cache - apt autoclean${NC}"
+	echo ""
+	sudo apt autoclean
+
+# 4. Clear all downloaded package files
+	echo -e "${BOLD}${YELLOW} Clear all downloaded package files - apt clean${NC}"
+	echo ""
+	sudo apt clean
+	clpdgcache
+	claptcache
+
+# 5. Clear pip Cached files
+	echo -e "${BOLD}${YELLOW} Clear pip Cached files${NC}"
+	echo ""
+    clpipcache
+	
+# 6. Clear tmp folders
+	echo -e "${BOLD}${YELLOW} Clear tmp folders${NC}"
+	echo ""
+	cltmpcache
+}
+
+
 ## Function to Load the private and public key for github web
 load_sshkey_github() {
 ## Load the private and public key for github web
@@ -243,32 +286,97 @@ truncate_n_history() {
 }
 
 ## Function to delete and clean .bash_history file 
-## of all commands starting with word passed as argument to Function
-## Usage histdelstwith history    --- Deletes all commands in .bash_history that start with history
-histdelstwith() {
-    local word="$1"
-    if [[ -z "$word" ]]; then
-        echo -e "${RED}Usage: histdelstwith <word>${NC}"
-        echo -e "Example: histdelstwith history"
+## Usage hisdany history    --- Deletes all commands in .bash_history that start with history
+hisd() {
+    local in_word_list="$1"
+    if [[ -z "$in_word_list" ]]; then
+        echo -e "${RED}Usage: hisd 'word1,word2,word3'${NC}"
+        echo -e "Example: hisd 'cd,rm,ping'${NC}"
         return 1
     fi
     
-    echo -e "${YELLOW}Deleting all history commands starting with '$word'${NC}"
+    # Split comma-separated in_word_list into array
+    IFS=',' read -ra words <<< "$in_word_list"
     
-    # Collect ALL line numbers FIRST (before any deletion)
-    local lines_to_delete=($(history | grep "^ *[0-9]\+  $word" | awk '{print $1}' | tac))
+    echo -e "${YELLOW}Deleting history for: ${words[*]}${NC}"
     
-    # Delete in reverse order (safest)
-    for num in "${lines_to_delete[@]}"; do
-        history -d "$num"
-        echo -e "${GREEN}Deleted history #$num${NC}"
+    # Loop through each word
+    for word in "${words[@]}"; do
+        word=$(echo "$word" | xargs)  # trim whitespace
+        
+        echo ""
+        echo "Searching for '$word'..."
+        
+        # Get matching lines starting with word
+        local matches=($(history | grep -E "^ *[0-9]+ *\[.*\] +${word}" | awk '{print $1}' | tac))
+		
+        
+        if [[ ${#matches[@]} -gt 0 ]]; then
+            echo "Found ${#matches[@]} matches: ${matches[*]}"
+            
+            # Delete matches for this word
+            for num in "${matches[@]}"; do
+                history -d "$num"
+                echo -e "${GREEN}Deleted #$num${NC}"
+            done
+            
+            # Save history IMMEDIATELY after each word
+            history -w
+            echo -e "${GREEN}Saved history after '$word' cleanup${NC}"
+        else
+            echo "No matches for '$word'"
+        fi
     done
     
-    # Save ONCE at the end
-    history -w
-    
-    echo -e "${BOLD}${GREEN}Done! All '$word' commands removed from history.${NC}"
+    echo ""
+    echo -e "${BOLD}${GREEN}Complete! All words processed.${NC}"
 }
+
+## Usage hisdany history    --- Deletes all commands in .bash_history that contains given words with history
+hisdany() {
+    local in_word_list="$1"
+    if [[ -z "$in_word_list" ]]; then
+        echo -e "${RED}Usage: hisdany 'word1,word2,word3'${NC}"
+        echo -e "Example: hisdany 'cd,rm,ping'${NC}"
+        return 1
+    fi
+    
+    # Split comma-separated in_word_list into array
+    IFS=',' read -ra words <<< "$in_word_list"
+    
+    echo -e "${YELLOW}Deleting history for: ${words[*]}${NC}"
+    
+    # Loop through each word
+    for word in "${words[@]}"; do
+        word=$(echo "$word" | xargs)  # trim whitespace
+        
+        echo ""
+        echo "Searching for '$word'..."
+        
+        # Get matching lines for this word
+        local matches=($(history | grep -E "^ *[0-9]+ *\[.*\] +.*$word" | awk '{print $1}' | tac))	
+        
+        if [[ ${#matches[@]} -gt 0 ]]; then
+            echo "Found ${#matches[@]} matches: ${matches[*]}"
+            
+            # Delete matches for this word
+            for num in "${matches[@]}"; do
+                history -d "$num"
+                echo -e "${GREEN}Deleted #$num${NC}"
+            done
+            
+            # Save history IMMEDIATELY after each word
+            history -w
+            echo -e "${GREEN}Saved history after '$word' cleanup${NC}"
+        else
+            echo "No matches for '$word'"
+        fi
+    done
+    
+    echo ""
+    echo -e "${BOLD}${GREEN}Complete! All words processed.${NC}"
+}
+
 
 ## Function to setup git repo in the current folder also set repo for github push
 setgit() {
@@ -429,13 +537,13 @@ setgit() {
 		echo ""		
     fi
 
-    # # Add remote repository in github 
-    # if ! git remote add "$repo_name" "git@github.com:nesancommitter/$repo_name.git"; then
-        # echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Failed to add remote '$repo_name'${NC}"
-        # echo -e "${BOLD}${YELLOW}Check: git remote remove $repo_name && retry${NC}"
-		# echo ""		
-        # return 1
-    # fi
+    # Add remote repository in github 
+    if ! git remote add "$repo_name" "git@github.com:nesancommitter/$repo_name.git"; then
+        echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Failed to add remote '$repo_name'${NC}"
+        echo -e "${BOLD}${YELLOW}Check: git remote remove $repo_name && retry${NC}"
+		echo ""		
+        return 1
+    fi
 	
 	# Check the remote -v has right configuration
 	# Check if git remote -v matches exact expected output
@@ -466,6 +574,28 @@ setgit() {
 		echo ""	
 		return 1
 	fi
+
+    #Check and start ssh-agent
+    start_ssh_agent
+
+    #Add the private key of github web to the SSH agent
+	# Check if any key in SSH agent contains "nesan.committer@gmail.com (ED25519)"
+	if ! ssh-add -l | grep -q "nesan.committer@gmail.com (ED25519)"; then
+	    echo ""
+	    echo "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
+		echo ""
+		ssh-add ~/.ssh/githubweb
+	fi	
+
+	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
+	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
+	    echo ""
+        echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
+		echo ""
+		return 1
+	else
+		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
+	fi	
 	
     # Push the local repo to remote github repo that is created now
     echo -e "${BOLD}${GREEN}Pushing to GitHub...${NC}"
@@ -569,19 +699,56 @@ cnpush() {
 	    echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}No remotes found! (run: git remote -v)${NC}"
 		echo ""
     	return 1
+	else
+        echo -e "${BOLD}${GREEN}Remote Found with repo name : $REMOTE_NAME${NC}"
+		echo ""
+	fi
+
+    # Check Remote repo name is same as the local folder
+	if ["$REMOTE_NAME" ==  "$repo_name"]; then
+        echo -e "${BOLD}${GREEN}Remote repo name match with local folder{NC}"
+		echo ""
+	else
+	    echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Remote repo not match with local folder${NC}"
+		echo ""
+    	return 1
 	fi
     
     # Push (with remote check)
     local remote_url=$(git remote get-url "$REMOTE_NAME" 2>/dev/null || echo "")
     if [[ -z "$remote_url" ]]; then
         echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Cannot get Remote URL for '$REMOTE_NAME'${NC}"
-		echo
+		echo ""
         return 1
+	else
+        echo -e "${BOLD}${YELLOW}Remote URL : $remote_url${NC}"
+		echo ""	
     fi
+
+    #Check and start ssh-agent
+    start_ssh_agent
+
+    #Add the private key of github web to the SSH agent
+	# Check if any key in SSH agent contains "nesan.committer@gmail.com (ED25519)"
+	if ! ssh-add -l | grep -q "nesan.committer@gmail.com (ED25519)"; then
+	    echo ""
+	    echo "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
+		echo ""
+		ssh-add ~/.ssh/githubweb
+	fi	
+
+	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
+	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
+	    echo ""
+        echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
+		echo ""
+		return 1
+	else
+		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
+	fi
     
     if git push -u "$repo_name" main; then
         echo -e "${BOLD}${GREEN}Pushed: ${dtvar}_${time_hm} → $repo_name${NC}"
-        echo -e "${BOLD}${YELLOW}Remote: $remote_url${NC}"
 		echo ""
     else
         echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Push failed (check internet/permissions)${NC}"
@@ -647,7 +814,8 @@ genie() {
     echo -e "${BOLD}${GREEN}   genie         : ${YELLOW}Help on the DE Genie environment ${NC}" 
 	echo -e "${BOLD}${GREEN}   rmysql        : ${YELLOW}connect to local mysql server with root  ${NC}"
 	echo -e "${BOLD}${GREEN}   lsserv        : ${YELLOW}list all the services       ${NC}"
-	echo -e "${BOLD}${GREEN}   histdelstwith : ${YELLOW}keep bash_history clean remove unwanted commands ${NC}"
+	echo -e "${BOLD}${GREEN}   hisd          : ${YELLOW}keep bash_history clean remove unwanted commands - start with ${NC}"
+	echo -e "${BOLD}${GREEN}   hisdany       : ${YELLOW}keep bash_history clean remove unwanted commands - contains ${NC}"
 	echo -e "${BOLD}${GREEN}   truncate_n_history : ${YELLOW}clean bash_history remove Last n commands${NC}"
     echo -e "${BOLD}${GREEN}   setgit        : ${YELLOW}Setup the current folder into git repo and set github repo for the same ${NC}" 	
     echo -e "${BOLD}${GREEN}   cnpush        : ${YELLOW}Commit changes of the current folder and push to github ${NC}" 
@@ -658,16 +826,17 @@ genie() {
 	echo -e "${BOLD}${BLUE}*************************************************${NC}"	
 	echo -e "${BOLD}${GREEN}   vpya          : ${YELLOW}activate and enter python venv /mypyvenv ${NC}"
 	echo -e "${BOLD}${GREEN}   vpyd          : ${YELLOW}exit python venv /mypyvenv      ${NC}"
+	echo -e "${BOLD}${BLUE}*************************************************${NC}"	
+    echo 
+	echo -e "${BOLD}${BLUE}*************************************************${NC}"
+	echo -e "${BOLD}${BLUE}****   ${RED}Useful commands to manage Container   ${BLUE}****${NC}"
+	echo -e "${BOLD}${BLUE}*************************************************${NC}"	
 	echo -e "${BOLD}${GREEN}   colorpallet   : ${YELLOW}Display echo color pallet ${NC}"
 	echo -e "${BOLD}${GREEN}   clpdgcache    : ${YELLOW}Clear Cached package index files ${NC}"
 	echo -e "${BOLD}${GREEN}   clpipcache    : ${YELLOW}Clear pip Cached files ${NC}"	
 	echo -e "${BOLD}${GREEN}   cltmpcache    : ${YELLOW}Clear tmp folders ${NC}"	
 	echo -e "${BOLD}${GREEN}   claptcache    : ${YELLOW}Clear apt-get package folders${NC}"
-
-
-
-
-
+	echo -e "${BOLD}${GREEN}   trim_img      : ${YELLOW}Delete unwanted apt libraries and pip catch folders${NC}"
 	echo -e "${BOLD}${BLUE}*************************************************${NC}"	
     echo 
 	echo -e "${BOLD}${BLUE}*************************************************${NC}"
