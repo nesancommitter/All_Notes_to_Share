@@ -705,11 +705,13 @@ cnpush() {
 	fi
 
     # Check Remote repo name is same as the local folder
-	if ["$REMOTE_NAME" ==  "$repo_name"]; then
+	if ["$REMOTE_NAME" == "$repo_name"]; then
         echo -e "${BOLD}${GREEN}Remote repo name match with local folder{NC}"
 		echo ""
 	else
 	    echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Remote repo not match with local folder${NC}"
+        echo -e "${BOLD}${YELLOW}Remote Repo : $REMOTE_NAME${NC}"		
+        echo -e "${BOLD}${YELLOW}Local folder : $repo_name${NC}"			
 		echo ""
     	return 1
 	fi

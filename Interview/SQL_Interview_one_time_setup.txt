@@ -10,3 +10,7 @@ FLUSH PRIVILEGES;
 -- Verify
 SELECT User, Host FROM mysql.user WHERE User='intuser';
 SHOW GRANTS FOR 'intuser'@'%';
+
+
+
+
