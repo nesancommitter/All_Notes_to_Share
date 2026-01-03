@@ -582,20 +582,20 @@ setgit() {
 	# Check if any key in SSH agent contains "nesan.committer@gmail.com (ED25519)"
 	if ! ssh-add -l | grep -q "nesan.committer@gmail.com (ED25519)"; then
 	    echo ""
-	    echo "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
+	    echo -e "${BOLD}${YELLOW}passphrase: passgithubweb${NC}"
 		echo ""
 		ssh-add ~/.ssh/githubweb
 	fi	
 
 	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
-	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
+	if ssh -T git@github.com | grep -q "Hi nesancommitter"; then
 	    echo ""
         echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
 		echo ""
 		return 1
 	else
-		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
-	fi	
+		echo -e "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
+	fi
 	
     # Push the local repo to remote github repo that is created now
     echo -e "${BOLD}${GREEN}Pushing to GitHub...${NC}"
