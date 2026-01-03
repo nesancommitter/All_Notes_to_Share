@@ -20,11 +20,14 @@ INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_da
 INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (413, 'emp15', 400, 'Sale4', 44, '2024-01-01', 1580000, 'F');
 INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (510, 'emp16', 500, 'Proj_1_lead', 55, '2004-01-01', 2000000, 'M');
 INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (511, 'emp17', 500, 'Proj_2_lead', 55, '2006-01-01', 2700000, 'F');
-INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (520, 'Ramesh', 500, 'Dev1', 510, '2016-01-01', 2150000, 'M');
-INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (521, 'emp19', 500, 'Dev2', 511, '2017-01-01', 2750000, 'F');
-INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (522, 'emp20', 500, 'Dev3', 511, '2018-01-01', 1000000, 'M');
-INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (523, 'emp21', 500, 'Tester1', 510, '2016-01-01', 1100000, 'M');
-INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (524, 'emp22', 500, 'Tester2', 511, '2025-01-01', 1200000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (520, 'Ramesh', 500, 'Dev', 510, '2016-01-01', 2150000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (521, 'emp19', 500, 'Dev', 511, '2017-01-01', 2750000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (522, 'emp20', 500, 'Dev', 511, '2018-01-01', 1000000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (523, 'emp21', 500, 'Tester', 510, '2016-01-01', 1100000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (524, 'emp22', 500, 'Tester', 511, '2025-01-01', 1200000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (1001, 'emp23', NULL, 'Housekeeping', 11, '2025-01-01', 120000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (1002, 'emp24', NULL, 'Housekeeping', 11, '2025-01-01', 110000, 'F');
+
 
 
 INSERT INTO departments (dept_id, dept_name) VALUES (1, 'Management');
