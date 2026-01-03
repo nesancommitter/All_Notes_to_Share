@@ -741,12 +741,12 @@ cnpush() {
 
 	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
 	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
+		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"
 	    echo ""
+	else
         echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
 		echo ""
 		return 1
-	else
-		echo "${BOLD}${GREEN}SUCCESS: github test connect for nesancommitter${NC}"	
 	fi
     
     if git push -u "$repo_name" main; then
