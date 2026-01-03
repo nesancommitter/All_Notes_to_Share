@@ -740,7 +740,7 @@ cnpush() {
 	fi	
 
 	# Check if any SSH test connection to git@github returns "Hi nesancommitter"
-	if ! ssh -T git@github.com | grep -q "Hi nesancommitter"; then
+	if ssh -T git@github.com | grep -q "Hi nesancommitter"; then
 	    echo ""
         echo -e "${BOLD}${RED}ERROR: github test connect is not for nesancommitter${NC}"
 		echo ""
