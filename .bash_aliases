@@ -705,8 +705,8 @@ cnpush() {
 	fi
 
     # Check Remote repo name is same as the local folder
-	if ["$REMOTE_NAME" == "$repo_name"]; then
-        echo -e "${BOLD}${GREEN}Remote repo name match with local folder{NC}"
+	if [[ "$REMOTE_NAME" == "$repo_name" ]]; then   #space added
+        echo -e "${BOLD}${GREEN}Remote repo name match with local folder${NC}"
 		echo ""
 	else
 	    echo -e "${BOLD}${RED}ERROR: ${BOLD}${YELLOW}Remote repo not match with local folder${NC}"
@@ -715,7 +715,7 @@ cnpush() {
 		echo ""
     	return 1
 	fi
-    
+
     # Push (with remote check)
     local remote_url=$(git remote get-url "$REMOTE_NAME" 2>/dev/null || echo "")
     if [[ -z "$remote_url" ]]; then
