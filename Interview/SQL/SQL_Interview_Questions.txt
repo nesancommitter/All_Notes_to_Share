@@ -1,0 +1,197 @@
+SQL interview Questions 
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) Find the second highest salary from the Employee table. -- Logic select max of all rows other than max salary. 
+
+SELECT MAX(salary) AS SecondHighestSalary FROM employees WHERE salary < ( SELECT MAX(salary) FROM employees );
+
+2) Find duplicate records in a table. 
+
+SELECT emp_name, COUNT(*) FROM employees GROUP BY emp_name HAVING COUNT(*) > 1; 
+
+3) Retrieve employees who earn more than their manager.
+
+SELECT e.emp_name AS Employee, e.salary AS Emp_Salary, m.emp_name AS Manager, m.salary AS Manager_Salary, e.job_title Emp_jobtitle
+, m.job_title Manager_jobtitle FROM employees e JOIN employees m ON e.manager_id = m.emp_id
+ WHERE e.salary > m.salary;
+ 
+4) Count employees in each department having more than 5 employees.
+
+SELECT emp.dept_id, dep.dept_name, COUNT(*) AS num_employees FROM employees as emp join departments as dep where dep.dept_id = emp.dept_id GROUP BY dept_id HAVING COUNT(*) > 5;
+
+5) Find employees who joined in the last 5 years. 
+
+SELECT * FROM employees WHERE join_date >= DATE_SUB(NOW(), INTERVAL 5 YEAR);
+
+6) Get departments with no employees. 
+
+SELECT d.dept_name FROM departments d LEFT JOIN employees e ON d.dept_id = e.dept_id WHERE e.emp_id IS NULL;
+
+7) Write a query to find the median salary. -- Pending
+
+SELECT AVG(salary) AS median_salary FROM ( SELECT salary FROM employees ORDER BY salary LIMIT 2 - (SELECT COUNT(*) FROM employees) % 2 OFFSET (SELECT (COUNT(*) - 1) / 2 FROM employees) ) AS median_subquery;
+
+8. Running total of employee salaries by department. 
+
+SELECT e.emp_name, e.dept_id, d.dept_name, e.salary, SUM(salary) OVER (PARTITION BY dept_id ORDER BY emp_id) AS running_total FROM employees as e join departments as d where e.dept_id=d.dept_id;
+
++----------+---------+----------------+------------+---------------+
+| emp_name | dept_id | dept_name      | salary     | running_total |
++----------+---------+----------------+------------+---------------+
+| CEO      |       1 | Management     | 5000000.00 |    5000000.00 |
+| CXO      |       1 | Management     | 3000000.00 |    8000000.00 |
+| Ramesh   |     100 | Administration | 2000000.00 |    2000000.00 |
+| emp06    |     100 | Administration | 1500000.00 |    3500000.00 |
+| Suresh   |     200 | HR             | 2100000.00 |    2100000.00 |
+| emp07    |     200 | HR             | 1700000.00 |    3800000.00 |
+| emp08    |     200 | HR             | 1600000.00 |    5400000.00 |
+
+9. Find the longest consecutive streak of daily logins for each emplyee. -- Pending
+
+WITH login_dates AS ( SELECT user_id, login_date, login_date - INTERVAL ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) DAY AS grp FROM user_logins ) SELECT user_id, COUNT(*) AS streak_length, MIN(login_date) AS start_date, MAX(login_date) AS end_date FROM login_dates GROUP BY user_id, grp
+ORDER BY streak_length DESC;
+
+10. Recursive query to find the full reporting chain for each employee.
+10. Detect hierarchical depth of each employee in the org chart.  
+
+WITH RECURSIVE reporting_chain AS 
+  (SELECT emp_id, emp_name, manager_id, 1 AS level FROM employees WHERE manager_id IS NULL
+  UNION ALL
+  SELECT e.emp_id, e.emp_name, e.manager_id, rc.level + 1 FROM employees e JOIN reporting_chain rc ON e.manager_id = rc.emp_id) 
+SELECT * FROM reporting_chain ORDER BY level, emp_id;
+
+11. Write a query to find gaps in a sequence of numbers (missing IDs). 
+
+SELECT (emp_id + 1) AS missing_id FROM employees e1 WHERE NOT EXISTS 
+  (SELECT 1 FROM employees e2 WHERE e2.emp_id = e1.emp_id + 1 ) ORDER BY missing_id;
+
+12. Calculate cumulative distribution (CDF) of salaries. -- Cumulative Distribution Function (CDF) shows "what percentage of employees earn this salary or less?"
+
+SELECT emp_name, salary,
+CUME_DIST() OVER (ORDER BY salary) AS salary_cdf FROM employees;
+
+emp_name	salary	salary_cdf CDF_Calculation
+Alice		30000	0.2        1/5 
+Bob			45000	0.6        3/5
+Charlie		45000	0.6        3/5
+Diana		60000	0.8        4/5         -- 80% of employees earn this salary of 75000 or less
+Eve			75000	1.0        5/5         -- 100% of employees earn this salary of 75000 or less
+
+13. Compare two tables and find rows with differences in any column (all columns). -- pending (use departments table with departments_old table)
+
+SELECT * FROM table1 t1 FULL OUTER JOIN table2 t2 ON t1.id = t2.id WHERE t1.col1 IS DISTINCT FROM t2.col1 OR t1.col2 IS DISTINCT FROM t2.col2 OR t1.col3 IS DISTINCT FROM t2.col3;
+
+14. Write a query to rank employees based on salary with ties handled properly. 
+
+SELECT emp_name, salary, RANK() OVER (ORDER BY salary DESC) AS salary_rank FROM employees;
+
+15. Find customers who have not made any purchase. -- pending
+
+SELECT c.customer_id, c.name FROM customers c LEFT JOIN sales s ON c.customer_id = s.customer_id WHERE s.sale_id IS NULL;
+
+16. Write a query to perform a conditional aggregation (count males and females in each department). 
+
+SELECT dept_id,
+COUNT(CASE WHEN gender = 'M' THEN 1 END) AS male_count, 
+COUNT(CASE WHEN gender = 'F' THEN 1 END) AS female_count 
+FROM employees GROUP BY dept_id;
+
+17. Write a query to calculate the difference between current row and previous row's salary (lag function).
+
+SELECT emp_name, salary, salary - LAG(salary) OVER (ORDER BY emp_id) AS salary_diff FROM employees;
+
+18. Identify overlapping date ranges for bookings.   -- pending
+
+SELECT b1.booking_id, b2.booking_id FROM bookings b1 JOIN bookings b2 ON b1.booking_id <> b2.booking_id WHERE b1.start_date <= b2.end_date AND b1.end_date >= b2.start_date;
+
+19. Write a query to find employees with salary greater than average salary in the entire company, ordered by salary descending. 
+
+SELECT emp_name, salary FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees) ORDER BY salary DESC;
+
+20. Aggregate JSON data (if supported) to list all employee names in a department as a JSON array.   -- pending
+
+SELECT dept_id, JSON_AGG(emp_name) AS employee_names FROM employees GROUP BY dept_id;
+
+21. Find employees who have the same salary as their manager. 
+
+SELECT e.emp_name AS Employee, e.salary, m.emp_name AS Manager FROM employees e JOIN employees m ON e.manager_id = m.emp_id WHERE e.salary = m.salary;
+
+22. Write a query to get the first and last purchase date for each customer.    -- pending
+
+SELECT customer_id, MIN(purchase_date) AS first_purchase, MAX(purchase_date) AS last_purchase FROM sales GROUP BY customer_id;
+
+23. Find the department with the highest average salary among all departments.
+
+WITH avg_salaries AS 
+   (SELECT dept_id, AVG(salary) AS avg_salary FROM employees GROUP BY dept_id) 
+SELECT * FROM avg_salaries WHERE avg_salary = (SELECT MAX(avg_salary) FROM avg_salaries);
+
+24. Write a query to find the number of employees in each job title. 
+
+SELECT job_title, COUNT(*) AS num_employees FROM employees GROUP BY job_title;
+
+25. Find employees who don’t have a department assigned. 
+
+SELECT * FROM employees WHERE dept_id IS NULL;
+
+26. Write a query to find the number of days since employees joined (difference in days between two dates) in the same table. 
+
+SELECT emp_id, emp_name, DATEDIFF(NOW(), join_date) AS days_employed FROM employees;
+
+27. Calculate the moving average of salaries over the last 3 employees ordered by hire date. 
+
+SELECT emp_name, join_date, salary, AVG(salary) OVER (ORDER BY join_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg_salary FROM employees;
+
+28. Find the most recent purchase per customer using window functions.  -- pending
+
+SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY purchase_date DESC) AS rn FROM sales ) sub WHERE rn = 1;
+
+
+29. Write a query to perform a self-join to find pairs of employees in the same department. 
+
+SELECT e1.emp_name AS Employee1, e2.emp_name AS Employee2, e1.dept_id FROM employees e1 JOIN employees e2 ON e1.dept_id = e2.dept_id AND e1.emp_id < e2.emp_id;
+
+30. Write a query to pivot rows into columns dynamically (if dynamic pivot is not supported, simulate it for fixed values). -- pending
+
+SELECT department_id, SUM(CASE WHEN job_title = 'Manager' THEN 1 ELSE 0 END) AS Managers, SUM(CASE WHEN job_title = 'Developer' THEN 1 ELSE 0 END) AS Developers, SUM(CASE WHEN job_title = 'Tester' THEN 1 ELSE 0 END) AS Testers FROM employees GROUP BY department_id;
+
+31. Find customers who made purchases in every category available.   -- pending
+
+SELECT customer_id FROM sales s GROUP BY customer_id HAVING COUNT(DISTINCT category_id) = (SELECT COUNT(DISTINCT category_id) FROM sales);
+
+32. Identify employees who haven’t received a salary raise in more than a year. -- pending
+
+SELECT e.name FROM employees e JOIN salary_history sh ON e.id = sh.employee_id GROUP BY e.id, e.name HAVING MAX(sh.raise_date) < CURRENT_DATE - INTERVAL '1 year';
+
+
+
+
+
+
+
+
+Sakthi
+Gokul
+Pranesh
+Arcim
+Vignesh waran
+Siva
+Ramya
+Jason
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

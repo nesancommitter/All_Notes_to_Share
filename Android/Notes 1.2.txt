@@ -1,0 +1,187 @@
+points to care
+~~~~~~~~~~~~~~~
+1) add the Code with the ppt
+2) Add the content on the Security 
+3) Remove Media API - topic
+4) Locatoin serviecs / Gmap - make it one
+4) concentrate on services AIDL, 
+5) Remove Other topics (Bluetooth/Wi-Fi)
+6) how to use DDMS/ - debugging
+7) Threads and process (User thread, etc) – Handlers and loopers 
+8) Creating first Android application - Cover structure of APK (
+9) Use of images (copyright issues)
+10) User version 2.3
+11) new feature in 3.0 ()
+12)
+~~~~~~~~~~~~~~~
+
+
+Introduction to Android 
+~~~~~~~~~~~~~~~
+• Overview of Android and Android SDK 
+• History of Android
+• Android features
+Android Architecture overview
+• Linux kernel
+• Libraries
+• Android Runtime
+• Application framework
+• Applications
+
+Setup of Android Development environment
+• System requirements
+• Eclipse and SDK installation, AVD creation
+• Creating first Android application
+• Project Structure
+Android Application Fundamentals
+• Android application building blocks
+• Activating components
+• Shutting down components
+• LifeCycle of Application
+• Development tools, Manifest File
+• LifeCycle of Activity
+User Interface 
+• View Hierarchy and Layouts
+• UI Events
+• Building Menus
+• Notifying users
+• Creating dialogs
+• Graphics & Animations
+Main Building Blocks
+• Activity
+• Intents
+• Services
+• Content Providers
+• Broadcast Receivers 
+Resources 
+• Overview of Android Resources
+• Creating Resources 
+• Using Resources 
+• Drawable Resources 
+• Animation Resources
+Data Storage
+• Shared Preferences
+• Internal Storage (Files)
+• External Storage(SD Card)
+• SQLite Databases
+Android Media API 
+• Playing audio/video 
+• Media recording
+Other topics
+• Blue tooth
+• WiFi
+• Camera
+• TelephonyManager
+• Location Services
+• Deploying Android Application on Device / Emulator
+• Google Maps
+
+
+
+
+
+
+
+Introduction to Android
+~~~~~~~~~~~~~~~~~~~~~~~~ 
+ Android is a software stack with a package on your mobile and Set of Development tools.
+ Phone has OS, App framework, Android Runtime, Linux Kernal (Drivers). Dev tools (SDK) has API (Java), command line tools, Emulators, Debugging tools.
+
+History of Android
+ --- xxx ----
+
+Features of Android
+ Highly reusable components (API)
+ Optimized Dalvik Virtual machine (Linux kernal)
+ Integrated Browser (WebKit engine) - Support for HTML 5
+ 2D Graphics (SGL engine) & 3D graphics with support for OpenGL ES 1.0 specification.
+ SQLite (Open source project for relational like Data storage)
+ Telephony (GSM, EDGE, 3G, WiFi)
+ Camera, Compass, NFC, accelerometer GPS (Hardware dependent)
+ 
+Android Architecture
+~~~~~~~~~~~~~~~~~~~~~~~~
+Linux kernal
+ Linux 2.6 is used for all system level support. all the functionality such as security, process management, driver model, network stack and memory management is handled by kernal.
+
+Libraries
+ Set of C/C++ libraries used by various components of system. can be used thru API by the developers. 
+ ? A media library for playback of audio and video media
+ ? A surface manager to provide display management
+ ? Graphics libraries that include SGL and OpenGL for 2D and 3D graphics
+ ? SQLite for native database support
+ ? SSL andWebKit for integrated web browser and Internet security
+
+Android Runtime
+ Every app runs in its own process, with its own instance of Dalvik VM. Many Dalvik VM's can run efficiently in device. VM can run the .dex files which are like .class files. Java class files are converted into .dex files by the "dx" tool. Dalvik uses linux kernal for multi threading, low-level memory management, system calls, etc.
+
+Application framework
+ In built apps and apps developed by us are given same level of access and priority. All the resources available for the inbuilt app is given to our app also. We can replace the components that are part of core applications (subject to security enforeced by framework).
+ Below form the base (and available) for all applications. 
+ 
+ Views - like lists, girds, text boxes, embeddable web browser
+ Content providers - 
+ Resource managers - providing access to non-code resources like localize strings, graphics, layout files
+ Notification manager - used by all apps to send notification / custom alerts in status bar
+ Activity manager - Manages app life cycle, provides a common navigation backstack
+
+Applicatoins 
+ In built (core apps) appliations mail client, contacts, maps, calender. 
+
+Setup of Android Development environment
+~~~~~~~~~~~~~~~~~~~~~~~~
+System requirements
+ One of the great feature of android developement is it can be done in Windows XP/Vista/7 (32-bit & 64-Bit), Mac OS X 10.5.8 (x86 only) and Linux environment also.
+ Eclipse 3.5 or greater IDE + Eclipse JDT plugin
+ JDK 5 or 6 (6 is better)
+ Android Development tools plugin
+ With disk space for around 700 Mb for the SDK and tools alone.
+
+Eclipse and SDK installation, AVD creation
+ Install Eclipse
+ Install Android SDK 
+   - Starter package (has Only core tools) is used to download all the SDK components
+   - The location of the SDK directory will be required for setting up the ADT plugin and when SDK tools are used from command line.
+ Install ADT (Android Dev Tools) plug-in for Eclipse
+   - Helps you to quickly set up new Android projects, create an application UI, debug your applications using the Android SDK tools.
+ Adding Platforms and Other Components
+   - AVD manager is used to download required SDK components into Dev environment. SDK (Android platform versions, Add-ons, tools, Samples and documentation are separate installable components). SDK already installed has only latest version of SDK Tools. 
+   - You need atleast one android platform and associated platform tools.
+   - In Eclipse Window -> Android SDK and AVD manager
+   - or invoke SDK Manager.exe
+
+Types of Components offered
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ > SDK Tools - Used for debugging and testing the apps, present in <SDk>/tools/ directory.
+ > SDK Platform-tools - platform-dependent tools for developing and debugging your application, present in <sdk>/platform-tools/ directory.
+ > Android platforms - An SDK platform (contains fully compliant Android library, system image, sample code, and emulator skins) is available for every production Android platform deployable to Android-powered devices.
+ > USB Driver for Windows - driver files so that you can run and debug your applications on an actual device.
+ > Samples - Contains the sample code and apps available for each Android development platform. 
+ > Documentation - Local copy of the Documentaion of the framework
+
+
+xxx ->  http://developer.android.com/sdk/installing.html -> Next steps
+
+xxx ->  • Creating first Android application
+xxx ->  • Project Structure
+
+
+Android Application Fundamentals
+ Built using Java code. Tools are used to compile the code and resources (icon, data, resources) into .apk (Android package) file for each application. Each install application is a different user (User ID is used by the system and is unknown to the application) by itself in the linux platform. Access to the files of the application are restricted using this user ID. Each process (application has its own process) has its own Virtual machine, so the applications code runs in isolation from other applications. Process is started with any of the app components need to be executed, and its shutdown when its no longer needed or to recover memory for other processes.
+ Application cannot have access for parts of the system/other applications for which its not given permission. To make two applications share access same resources (files, etc) they both may be made to share the same User ID. Applications with same Usetr ID can also be made to run in the same Linux process and share same VM. Or an application can request permission to access device data such as the user's contacts, SMS messages, the mountable storage (SD card), camera, Bluetooth, and more. All application permissions must be granted by the user at install time.
+
+ Application Components - Building blocks of app, each one is its own entity and plays a specific role. Each type has its own lifecycle.
+a) Activities - Single screen with a user interface. An app has many activities which are independent. An activity of one app can be invoked by another app with the owners permission. (Camera app can start the activity to compose new email which is an activity of the email client app). Subclass of the Activity class in SDK.
+b) Services - Runs in background, no user interface. e.g playing music in background, downloading a file in background. Subclass of the Service class in SDK.
+c) Content providers - Manages a shared set of app data. Data can be in file system, SQLite database, Web, SD card or any storage. Through Content provider, other apps can query/modify with permission. E.G Android provides Content provider that manages User's contact information, 
+
+xstart -> http://developer.android.com/guide/topics/fundamentals.html
+
+
+
+• Android application building blocks
+• Activating components
+• Shutting down components
+• LifeCycle of Application
+• Development tools, Manifest File
+• LifeCycle of Activity

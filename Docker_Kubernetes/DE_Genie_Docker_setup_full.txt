@@ -1,0 +1,3369 @@
+Docker Learn commands and setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+account details
+
+docker     : https://app.docker.com/
+Docker hub : https://hub.docker.com/
+Hub home   : https://hub.docker.com/u/nesancommitter
+
+mailID : nesan.committer@gmail.com
+user name : nesancommitter
+
+Install Docker desktop
+Login docker desktop using docker username
+
+
+Usage:  docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Common Commands:
+  run         Create and run a new container from an image
+  exec        Execute a command in a running container
+  ps          List containers
+  build       Build an image from a Dockerfile
+  bake        Build from a file
+  pull        Download an image from a registry
+  push        Upload an image to a registry
+  images      List images
+  login       Authenticate to a registry
+  logout      Log out from a registry
+  search      Search Docker Hub for images
+  version     Show the Docker version information
+  info        Display system-wide information
+
+Management Commands:
+  ai*         Docker AI Agent - Ask Gordon
+  builder     Manage builds
+  buildx*     Docker Buildx
+  compose*    Docker Compose
+  container   Manage containers
+  context     Manage contexts
+  debug*      Get a shell into any image or container
+  desktop*    Docker Desktop commands
+  extension*  Manages Docker extensions
+  image       Manage images
+  init*       Creates Docker-related starter files for your project
+  manifest    Manage Docker image manifests and manifest lists
+  mcp*        Docker MCP Plugin
+  model*      Docker Model Runner
+  network     Manage networks
+  offload*    Docker Offload
+  plugin      Manage plugins
+  sandbox*    Docker Sandbox
+  sbom*       View the packaged-based Software Bill Of Materials (SBOM) for an image
+  scout*      Docker Scout
+  system      Manage Docker
+  volume      Manage volumes
+
+Swarm Commands:
+  swarm       Manage Swarm
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  import      Import the contents from a tarball to create a filesystem image
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  wait        Block until one or more containers stop, then print their exit codes
+
+Global Options:
+      --config string      Location of client config files (default
+                           "C:\\Users\\ADMIN\\.docker")
+  -c, --context string     Name of the context to use to connect to the
+                           daemon (overrides DOCKER_HOST env var and
+                           default context set with "docker context use")
+  -D, --debug              Enable debug mode
+  -H, --host string        Daemon socket to connect to
+  -l, --log-level string   Set the logging level ("debug", "info",
+                           "warn", "error", "fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default
+                           "C:\\Users\\ADMIN\\.docker\\ca.pem")
+      --tlscert string     Path to TLS certificate file (default
+                           "C:\\Users\\ADMIN\\.docker\\cert.pem")
+      --tlskey string      Path to TLS key file (default
+                           "C:\\Users\\ADMIN\\.docker\\key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Run 'docker COMMAND --help' for more information on a command.
+
+For more help on how to use Docker, head to https://docs.docker.com/go/guides/
+
+Setup the lab for DE Genine based on ubuntu
+
+## pull the ubuntu image in to docker desktop
+docker pull ubuntu
+
+## Create a container ubuntu_cont_DE with options for mounted drives
+## docker rm -f ubuntu_cont_DE   ## Never use this remove command you will lose all the changes made to container
+docker run -it --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --volume=H:\:/mnt/hdrive --network=bridge --runtime=runc -p 8080:80 -p 3306:3306
+ ubuntu bash
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+docker attach ubuntu_cont_DE
+
+## of start the bash execution from the running container ubuntu_cont_DE - Incase you want the container to keep running even after you exit from shell
+docker exec -it ubuntu_cont_DE bash
+
+once in the container prompt create .bashrc 
+
+## update all the latest patch of Ubuntu
+root@ubundockhost:/# apt update
+
+## install wget, sudo, curl, vim, vi, unzip with below command 
+root@ubundockhost:/# apt install -y wget curl sudo vim unzip
+
+## install java with below command 
+root@ubundockhost:/# apt install -y openjdk-11-jre
+
+## Test Java is installed properly 
+root@ubundockhost:/# java    
+Usage: java [options] <mainclass> [args...]
+           (to execute a class)
+
+## install python, python3-pip with below command 
+root@ubundockhost:/# apt install -y python3 python3-pip
+
+## Test python and pip is installed properly 
+root@ubundockhost:/# python3
+Python 3.12.3 (main, Nov  6 2025, 13:44:16) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> exit()
+
+## Install python virual env package to enable virual evironments in ubuntu image - pip install can be used only in virtual environments in container
+root@ubundockhost:/# apt install python3.12-venv
+
+## Run the command to create a virtual environment mypyvenv inside container to install all libraries required with pip
+root@ubundockhost:/# cd /
+root@ubundockhost:/# python3 -m venv mypyvenv
+
+## Check the mypyvenv virtual env is created
+root@ubundockhost:/# cd mypyvenv/
+root@ubundockhost:/mypyvenv# ll
+total 24
+drwxr-xr-x 5 root root 4096 Dec 15 19:08 ./
+drwxr-xr-x 1 root root 4096 Dec 15 19:08 ../
+drwxr-xr-x 2 root root 4096 Dec 15 19:08 bin/
+drwxr-xr-x 3 root root 4096 Dec 15 19:08 include/
+drwxr-xr-x 3 root root 4096 Dec 15 19:08 lib/
+lrwxrwxrwx 1 root root    3 Dec 15 19:08 lib64 -> lib/
+-rw-r--r-- 1 root root  148 Dec 15 19:08 pyvenv.cfg
+
+## Create .bash_aliases file which holds all the startup commands required when the container starts
+## aliase to python3 ensure whenever python3 is invoked 
+(mypyvenv) root@ubundockhost:/# echo "source /mypyvenv/bin/activate" >> ~/.bash_aliases
+(mypyvenv) root@ubundockhost:/# echo "alias python3='source /mypyvenv/bin/activate && python3" >> ~/.bash_aliases
+
+## The source /mypyvenv/bin/activate brings below change to path variable until deactivate is executed when the PATH variable is restored to normal
+source /mypyvenv/bin/activate   →  PATH=/mypyvenv/bin:$PATH  →  (mypyvenv) prompt
+deactivate                      →  PATH restored             →  normal prompt
+
+Once source /mypyvenv/bin/activate is executed pip list will only list the libraries that are present in /mypyvenv/lib/python3.12/site-packages after the deactivate is executed pip list will list all the libraries that are in the common python lib path such as /usr/lib/python3.12 
+
+## Check the minimal is installed
+(mypyvenv) root@ubundockhost:/# python3
+Python 3.12.3 (main, Nov  6 2025, 13:44:16) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pluggy
+>>> dir(pluggy)
+['HookCallError', 'HookCaller', 'HookImpl', 'HookRelay', 'HookimplMarker', 'HookimplOpts', 'HookspecMarker', 'HookspecOpts', 'PluggyTeardownRaisedWarning', 'PluggyWarning', 'PluginManager', 'PluginValidationError', 'Result', '__all__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__path__', '__spec__', '__version__', '_callers', '_hooks', '_manager', '_result', '_tracing', '_version', '_warnings']
+
+## install mysql server with below command
+root@ubundockhost:/# apt install mysql-server
+mysqld will log errors to /var/log/mysql/error.log
+mysqld is running as pid 543
+Created symlink /etc/systemd/system/multi-user.target.wants/mysql.service → /usr/lib/systemd/system/mysql.service.
+
+## invoke mysql server process
+/usr/sbin/mysqld --user=mysql &
+
+## Check the status of mysql server process is running
+root@ubundockhost:/# service mysql status
+ * /usr/bin/mysqladmin  Ver 8.0.44-0ubuntu0.24.04.2 for Linux on x86_64 ((Ubuntu))
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Server version          8.0.44-0ubuntu0.24.04.2
+Protocol version        10
+Connection              Localhost via UNIX socket
+UNIX socket             /var/run/mysqld/mysqld.sock
+Uptime:                 27 min 25 sec
+
+Threads: 2  Questions: 90  Slow queries: 0  Opens: 243  Flush tables: 3  Open tables: 162  Queries per second avg: 0.054
+
+## invoke mysql with root user password is also root
+root@ubundockhost:/# mysql -u root -p
+Enter password: root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+mysql> 
+
+## check all the default databases are present in mysql
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+## include this command in the .bash_aliases so that mysql server will start everytime container is executed
+(mypyvenv) root@ubundockhost:/# echo "/usr/sbin/mysqld --user=mysql &" >> ~/.bash_aliases
+
+######### Baseline the work and create a docker image ######### 
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+C:\Users\ADMIN>docker ps -a
+CONTAINER ID   IMAGE                              COMMAND                  CREATED       STATUS                     PORTS                                     NAMES
+4da93d1f8bb8   ubuntu                             "bash"                   2 hours ago   Up 53 minutes              0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+d2018e90f987   getting-started-todo-app-backend   "docker-entrypoint.s…"   4 days ago    Exited (1) 2 hours ago                                               getting-started-todo-app-backend-1
+b0c3826846b2   phpmyadmin                         "/docker-entrypoint.…"   4 days ago    Exited (137) 2 hours ago                                             getting-started-todo-app-phpmyadmin-1
+ae1704f4a7e8   mysql:9.3                          "docker-entrypoint.s…"   4 days ago    Exited (137) 2 hours ago                                             getting-started-todo-app-mysql-1
+ff5eed2764b1   traefik:v3.6                       "/entrypoint.sh --pr…"   4 days ago    Exited (137) 2 hours ago                                             getting-started-todo-app-proxy-1
+03d6ca72b6fd   getting-started-todo-app-client    "docker-entrypoint.s…"   4 days ago    Exited (1) 2 hours ago                                               getting-started-todo-app-client-1
+78595831c0aa   docker/welcome-to-docker:latest    "/docker-entrypoint.…"   4 days ago    Exited (255) 4 days ago    0.0.0.0:8080->80/tcp                      helloworld
+
+## login to docker hub
+C:\Users\ADMIN>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+## ubuntu_cont_DE container is present with container ID 4da93d1f8bb8 so commit that container
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+C:\Users\ADMIN>docker commit -a "SivanesanG" -m "Initial DE image version with Ubuntu, Python, MySQL" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+sha256:b031a00aacf7d01adb13259264fde978779e6594bafb2a00fb043ecf64ad5b4c
+
+## Push the Image to Docker Hub
+C:\Users\ADMIN>docker push nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v1]
+20043066d3d5: Mounted from library/ubuntu
+7d9a62b40bc4: Pushing [====>                                              ]  45.09MB/491.5MB
+
+Final output
+
+C:\Users\ADMIN>docker push nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v1]
+20043066d3d5: Mounted from library/ubuntu
+7d9a62b40bc4: Pushed
+initial-v1-ubuntu-python-mysql: digest: sha256:b031a00aacf7d01adb13259264fde978779e6594bafb2a00fb043ecf64ad5b4c size: 752
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+initial-v1-ubuntu-python-mysql: Pulling from nesancommitter/img_ubuntu_cont_de_v1
+Digest: sha256:b031a00aacf7d01adb13259264fde978779e6594bafb2a00fb043ecf64ad5b4c
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+docker.io/nesancommitter/img_ubuntu_cont_de_v1:initial-v1-ubuntu-python-mysql
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v1 > img_ubuntu_cont_de_v1.tar
+
+H:\Docker_sharedfiles\images>dir
+ Volume in drive H is new2TB_H
+ Volume Serial Number is 0C24-5CB1
+
+ Directory of H:\Docker_sharedfiles\images
+
+15-12-2025  10:49 PM    <DIR>          .
+15-12-2025  10:49 PM    <DIR>          ..
+15-12-2025  10:50 PM       521,195,520 img_ubuntu_cont_de_v1.tar
+               1 File(s)    521,195,520 bytes
+               2 Dir(s)  501,175,664,640 bytes free
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v1.tar 
+
+######### Continue to build the docker image ######### 
+
+## install apache2 php and phpmyadmin to user webinterface for mysql with below command 
+root@ubundockhost:/# sudo apt install apache2 php libapache2-mod-php php-mysql php-mbstring php-zip php-gd php-json php-curl -y
+
+## Enable apache2 modules
+(mypyvenv) root@ubundockhost:/# a2enmod rewrite
+Enabling module rewrite.
+To activate the new configuration, you need to run: 
+  service apache2 restart
+  
+## Check if apache2 service is running
+(mypyvenv) root@ubundockhost:/# service apache2 status
+ * apache2 is not running
+ 
+## Start the apache2 service  
+(mypyvenv) root@ubundockhost:/# service apache2 restart
+ * Restarting Apache httpd web server apache2                                                                                                                                                 
+ AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message      [ OK ]
+ 
+## Check if apache2 service is running
+(mypyvenv) root@ubundockhost:/# service apache2 status
+ * apache2 is running  
+
+## Check Apache 2 is running by opening chrome in host windows and visit http://localhost:8080/ 
+## It displays the html file present in the container path /var/www/html/index.html
+
+## To host your own HTML web page replace You should replace this file (located at /var/www/html/index.html) before continuing to operate your HTTP server.
+/var/www/html/index.html
+
+## Install phpMyAdmin
+root@ubundockhost:/# sudo apt install phpmyadmin -y
+
+Configure database for phpmyadmin with dbconfig-common? [yes/no] yes
+
+Please provide a password for phpmyadmin to register with the database server. If left blank, a random password will be generated.
+
+MySQL application password for phpmyadmin: letmego
+
+Password confirmation: letmego
+Creating config file /etc/dbconfig-common/phpmyadmin.conf with new version
+
+## Create alias to mysql root login so its easy to open everytime
+echo "alias rmysql='mysql -u root -p" >> ~/.bash_aliases
+
+## Check all the database required for phpmyadmin is created in mysql
+(mypyvenv) root@ubundockhost:/# mysql -u root -p
+Enter password: root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 19
+Server version: 8.0.44-0ubuntu0.24.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+
+## Download phpMyAdmin from web into /tmp folder
+(mypyvenv) root@ubundockhost:/var/www# wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip -O /tmp/phpmyadmin.zip
+(mypyvenv) root@ubundockhost:/var/www# ll /tmp/phpmyadmin.zip
+-rw-r--r-- 1 root root 16431330 Oct  8 09:33 /tmp/phpmyadmin.zip
+
+## Unzip the contents of zip file into /var/www/
+(mypyvenv) root@ubundockhost:/var/www# unzip /tmp/phpmyadmin.zip -d /var/www/
+Archive:  /tmp/phpmyadmin.zip
+   creating: /var/www/phpMyAdmin-5.2.3-all-languages/
+ extracting: /var/www/phpMyAdmin-5.2.3-all-languages/.rtlcssrc.json
+  inflating: /var/www/phpMyAdmin-5.2.3-all-languages/CONTRIBUTING.md
+  inflating: /var/www/phpMyAdmin-5.2.3-all-languages/ChangeLog
+
+## Check the unzip folder
+(mypyvenv) root@ubundockhost:/var/www# ll /var/www
+total 20
+drwxr-xr-x  4 root root 4096 Dec 15 23:45 ./
+drwxr-xr-x  1 root root 4096 Dec 15 23:14 ../
+drwxr-xr-x  2 root root 4096 Dec 15 23:14 html/
+drwxr-xr-x 12 root root 4096 Oct  7 16:40 phpMyAdmin-5.2.3-all-languages/
+
+## move the code from unzip folder into virutal apache domain named phpmyadmin so that it can be access externally
+(mypyvenv) root@ubundockhost:/var/www# mv /var/www/phpMyAdmin-5.2.3-all-languages /var/www/phpmyadmin
+(mypyvenv) root@ubundockhost:/var/www# ll /var/www
+total 20
+drwxr-xr-x  4 root root 4096 Dec 15 23:49 ./
+drwxr-xr-x  1 root root 4096 Dec 15 23:14 ../
+drwxr-xr-x  2 root root 4096 Dec 15 23:14 html/
+drwxr-xr-x 12 root root 4096 Oct  7 16:40 phpmyadmin/
+
+## Create a Virtual Host Configuration file in location : /etc/apache2/sites-available/phpmyadmin.conf
+(mypyvenv) root@ubundockhost:/var/www/phpmyadmin# cat /etc/apache2/sites-available/phpmyadmin.conf
+<VirtualHost *:80>
+    ServerName localhost
+    DocumentRoot /var/www/html
+    Alias /phpMyAdmin /var/www/html/phpmyadmin
+    <Directory /var/www/html/phpMyAdmin>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+## Enable the Site and Modules
+(mypyvenv) root@ubundockhost:/var/www/phpmyadmin# a2ensite phpmyadmin.conf
+Enabling site phpmyadmin.
+To activate the new configuration, you need to run:
+  service apache2 reload
+  
+## Reload the apache2 new Site and Modules
+(mypyvenv) root@ubundockhost:/var/www/phpmyadmin# service apache2 reload
+ * Reloading Apache httpd web server 
+
+visit http://localhost:8080/phpmyadmin
+
+username:password
+
+phpmyadmin:letmego
+
+## Make config changes to the mysql config file
+## Add the bind-address details in the mysql config file also which is in /etc/mysql/mysql.conf.d/mysqld.cnf
+vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+Change the line to --- This allows MySQL to accept connections from any IP, not just localhost.
+
+bind-address = 0.0.0.0
+
+(mypyvenv) root@ubundockhost:/var/run/mysqld# cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep bind-address
+bind-address            = 0.0.0.0
+mysqlx-bind-address     = 127.0.0.1
+
+## Create user mysql in the mysql so you can use it in phpmyadmin 
+(mypyvenv) root@ubundockhost:/var/run/mysqld# mysql -u root -p
+Enter password: root
+
+mysql> SELECT User, Host FROM mysql.user WHERE User = 'mysql';    ## There is no user mysql
+Empty set (0.00 sec)
+
+mysql> CREATE USER 'mysql'@'localhost' IDENTIFIED BY 'mysql';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'mysql'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT User, Host FROM mysql.user WHERE User = 'mysql';   ## user mysql created 
++-------+-----------+
+| User  | Host      |
++-------+-----------+
+| mysql | localhost |
++-------+-----------+
+1 row in set (0.00 sec)
+
+## Ensure localhost is mapped to 127.0.0.1 in /etc/hosts
+(mypyvenv) root@ubundockhost:/var/run/mysqld# cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+
+## Test connection to mysql with 127.0.0.1 or localhost and check for user mysql
+(mypyvenv) root@ubundockhost:/var/run/mysqld# mysql -u mysql -h 127.0.0.1 -p
+Enter password: mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 17
+Server version: 8.0.44-0ubuntu0.24.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+## Configure phpmyadmin so it can connect to the right mysql instance with right credentials and connect using tcp
+(mypyvenv) root@ubundockhost:/var/run/mysqld# cp /var/www/phpmyadmin/config.sample.inc.php /etc/phpmyadmin/config.inc.php
+(mypyvenv) root@ubundockhost:/var/run/mysqld# vi /etc/phpmyadmin/config.inc.php 
+
+add below 6 lines 
+
+$cfg['Servers'][$i]['user'] = 'mysql';
+$cfg['Servers'][$i]['password'] = 'mysql';
+$cfg['Servers'][$i]['host'] = '127.0.0.1'; // or your MySQL server IP
+$cfg['Servers'][$i]['port'] = '3306';      // default MySQL port
+$cfg['Servers'][$i]['connect_type'] = 'tcp';
+$cfg['Servers'][$i]['socket'] = '';
+
+## Check the lines that are added
+(mypyvenv) root@ubundockhost:/var/run/mysqld# tail -7 /etc/phpmyadmin/config.inc.php
+$cfg['Servers'][$i]['user'] = 'mysql';
+$cfg['Servers'][$i]['password'] = 'mysql';
+$cfg['Servers'][$i]['host'] = '127.0.0.1'; // or your MySQL server IP
+$cfg['Servers'][$i]['port'] = '3306';      // default MySQL port
+$cfg['Servers'][$i]['connect_type'] = 'tcp';
+$cfg['Servers'][$i]['socket'] = '';
+
+## restart both mysql and the apache2 services
+(mypyvenv) root@ubundockhost:/etc/phpmyadmin# sudo service mysql restart
+ * Stopping MySQL database server mysqld                                                                                                                                               [ OK ]
+ * Starting MySQL database server mysqld                                                     
+
+## restart both mysql and the apache2 services
+(mypyvenv) root@ubundockhost:/etc/phpmyadmin# /etc/init.d/apache2 restart
+ * Restarting Apache httpd web server apache2      
+
+## Check all the running services 
+(mypyvenv) root@ubundockhost:/var/run/mysqld# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ - ]  x11-common
+
+## Check status of Mysql service
+(mypyvenv) root@ubundockhost:/var/run/mysqld# sudo service mysql status
+ * /usr/bin/mysqladmin  Ver 8.0.44-0ubuntu0.24.04.2 for Linux on x86_64 ((Ubuntu))
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Server version          8.0.44-0ubuntu0.24.04.2
+Protocol version        10
+Connection              Localhost via UNIX socket
+UNIX socket             /var/run/mysqld/mysqld.sock
+Uptime:                 2 min 30 sec
+
+Threads: 2  Questions: 12  Slow queries: 0  Opens: 119  Flush tables: 3  Open tables: 38  Queries per second avg: 0.080 
+
+## Check status of apache2 service
+(mypyvenv) root@ubundockhost:/var/run/mysqld# sudo service apache2 status
+ * apache2 is running
+
+## Open and start using phpmyadmin 
+
+visit http://localhost:8080/phpmyadmin from the windows host chrome browser
+username : mysql
+password : mysql
+
+Start using phpmyadmin from browser 
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED       STATUS                    PORTS                                     NAMES
+4da93d1f8bb8   ubuntu                            "bash"                   7 hours ago   Up 5 minutes              0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+78595831c0aa   docker/welcome-to-docker:latest   "/docker-entrypoint.…"   5 days ago    Exited (255) 4 days ago   0.0.0.0:8080->80/tcp                      helloworld
+
+## login to docker hub
+C:\Users\ADMIN>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+Login Succeeded
+
+## ubuntu_cont_DE container is present with container ID 4da93d1f8bb8 so commit that container
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V2 of DE image version with apache2 php and phpmyadmin" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin
+sha256:64869936da45326b493e3cb712348984100a7887e70c3e3711deac86551fbc2e
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v2]
+8a1061ac7812: Pushed
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v1
+v2-added-apache2-php-phpmyadmin: digest: sha256:64869936da45326b493e3cb712348984100a7887e70c3e3711deac86551fbc2e size: 752
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin
+v2-added-apache2-php-phpmyadmin: Pulling from nesancommitter/img_ubuntu_cont_de_v2
+Digest: sha256:64869936da45326b493e3cb712348984100a7887e70c3e3711deac86551fbc2e
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin
+docker.io/nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v2 > img_ubuntu_cont_de_v2.tar
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v2.tar 
+
+######### Continue to build the docker image #########
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v2 and Add port 
+###### stop the container and run it again with below command which exposes port 3306 to access mysql from host windows system 
+
+## Stop the container with name ubuntu_cont_DE
+C:\Users\ADMIN>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v2
+docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v2
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+docker run -it --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --volume=H:\:/mnt/hdrive --network=bridge -p 8080:80 -p 3306:3306 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin bash
+
+## edit bash_aliases file to have all below content
+(mypyvenv) root@ubundockhost:/# vi ~/.bash_aliases
+
+echo "Welcome Sivanesan to DE genie"
+source /mypyvenv/bin/activate
+echo "python virtual environment mypuvenv is activated"
+echo "path for mypyvenv is /mypyvenv"
+alias python3='source /mypyvenv/bin/activate && python3'
+alias python='source /mypyvenv/bin/activate && python3'
+echo "alias set for python3 command so that it always uses mypyvenv whenever invoked with python3"
+/usr/sbin/mysqld --user=mysql &
+echo "started mysql server with command : /usr/sbin/mysqld --user=mysql &"
+echo "mysql server is running in backgroupd"
+alias rmysql='mysql -u root -p'
+echo "alias set for rmysql to run mysql with root user commeand : mysql -u root -p"
+sudo service mysql restart
+echo "mysql instantc restarted successfully"
+/etc/init.d/apache2 restart
+echo "apache2 service is restarted successfully"
+echo "****************************************"
+echo "    Status of mysql server is           "
+sudo service mysql status
+echo "****************************************"
+echo ""
+echo ""
+echo "****************************************"
+echo "    Status of apache2 server is         "
+sudo service apache2 status
+echo "****************************************"
+echo "End of ~/.bash_aliases"
+echo "Happy working with DE Genine image"
+echo "for any queries write to nesan.committer@gmail.com"
+
+## Install the AWS CLI 
+## Download the binary zip file
+(mypyvenv) root@ubundockhost:/tmp# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 60.2M  100 60.2M    0     0   9.9M      0  0:00:06  0:00:06 --:--:-- 10.0M
+
+## Extract the the binary zip file
+(mypyvenv) root@ubundockhost:/tmp# unzip /tmp/awscliv2.zip -d /tmp/awscli_extracted/
+
+## invoke the install command in the extracted folder 
+(mypyvenv) root@ubundockhost:/tmp/awscli_extracted/aws# . /tmp/awscli_extracted/aws/install
+You can now run: /usr/local/bin/aws --version
+
+## Test if the aws CLI is installed successfully
+(mypyvenv) root@ubundockhost:/# aws --version
+aws-cli/2.32.17 Python/3.13.11 Linux/6.6.87.2-microsoft-standard-WSL2 exe/x86_64.ubuntu.24
+
+## Install dependancies which is required for aws help
+apt-get install -y mandoc
+
+## Install dependancies which is required for aws CLI to work with help or output
+apt-get install -y less
+
+## To disable this pager functionality and display full help and share full output in one go
+echo 'export AWS_PAGER=""' >> ~/.bashrc
+
+## Install python lib for AWS to access AWS programatically
+(mypyvenv) root@ubundockhost:/# pip3 install boto3
+
+## Test boto3 is install and working from python
+(mypyvenv) root@ubundockhost:/# python3 -c "import boto3; print(boto3.__version__)"
+1.42.10
+
+## Test boto3 is install and working from python
+(mypyvenv) root@ubundockhost:/# pip3 show boto3
+Name: boto3
+Version: 1.42.10
+Summary: The AWS SDK for Python
+Home-page: https://github.com/boto/boto3
+Author: Amazon Web Services
+Author-email:
+License: Apache-2.0
+Location: /mypyvenv/lib/python3.12/site-packages
+Requires: botocore, jmespath, s3transfer
+Required-by: snowflake-connector-python
+
+## Install python lib for Databricks to access Databricks programatically
+(mypyvenv) root@ubundockhost:/# pip install databricks-sdk
+
+## Clean up the /tmp folder to save space in container 
+(mypyvenv) root@ubundockhost:/# cd /tmp
+(mypyvenv) root@ubundockhost:/tmp# rm -r awscli_extracted/
+(mypyvenv) root@ubundockhost:/tmp# rm awscliv2.zip
+(mypyvenv) root@ubundockhost:/tmp# rm phpmyadmin.zip
+
+## Install azure CLI 
+
+## Install all the required dependancies 
+(mypyvenv) root@ubundockhost:/tmp# sudo apt install apt-transport-https ca-certificates gnupg lsb-release -y
+
+## Add Microsoft Repository : Download and add the Microsoft GPG key
+(mypyvenv) root@ubundockhost:/tmp# curl -sL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-archive-keyring.gpg
+
+## Add the Azure CLI repository
+(mypyvenv) root@ubundockhost:/tmp# echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/azure-cli/ noble main
+
+## Check the contents of /etc/apt/sources.list.d/azure-cli.list
+(mypyvenv) root@ubundockhost:/tmp# cat /etc/apt/sources.list.d/azure-cli.list
+deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/azure-cli/ noble main
+
+## Install Azure CLI
+(mypyvenv) root@ubundockhost:/tmp# sudo apt update
+Get:1 https://packages.microsoft.com/repos/azure-cli noble InRelease [3564 B]
+
+## Install Azure CLI
+(mypyvenv) root@ubundockhost:/tmp# sudo apt install azure-cli -y
+
+## Check az CLI is installed successfully
+(mypyvenv) root@ubundockhost:/tmp# az --version
+azure-cli                         2.81.0
+
+core                              2.81.0
+telemetry                          1.1.0
+
+Dependencies:
+msal                            1.34.0b1
+azure-mgmt-resource               23.3.0
+
+Python location '/opt/az/bin/python3'
+Config directory '/root/.azure'
+Extensions directory '/root/.azure/cliextensions'
+
+Python (Linux) 3.13.9 (main, Nov 26 2025, 00:44:06) [GCC 13.3.0]
+
+Legal docs and information: aka.ms/AzureCliLegal
+
+
+Your CLI is up-to-date.
+
+## Login to Azure
+(mypyvenv) root@ubundockhost:/tmp# az login
+To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code SWR3SXWJ4 to authenticate.
+
+## Install python lib for Azure to access Azure programatically - This is just azure core For specific services, install individual packages
+(mypyvenv) root@ubundockhost:/# pip install azure-core
+Collecting azure-core
+
+## Install python lib for Azure specific services : For specific services, install individual packages
+#### for complete list of SDK available check https://azure.github.io/azure-sdk/releases/latest/all/python.html
+pip install azure-mgmt-compute
+pip install azure-mgmt-storage
+pip install azure-identity
+
+## check azure core is installed properly
+(mypyvenv) root@ubundockhost:/# pip show azure-core
+Name: azure-core
+Version: 1.37.0
+Summary: Microsoft Azure Core Library for Python
+Home-page: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/core/azure-core
+Author: Microsoft Corporation
+Author-email: azpysdkhelp@microsoft.com
+License: MIT License
+Location: /mypyvenv/lib/python3.12/site-packages
+Requires: requests, typing-extensions
+Required-by:
+(mypyvenv) root@ubundockhost:/#
+
+## Install databricks CLI 
+## Use pip to install the Databricks CLI:
+(mypyvenv) root@ubundockhost:/tmp# pip3 install --upgrade databricks-cli
+Collecting databricks-cli
+
+## Test databricks cli is installed and can be used
+(mypyvenv) root@ubundockhost:/tmp# databricks -v
+Version 0.18.0
+
+## Configure databricks CLI
+(mypyvenv) root@ubundockhost:/tmp# databricks configure
+Databricks Host (should begin with https://): 
+
+## Install snowflake CLI 
+## Use pip to install the snowflake CLI:
+pip3 install snowflake-cli
+
+## Test snowflake cli is installed and can be used
+(mypyvenv) root@ubundockhost:/tmp# snow --version
+Snowflake CLI version: 3.14.0
+
+### Rework with snowflake Account
+## Create a configuration file in the user home directory:
+(mypyvenv) root@ubundockhost:/tmp# mkdir -p ~/.snowflake
+(mypyvenv) root@ubundockhost:/tmp# touch ~/.snowflake/config
+
+## Edit the config file with your Snowflake account details
+(mypyvenv) root@ubundockhost:/tmp# vi ~/.snowflake/config
+(mypyvenv) root@ubundockhost:/tmp# cat ~/.snowflake/config
+[connections.my_conn]
+account = your_account
+user = your_username
+password = your_password
+warehouse = your_warehouse
+database = your_database
+schema = your_schema
+role = your_role
+
+## You can then use the CLI with the connection name
+(mypyvenv) root@ubundockhost:/tmp# snow connection list
+No data
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                                                                  COMMAND                  CREATED             STATUS                     PORTS                                                                                  NAMES
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin   "bash"                   About an hour ago   Up 14 minutes              0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+4da93d1f8bb8   ubuntu                                                                 "bash"                   10 hours ago        Exited (137) 2 hours ago                                                                                          ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                        "/docker-entrypoint.…"   5 days ago          Exited (255) 4 days ago    0.0.0.0:8080->80/tcp                                                                   helloworld
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login did not succeed, error: Error response from daemon: Get "https://registry-1.docker.io/v2/": Get "https://auth.docker.io/token?account=nesancommitter&client_id=docker&offline_token=true&service=registry.docker.io": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers) (Client.Timeout exceeded while awaiting headers)
+
+USING WEB-BASED LOGIN
+
+i Info → To sign in with credentials on the command line, use 'docker login -u <username>'
+
+
+Your one-time device confirmation code is: PSCW-WJHM
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+
+Waiting for authentication in the browser…
+Login Succeeded
+
+## ubuntu_cont_DE container is present with container ID 4da93d1f8bb8 so commit that container
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V3 of DE image version with aws cli azure cli databricks cli snowflake cli aws-boto3 for python and azure-core for python" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli
+sha256:eae9836cb98f42d16f4333533bafa5a43c9b1a56d9f72fdd6a28acd19c72867c
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v3]
+cf789a38f3f6: Pushing [==================================================>]  293.4MB/293.4MB
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v2
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v2
+v3-added-aznawscli-aznawspysdk-DBnShowcli: digest: sha256:eae9836cb98f42d16f4333533bafa5a43c9b1a56d9f72fdd6a28acd19c72867c size: 972
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli
+v3-added-aznawscli-aznawspysdk-DBnShowcli: Pulling from nesancommitter/img_ubuntu_cont_de_v3
+Digest: sha256:eae9836cb98f42d16f4333533bafa5a43c9b1a56d9f72fdd6a28acd19c72867c
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli
+docker.io/nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v3 > img_ubuntu_cont_de_v3.tar
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v3.tar 
+
+######### Continue to build the docker image #########
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v3
+###### stop the container and run it again with below command which exposes port 3306 to access mysql from host windows system 
+
+## Stop the container with name ubuntu_cont_DE
+C:\Users\ADMIN>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v2_1
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v2_1
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --volume=H:\:/mnt/hdrive --network=bridge -p 8080:80 -p 3306:3306 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli bash
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+docker attach ubuntu_cont_DE
+
+## Install SSH that is requied to connect to any external systems such as AWS instance
+
+# install OpenSSH server
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# apt-get install -y openssh-server
+Reading package lists... Done
+
+# install iproute2 used to check the active ports inside the container
+(mypyvenv) root@ubundockhost:/mnt/hdrive# apt-get install -y iproute2
+Reading package lists... Done
+
+# Create SSH directory
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# mkdir -p /var/run/sshd
+
+# Set proper permissions
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# chmod 755 /var/run/sshd
+
+# Create ubuntussh user (if not exists) with sudo access
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# useradd -rm -d /home/ubuntussh -s /bin/bash -g root -G sudo -u 1234 ubuntussh
+useradd warning: ubuntussh's uid 1234 is greater than SYS_UID_MAX 999
+
+## update shadown file /etc/shadow with chpasswd command for ubuntussh
+echo 'ubuntussh:ubuntussh123' | chpasswd
+
+## Check ID is created properly
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# id ubuntussh
+uid=1234(ubuntussh) gid=0(root) groups=0(root),27(sudo)
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# getent passwd ubuntussh
+ubuntussh:x:1234:0::/home/ubuntussh:/bin/bash
+
+## Test login with su command to check if ubuntussh user is created and available 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# su - ubuntussh
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntussh@ubundockhost:~$ whoami
+ubuntussh
+ubuntussh@ubundockhost:~$ exit
+logout
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning#
+
+## View shadow entry (requires root; shows encrypted hash)
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# sudo grep ubuntussh /etc/shadow
+ubuntussh:$y$j9T$CAqzKVTMLd/EAhcZ3tsVF.$qvuxlVGNSKFPlIafUCKJu9lOhE5SVdOQLEXi8K67pG2:20440::::::
+
+# Configure SSH daemon for password auth and root login
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+## Start SSH daemon in background
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# /usr/sbin/sshd -D &
+[2] 3229
+
+## Check the ssh demon is running
+(mypyvenv) root@ubundockhost:/mnt/hdrive# ps aux | grep '[s]shd'
+root        3229  0.0  0.0  12016  7936 pts/0    S    21:10   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive# service ssh status
+ * sshd is running
+
+## From outside of the container run the commands to check all the services that are running inside the container 
+               docker exec <container_name> ps aux
+C:\Users\ADMIN>docker exec ubuntu_cont_DE ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0   5204  4480 pts/0    Ss   Dec17   0:00 bash
+root         686  0.0  0.0   6044  4608 pts/0    S+   Dec17   0:00 bash
+mysql        690  0.6  2.4 2443216 396488 pts/0  Sl+  Dec17   9:48 /usr/sbin/mysqld --user=mysql
+root        1020  0.0  0.1 227588 30408 ?        Ss   Dec17   0:03 /usr/sbin/apache2 -k start
+www-data    1023  0.0  0.1 228328 29872 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+www-data    1024  0.0  0.0 228048 13792 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+www-data    1025  0.0  0.0 228048 13792 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+www-data    1026  0.0  0.0 228048 13792 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+www-data    1027  0.0  0.0 228048 13792 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+www-data    1101  0.0  0.0 228048 13792 ?        S    Dec17   0:00 /usr/sbin/apache2 -k start
+root        3229  0.0  0.0  12016  7936 pts/0    S    21:11   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root        3253 50.0  0.0   7892  3968 ?        Rs   21:35   0:00 ps aux
+
+## From the host where container is running Check all the port mapping enabled for container (if -p 2222:22 used)
+               docker port <container_name>
+C:\Users\ADMIN>docker port ubuntu_cont_DE
+80/tcp -> 0.0.0.0:8080
+80/tcp -> [::]:8080
+3306/tcp -> 0.0.0.0:3306
+3306/tcp -> [::]:3306
+
+## From inside of container you can connect again to container using SSH with below command using the ssh user just created ubuntussh
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive# ssh ubuntussh@localhost -p 22
+The authenticity of host 'localhost (::1)' can't be established.
+ED25519 key fingerprint is SHA256:Sm0QtGpiUfPauOK7jqogoqnezE7XGEPFVJCkm5+5D4A.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'localhost' (ED25519) to the list of known hosts.
+ubuntussh@localhost's password: ubuntussh123
+
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.6.87.2-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntussh@ubundockhost:~$ ll    ## Got the prompt with ubuntussh user but notice the host name is same ubundockhost which is hostname of our container
+
+## Check the home directory 
+ubuntussh@ubundockhost:~$ pwd
+/home/ubuntussh
+
+## Check the H driver mapping that was done during docker run with folder /mnt/hdrive and list the files
+ubuntussh@ubundockhost:/home$ cd /mnt/hdrive/
+ubuntussh@ubundockhost:/mnt/hdrive$ ll
+total 22216
+drwxrwxrwx  1 root root      512 Oct 14  2024 '$RECYCLE.BIN'/
+drwxrwxrwx  1 root root      512 Dec 18 21:20  ./
+drwxr-xr-x  1 root root     4096 Dec 15 18:38  ../
+-rw-r--r--  1 root root       55 Dec 15 15:19  .bashrc
+-rwxrwxrwx  1 root root    32149 Nov  1  2021 '333-2021GENERAL POWER OF ATTORNEY.docx'*
+
+## Exit from SSH which will return back to our old prompt in container - SSH connection to container is closed
+ubuntussh@ubundockhost:/mnt/hdrive$ exit
+logout
+Connection to localhost closed.
+(mypyvenv) root@ubundockhost:/mnt/hdrive#
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                                                                            COMMAND                  CREATED      STATUS                    PORTS                                                                                  NAMES
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"                   2 days ago   Up 2 days                 0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin             "bash"                   3 days ago   Exited (137) 2 days ago                                                                                          ubuntu_cont_DE_old_v2_1
+4da93d1f8bb8   ubuntu                                                                           "bash"                   3 days ago   Exited (137) 3 days ago                                                                                          ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                                  "/docker-entrypoint.…"   8 days ago   Exited (255) 7 days ago   0.0.0.0:8080->80/tcp                                                                   helloworld
+
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+## ubuntu_cont_DE container is present with container ID 53ed1e47bc41 so commit that container into an image
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V4 of DE image version with SSH installed and port mapping for ssh" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+sha256:b680fd12b81e24fc317416c9de4640ab4fedbf1e58849c1f64fd667c7fb0c0e9
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v4]
+cf789a38f3f6: Mounted from nesancommitter/img_ubuntu_cont_de_v3
+f5528e7232ea: Pushed
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v3
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v3
+v4-added-ssh-portmapping22: digest: sha256:b680fd12b81e24fc317416c9de4640ab4fedbf1e58849c1f64fd667c7fb0c0e9 size: 1191
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+v4-added-ssh-portmapping22: Pulling from nesancommitter/img_ubuntu_cont_de_v4
+Digest: sha256:b680fd12b81e24fc317416c9de4640ab4fedbf1e58849c1f64fd667c7fb0c0e9
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+docker.io/nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v4 > img_ubuntu_cont_de_v4.tar
+3
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v4.tar 
+
+######### Continue to build the docker image #########
+nesancommitter/img_ubuntu_cont_de_v4
+nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v4
+###### stop the container and run it again with below command which exposes port 22 to access container via ssh from host windows system 
+
+## Stop the container with name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v3
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v3
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+C:\Users\ADMIN>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --volume=H:\:/mnt/hdrive --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22 bash
+b3daff9e5b27d7a293e4d0a7f516f887ade30589c1bc1f7a2e96b487a282b7b6
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+docker attach ubuntu_cont_DE
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Check the SSH service is running in the container
+(mypyvenv) root@ubundockhost:~# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ + ]  ssh
+ [ - ]  x11-common
+
+## From the Powershell in windows host try to connect to container port 2222 ## Notice here 2222 is tagged as RemotePort
+PS H:\All_Notes_from_learning> Test-NetConnection localhost -Port 2222
+
+
+ComputerName     : localhost
+RemoteAddress    : ::1
+RemotePort       : 2222
+InterfaceAlias   : Loopback Pseudo-Interface 1
+SourceAddress    : ::1
+TcpTestSucceeded : True
+
+PS H:\All_Notes_from_learning>
+
+## Check listening ports on host -- This means Containers port 22 is listening to the host port 2222
+PS H:\All_Notes_from_learning> netstat -an | findstr :2222
+  TCP    0.0.0.0:2222           0.0.0.0:0              LISTENING
+  TCP    [::]:2222              [::]:0                 LISTENING
+  TCP    [::1]:2222             [::]:0                 LISTENING
+
+## From host running your docker container try and connect to container with ssh -- Needs port mapping 
+
+H:\Docker_sharedfiles\images>ssh ubuntussh@localhost -p 2222
+ubuntussh@localhost's password: ubuntussh123
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.6.87.2-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+Last login: Thu Dec 18 23:42:26 2025 from ::1
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntussh@ubundockhost:~$
+
+## Connection is successful try history command to see commands that were run previously
+
+ubuntussh@ubundockhost:~$ history
+    1  whoami
+    2  su
+    3  su - root
+    4  exit
+    5  ll
+    6  pwd
+    7  cd /home/root
+    8  cd ..
+    9  ll
+   10  cd ubuntu
+   11  cd /mnt/hdrive/
+   12  ll
+   13  exit
+   14  history
+ubuntussh@ubundockhost:~$
+
+## Close the SSH session with exit command which will exit the bash shell and return to host shell
+ubuntussh@ubundockhost:~$ exit
+logout
+Connection to localhost closed.
+
+## Find the IP address of the container so you can use the IP address instead of localhost to connect via ssh
+H:\Docker_sharedfiles\images>docker inspect ubuntu_cont_DE | findstr IPAddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.17.0.2",
+
+## Get the IP address of the container with docker exec command so you get that right from inside the running conntainer
+H:\Docker_sharedfiles\images>docker exec ubuntu_cont_DE ip addr show eth0 | findstr inet
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+
+##Full output of the ip addr show from inside the Docker container
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# ip addr show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 6e:90:3b:96:b3:31 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+## Inspect all the parameters of Docker container 
+PS C:\WINDOWS\system32> docker inspect ubuntu_cont_DE
+[
+    {
+        "Id": "c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f",
+        "Created": "2025-12-23T08:07:08.922989521Z",
+        "Path": "bash",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 4756,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2025-12-23T08:07:09.020319312Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13",
+        "ResolvConfPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/hostname",
+        "HostsPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/hosts",
+        "LogPath": "/var/lib/docker/containers/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f/c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f-json.log",
+        "Name": "/ubuntu_cont_DE",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "H:\\:/mnt/hdrive",
+                "C:\\Users\\ADMIN\\.aws:/host_aws"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "22/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "2222"
+                    }
+                ],
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3306"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                54,
+                190
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": null,
+            "Name": ""
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "H:\\",
+                "Destination": "/mnt/hdrive",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "C:\\Users\\ADMIN\\.aws",
+                "Destination": "/host_aws",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "ubundockhost",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "22/tcp": {},
+                "3306/tcp": {},
+                "80/tcp": {}
+            },
+            "Tty": true,
+            "OpenStdin": true,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "AWS_CONFIG_FILE=/host_aws/config",
+                "dockerenv=thisisdockerenvval"
+            ],
+            "Cmd": [
+                "bash"
+            ],
+            "Image": "nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "'for.DataEngg.built.on.ubuntu'": "",
+                "'org.opencontainers.image.ref.name": "ubuntu'",
+                "'org.opencontainers.image.version": "24.04'",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            },
+            "StopTimeout": 1
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "5d3b6e50907df92b4d448040f9f160a97dc86ea7aaa0dc38ba688be5d747d45d",
+            "SandboxKey": "/var/run/docker/netns/5d3b6e50907d",
+            "Ports": {
+                "22/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "2222"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "2222"
+                    }
+                ],
+                "3306/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "3306"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "3306"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8080"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "6e:90:3b:96:b3:31",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "def41c931c392f1364510253714e7735d63875c90657a1181a9b2981eaf7175f",
+                    "EndpointID": "f22eb4484235b4039bb95d4acec76e3602415a43d66463ad03eb061081c5d5d6",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13",
+            "size": 1409,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                                                                            COMMAND                  CREATED       STATUS                     PORTS                                                                                                                           NAMES
+abd820d82472   hello-world                                                                      "/hello"                 2 days ago    Exited (0) 2 days ago                                                                                                                                      serene_mclean
+b3daff9e5b27   nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22                  "bash"                   4 days ago    Up 2 days                  0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:2222->22/tcp, [::]:2222->22/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"                   7 days ago    Exited (137) 4 days ago                                                                                                                                    ubuntu_cont_DE_old_v3
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin             "bash"                   7 days ago    Exited (137) 7 days ago                                                                                                                                    ubuntu_cont_DE_old_v2_1
+4da93d1f8bb8   ubuntu                                                                           "bash"                   7 days ago    Exited (137) 7 days ago                                                                                                                                    ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                                  "/docker-entrypoint.…"   12 days ago   Exited (255) 12 days ago   0.0.0.0:8080->80/tcp                                                                                                            helloworld
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+## ubuntu_cont_DE container is present with container ID b3daff9e5b27 so commit that container into an image
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V5 of DE image version with some additions and sso config for aws" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13
+
+v4
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v5]
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v4
+cf789a38f3f6: Mounted from nesancommitter/img_ubuntu_cont_de_v4
+f5528e7232ea: Mounted from nesancommitter/img_ubuntu_cont_de_v4
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v4
+13b8b174407e: Pushing [==================================================>]  5.723MB/5.723MB
+13b8b174407e: Pushed
+v5-added-ssologin-mount-host-aws: digest: sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13 size: 1409
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+v5-added-ssologin-mount-host-aws: Pulling from nesancommitter/img_ubuntu_cont_de_v5
+Digest: sha256:b3f286022571d007e1656fec0b848e6ee7896ff3cb2416d2475342ca36c7ca13
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+docker.io/nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v5 > img_ubuntu_cont_de_v5.tar
+3
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v5.tar 
+
+######### Continue to build the docker image #########
+nesancommitter/img_ubuntu_cont_de_v5
+nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v5
+###### stop the container and rename it so we can run new image with same name
+
+## Stop the container with name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v4
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v4
+
+## Stop the previous version container with ubuntu_cont_DE_old_v4
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE_old_v4
+
+## run it again with below command which mounts C:\Users\ADMIN\.aws\sso\cache host folder as /host_aws inside of container so SSO token for AWS is raised in host windows and used inside docker container. Mount the host's AWS directory inside the docker containers as /host_aws with (-v C:\Users\ADMIN\.aws:/host_aws/config) then set the environment variable AWS_CONFIG_FILE=/host_aws/config
+
+Then run the sso login first in the host which creates tokens
+Again if you run the sso login inside container, it skips browser prompts since tokens are shared.
+
+aws sso login --profile AWS-Mumbai-dev-SSO
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws bash
+c3d718fcbe4f2bb278859acfc8288613a077f78782a576e9bedf03c5c73e746f
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/# 
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Check the SSH service is running in the container
+(mypyvenv) root@ubundockhost:~# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ + ]  ssh
+ [ - ]  x11-common
+
+## You can use multiple logins to your same running docker container - open two different cmd shell and run below commands in them to establish bash shell with your docker container as two sessions with same docker container
+
+docker exec -it ubuntu_cont_DE bash     --- From first cmd shell 
+docker exec -it ubuntu_cont_DE bash     --- From second cmd shell
+
+Now we have two sessions that is active. But there is a issue in this when you have two interactive sessions from one active docker container with bash shell, then in first session if you have SSH connection to another machine and use second session just for interactive bash the SSH gets disconnected and the first session also becomes replica of second session just as bash interaction itself.
+
+This is happening because both docker exec -it sessions are attaching to the same TTY (terminal) inside the single Docker container, causing them to share the same interactive stdin/stdout/stderr streams. This is called as TTY Contention
+
+docker exec -it ubuntu_cont_DE bash  (Session 1)
+docker exec -it ubuntu_cont_DE bash  (Session 2)
+
+Both sessions → Same container → Same /dev/pts/0 TTY → Input/output collision
+
+When Session 2 types commands, it overwrites Session 1's TTY buffer, disconnecting SSH (which relies on clean stdin) and making both sessions appear identical. Why SSH Specifically Disconnects is 
+
+SSH → docker exec -it → container bash → SIGWINCH/SIGTTIN from Session 2
+    ↓
+TTY buffer overwritten → SSH detects broken pipe → Disconnects
+
+Use tmux or screen Inside Container (Best Practice)
+
+Solutions: Solution for this is to use tmux server in the docker, so anyone who wants to additionally connect to docker can connect in the active session of tmux it will not disturb anyother users. Other users can also create new tmux sessions and connect to docker. As of now newsess2 is always set to be active in the docker root user. So any user can
+
+1) run docker exec command with tmux command and connect to newsess2 or create own new session and work in new session
+or
+2) SSH to docker with root user and then attach to tmux session newsess2 or create own new session and work in new session
+
+Option 1 Commands 
+~~~~~~~~~~~~~~~~~~~
+## Use existing session newsess2          ---- Use Ctrl-B d to detach and exit from container
+H:\All_Notes_from_learning>docker exec -it ubuntu_cont_DE tmux a -t newsess2   ## use existing session newsess2
+[detached (from session newsess2)]
+
+H:\All_Notes_from_learning>
+
+## Create new session and attach to that  ---- Use Ctrl+B & kill the session ownsess and exit from container
+H:\All_Notes_from_learning>docker exec -it ubuntu_cont_DE tmux new-session -s ownsess   ## use existing session ownsess
+[exited]
+
+H:\All_Notes_from_learning>
+
+## Set password for root user 
+(mypyvenv) root@ubundockhost:/# sudo passwd root
+New password: root
+Retype new password: root
+
+#Install and start tmux
+$ apt install -y tmux 
+
+# Start a tmux session and detach it from shell for using with multiple connections 
+$ tmux new-session -d -s newsess2
+
+Option 2 Commands 
+~~~~~~~~~~~~~~~~~~~
+## Use existing session newsess2
+## From the host system ssh to the docker and login with root user 
+H:\All_Notes_from_learning>ssh root@localhost -p 2222
+root@localhost's password: root
+
+##Once in the docker root prompt attach to tmux newsess2  ---- Use Ctrl-B d to detach and exit from container then exit to close SSH
+(mypyvenv) root@ubundockhost:~# tmux a -t newsess2
+[detached (from session newsess2)]
+[detached (from session newsess2)]
+(mypyvenv) root@ubundockhost:~# exit
+logout
+Connection to localhost closed.  
+
+## Create new session and attach to that  ---- Use Ctrl+B & kill the session ownsess and exit from container
+## From the host system ssh to the docker and login with root user 
+H:\All_Notes_from_learning>ssh root@localhost -p 2222
+root@localhost's password: root
+
+##Once in the docker root prompt Create new session and attach to that  ---- Use Ctrl+B & kill the session ownsess and exit from container then exit to close SSH session
+
+(mypyvenv) root@ubundockhost:~# tmux new-session -s ownsess
+[exited]
+(mypyvenv) root@ubundockhost:~# exit
+logout
+Connection to localhost closed.
+
+tmux Utility for multiple screens in the same Linux Session
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tmux: Terminal Multiplexer 
+
+tmux is useful in real world when we connect to any system/server via SSH and if run a command in system/server and command would take many hours to complete if the ssh drops we dont know the status of the command or we may need to restart the command again. But with tmux we can maintain the local execution session even when the ssh connect to the system/server drops. with tmux Lost connections will not kill long-running tasks.
+
+ssh prod-server
+tmux new -s deploy
+kubectl rollout deployment/web  # 2-hour deployment
+# Network drops → SSH dies but the internal tmux session is alive and the deployment is unaffected
+ssh prod-server again
+tmux attach -t deploy           # Deployment continues!
+
+tmux can be useful for multi tasking in local single terminal - Invoke tmux (multi sessions or multi windows in same session or multi panes in same window) then run commands in each pan in forground itself no need to run commands in background.
+
+tmux can be used for Long-Running Background Jobs such as backups which are run in foregroud and not run as backgroud process.
+
+$ tmux new -s backup
+rsync -av /data/ backup-server:/backups  # 8-hour backup
+Ctrl+B d                                 # Detach
+# Go home, sleep
+$ tmux attach -t backup  # Next day: 99% complete
+
+tmux can be used for Remote Team Collaboration : multiple users from different client machines can connect to the same session of tmux running in the server as shown below using ssh then tmux attach. This is perfect example for us to understand what is a session and client in tmux in this case there is only one session incident-1234 but there are two clients attached to same session one by senior dev and another one by junior dev.
+
+# Senior dev ssh to prod server starts tmux session
+ssh prod; tmux new -s incident-1234
+# Junior dev ssh to prod server and joins the same tmux session (read-only) -r option 
+ssh prod; tmux attach -r -t incident-1234
+
+tmux can be used for log analysis which require continious monitoring
+
+tmux new -s logs
+Window 1: tail -f /var/log/auth.log | grep fail      ## window dedicated to monitor log file for text fail 
+Window 2: journalctl -f -u nginx                     ## use other window for nginx log monitoring
+Window 3: netstat -tulpn | grep LISTEN               ## use third window for netstat   
+
+tmux can be used for Jump Host Management
+
+# Central jumphost with tmux
+ssh jumphost
+tmux new -s fleet
+Window 1: ssh db-01     Window 2: ssh app-01
+Window 3: ssh cache-01  Window 4: htop
+
+tmux creates multiple terminal windows/panes inside a single linux terminal session. tmux follows this hierachy Session -> Window -> Pan. There can be multiple active sessions, in each session there can be multiple windows and in each window there can be many pans. 
+
+Start a new tmux session 
+
+$ tmux new-session -s mytmuxsess1
+
+Once you are in the tmux session it opens with window1, Use these keys to check 
+
+1) just type window1_pan1 in prompt for identification
+2) Ctrl+B %           → Split vertical pane    -- this creates additional pan in window1 which becomes active pan
+3) type window1_pan2 in prompt for identification
+4) Ctrl+B Left Arrow  → Move control to Pan1 in window1
+5) Ctrl+B Right Arrow → Move control to Pan2 in window1
+6) Ctrl+B C           → Create new window (in same session mytmuxsess1) - now window2 is over window1
+7) type window2 in prompt for identification
+8) Ctrl+B 1           → Bring window1 to front and move window2 to back
+9) Ctrl+B 2           → Bring window2 to front and move window1 to back
+10) Check the status bar below  → Session_Name:command  1:command  2: command       "Hostname" time Date  
+11) Ctrl+B D          → Detach (tmux still runs in background and all the sessions of tmux are active)
+12) ps -ef shows tmux is active process
+13) tmux attach mytmuxsess1  → Detach back the session mytmuxsess1 - all previous windows are still active
+
+[mytmuxses0:bash  1:bash* 2:bash-                                                                                                                               "ubundockhost" 18:49 25-Dec-25
+
+With in tmux session use below hot keys to operate with multiple windows simultaneously
+
+Session hot keys and commands :
+Ctrl+B ?          → List all hotkeys/key bindings
+Ctrl+B :source ~/.tmux.conf  → reload the config file
+Ctrl+B s          → Session list (interactive switch)
+Ctrl+B : kill-session → enter Command mode and kill current session e.g "switch-client -t newsess2"
+Ctrl+B $          → Rename current session
+Ctrl+B :          → Command mode - Prompt for a command
+Ctrl+B D          → Choose and detach a client from a list (tmux still runs in background and all the sessions of tmux are active)
+Ctrl+B r          → Redraw the current client
+Ctrl+B (          → Switch to previous client
+Ctrl+B )          → Switch to next client
+Ctrl+B t          → Show a clock in window itself
+Ctrl+B w     	  → list windows in all session to select
+Ctrl+B ~          → Show messages (show all the history commands and activities done with tmux session)
+Ctrl+B L          → Switch to the last client
+Ctrl+B D          → Choose and detach a client from a list (most cases only one client is attached to session, when more than one client is attached we can detach using list)
+
+two different clients connected to same session 
+(0) /dev/pts/0: 03:10: session newsess2
+(1) /dev/pts/9: 03:10: session newsess2
+
+tmux new -s sessname
+tmux ls
+tmux info                   ## Info on All sessions/windows/panes
+tmux kill-session -t name
+tmux kill-session -a        ## Kill all sessions but current active session
+tmux rename -t old new      ## Rename a session 
+tmux attach -t sessname     ## Attach existing session 
+tmux new -A -s sessname     ## Attach if session exists or create new session
+
+Window hot keys and commands :
+Ctrl+B C     → Create new window inside this session(your "Session 2")  CLI : tmux new-window
+Ctrl+B &     → kill current window
+Ctrl+B w     → list windows in all session to select
+Ctrl+B 0-9   → Switch window n 
+Ctrl+B '     → Prompt for window index to select - enter window number to activate
+Ctrl+B ,     → rename current window
+Ctrl+B n/p   → select next window or previous window
+Ctrl+B l     → Select the previously current window
+Ctrl+B i     → Display current window information in status bar
+Ctrl+B !     → Break pane to a new window
+
+tmux new-window
+tmux kill-window	
+tmux list-windows
+tmux select-window -t :N
+tmux rename-window name
+
+Panes (Splits) hot keys and commands :
+Ctrl+B "     → Split window into horizontal pane
+Ctrl+B %     → Split window into vertical pane 
+Ctrl+B x     → kill the current pan 
+Ctrl+B E     → Spread panes out evenly
+Ctrl+B :resize-pane -D 10  → resize the current pan down10 lines
+Ctrl+B m     → Mark the current pane (Toggle press again)
+Ctrl+B M     → Clear the marked pane
+
+tmux split-window
+tmux split-window -h
+tmux kill-pane
+tmux resize-pane -D 10
+
+Navigation & Layout hot keys and commands :
+Ctrl+B { / } → swap pane Left/right swap
+Ctrl+B z     → zoom the current pan, full screen pan - toggle zoom - press again for the panned view
+Ctrl+B q     → show pan numbers on the pans
+Ctrl+B ←↑↓→  → Move between panes (arrowkeys) Select the pane left|above|below|right the active pane
+Ctrl+B ;     → Move to previously active pan - toggle last pan (just like alt+tab in windows)
+Ctrl+B o     → move to next pan in cyclic order (pan1, pan2, pan3,... panN)
+Ctrl+B M-o   → Rotate through the panes in reverse
+
+Ctrl+B Space → move to next layout (there are multiple layouts) test this with two pans window
+Ctrl+B {     → Swap the active pane with the pane above
+Ctrl+B }     → Swap the active pane with the pane below
+
+Copy Mode (Scrollback) hot keys and commands :
+ 
+Ctrl+B ]     → Paste clipboard
+tmux clear-history  →  Clear history 
+Ctrl+B :     → clear-history
+
+tmux commands demo
+~~~~~~~~~~~~~~~~~~~~~~
+## Start a tmux session - test multiple sessions 
+$ tmux new-session -s mytmuxsess1
+
+press Ctrl+B D to detach from session
+
+Start another session with command
+$ tmux new-session -s mytmuxsess1
+
+## List all the active tmux sessions
+(mypyvenv) root@ubundockhost:/# tmux ls
+mytmuxsess1: 3 windows (created Thu Dec 25 18:37:04 2025)
+mytmuxsess2: 1 windows (created Thu Dec 25 18:55:53 2025)
+
+## Attach to any tmux session 
+$ tmux a -t mytmuxsess1 
+$ tmux attach-session -t mytmuxsess2
+$ tmux attach -t mytmuxsess2
+$ tmux a       ## Attaches to last used session 
+
+# BEST: Creates if doesn't exist, attaches if does
+$ tmux new-session -A -s mytmuxsess2
+$ tmux new -A -s mytmuxsess2
+
+#Kill any active session 
+$ tmux kill-session -t ssh-work
+$ tmux kill-session -a            ## Kills all but active session
+
+## Rename the session
+$ tmux rename -t old new
+
+Below commands can be used in CLI or in Command mode (Ctrl+B :) 
+
+tmux new-window   or   Ctrl+B : + new-window   or   Ctrl+B C
+tmux list-windows or   Ctrl+B : + list-windows
+tmux select-window -t :N 
+tmux rename-window 
+tmux kill-window 
+tmux split-window
+tmux split-window -h
+tmux resize-pane -D 10
+tmux kill-pane
+tmux swap-pane -D
+tmux move-pane -t :1.2
+
+## tmux list-windows
+
+0: bash (1 panes) [190x53] [layout babd,190x53,0,0,0] @0
+1: sess1win1* (2 panes) [190x53] [layout b553,190x53,0,0{95x53,0,0,1,94x53,96,0,4}] @1 (active)
+2: bash- (1 panes) [190x53] [layout bac2,190x53,0,0,5] @2
+
+tmux split-window
+
+/tmp/tmux-1000/          # Server socket directory
+/tmp/tmux-1000/default   # Main server socket
+~/.tmux.conf             # Client config file
+
+Ports in Docker 
+~~~~~~~~~~~~~~~~~~~~~~~~
+In Docker bridges isolated container networks to the host, enabling external access to services running inside containers. Without port mapping, container services (MySQL on 3306, web apps on 80) remain inaccessible from host/external networks due to Docker's network isolation. So port mapping is required while we run Docker we need port mappings to access the services that run inside the container from the host. 
+
+e.g. when you have webserver running inside container which uses port 80(default port for webserver), to access the webserver from the host we need to map the port 80 of the container to any port of the host with mapping notation of -p host_port:container_port. May be we already have another webserver already active on host machine which uses default port 80, so inorder to avoid port conflict in the host we use mapping -p 8080:80 which means host port 8080 is mapped to container port 80. 
+In this case we are avoiding port conflict in host machine, webserver running in host uses default port 80, webserver running inside the container can be accessed from the host with port number 8080.
+Also we you need to run multiple instances of your same container with nginx webserver using port 80 inside the container but map different host port numbers 8080, 8081, 8082 in host to refer to ports of different instances of the container running on that host. -p host_port:container_port is the representation. 
+
+docker run -d -p 8080:80 nginx     # App container 1
+docker run -d -p 8081:80 nginx     # App container 2
+docker run -d -p 8082:80 nginx     # App container 3
+
+To list all the ports that are mapped by every running container use the below command in host
+C:\Users\ADMIN>docker ps
+CONTAINER ID   IMAGE                                                                            COMMAND   CREATED      STATUS      
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"    2 days ago   Up 2 days   
+
+PORTS                                                                                  NAMES
+0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+
+Two lines of output is shown above container details along with ports mapping.
+
+## Refined output of the above 
+C:\Users\ADMIN>docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}"
+NAMES            PORTS                                                                                  STATUS
+ubuntu_cont_DE   0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   Up 2 days
+
+## List all the ports and scokets along with processed using them that are listening + established + closed inside the container run this from host
+C:\Users\ADMIN>docker exec ubuntu_cont_DE ss -tunapl
+Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+tcp   LISTEN 0      70         127.0.0.1:33060      0.0.0.0:*
+tcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*    users:(("sshd",pid=3229,fd=3))
+tcp   LISTEN 0      511          0.0.0.0:80         0.0.0.0:*    users:(("apache2",pid=1020,fd=3))
+tcp   LISTEN 0      151          0.0.0.0:3306       0.0.0.0:*
+tcp   LISTEN 0      128             [::]:22            [::]:*    users:(("sshd",pid=3229,fd=4))
+
+## to know entire details about the container from the host
+               docker inspect <container_name>
+C:\Users\ADMIN>docker inspect ubuntu_cont_DE
+[
+    {
+        "Id": "53ed1e47bc41a961c9753f4a95b48707711fe5c777e7182b463f7c1e8bef2a23",
+        "Created": "2025-12-15T22:54:09.720395932Z",
+        "Path": "bash",
+        "Args": [],
+        "State": {
+		********* Many more details **********
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:eae9836cb98f42d16f4333533bafa5a43c9b1a56d9f72fdd6a28acd19c72867c",
+            "size": 972,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]		
+
+Script Command
+~~~~~~~~~~~~~~~~~~
+The script command records terminal sessions to a file (typescript) and creates isolated pseudo-TTY environments. 
+
+$script session.log
+# Your work here (commands, output captured)
+exit
+
+Usecase 1: This will be useful to Record customer SSH sessions for troubleshooting - Support/Debugging
+
+Support engineer: script -t /shared/timing.tim /shared/customer123-session.log
+customer$ ssh prod-server
+# Everything captured for later review
+
+Usecase 2: This will be useful for Tranings and Demos 
+
+$ script -c "demo-app" -t timing.tim demo.ansi    ## demo.ansi file will have all the commands that are run can be referenced later
+
+Record colored demos for later playback
+Trainer: 
+$ script training-demo.ansi
+# Shows live typing effect in tutorials
+
+Usecase 3: Audit Compliance - Mandatory session logging : Sysadmin: All root sessions logged to central audit server
+
+script -a -t timing.tim /var/audit/admin-$(date +%Y%m%d).log
+
+Usecase 4: Automated Testing - invoke the test-suite and log all the commands and output into test-output.log  
+
+script -q -c "./test-suite" -t timing.tim test-output.log
+
+Flag	Purpose	Real-World Use
+~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+-q		Quiet (no startup message)	Docker sessions, automation
+-c "cmd"	Execute single command	Isolated execution: script -q -c "top" /dev/null
+-a		Append to existing file	Continuous logging sessions
+-t		Timing info	Performance analysis replays
+/dev/null	No file output	TTY isolation only (your case)
+
+scriptreplay file.log    -- Plays back session it requires timing file also -t timing.tim without timing file scriptreplay cant work
+
+## Install pyspark python library
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# pip install pyspark==3.3.0
+Collecting pyspark==3.3.0
+
+## install aws-glue-libs python library
+## Download from git
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# git clone https://github.com/awslabs/aws-glue-libs.git
+Cloning into 'aws-glue-libs'...
+remote: Enumerating objects: 321, done.
+remote: Counting objects: 100% (104/104), done.
+remote: Compressing objects: 100% (54/54), done.
+remote: Total 321 (delta 67), reused 68 (delta 50), pack-reused 217 (from 1)
+Receiving objects: 100% (321/321), 160.42 KiB | 3.27 MiB/s, done.
+Resolving deltas: 100% (205/205), done.
+
+## check the files
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# cd aws-glue-libs/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/aws-glue-libs# ll
+total 200
+drwxr-xr-x 1 root root    512 Dec 29 21:59 ./
+drwxrwxrwx 1 root root    512 Dec 29 21:59 ../
+drwxr-xr-x 1 root root    512 Dec 29 21:59 .git/
+-rw-r--r-- 1 root root     73 Dec 29 21:59 .gitignore
+-rw-r--r-- 1 root root   4845 Dec 29 21:59 LICENSE.txt
+-rw-r--r-- 1 root root     92 Dec 29 21:59 NOTICE.txt
+-rw-r--r-- 1 root root   4273 Dec 29 21:59 README.md
+-rw-r--r-- 1 root root 181604 Dec 29 21:59 THIRD-PARTY-LICENSES
+drwxr-xr-x 1 root root    512 Dec 29 21:59 awsglue/
+drwxr-xr-x 1 root root    512 Dec 29 21:59 bin/
+-rw-r--r-- 1 root root   1671 Dec 29 21:59 pom.xml
+-rw-r--r-- 1 root root    255 Dec 29 21:59 setup.py
+
+## Install with pip 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap/aws-glue-libs# pip install .
+Processing /mnt/hdrive/scrap/aws-glue-libs
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: aws-glue-libs
+  DEPRECATION: Building 'aws-glue-libs' using the legacy setup.py bdist_wheel mechanism, which will be removed in a future version. pip 25.3 will enforce this behaviour change. A possible replacement is to use the standardized build interface by setting the `--use-pep517` option, (possibly combined with `--no-build-isolation`), or adding a `pyproject.toml` file to the source tree of 'aws-glue-libs'. Discussion can be found at https://github.com/pypa/pip/issues/6334
+  Building wheel for aws-glue-libs (setup.py) ... done
+  Created wheel for aws-glue-libs: filename=aws_glue_libs-4.0.0-py3-none-any.whl size=67321 sha256=b572dfed351337b5afd4987a81b77547504c74d6e4a9efba409ea64835c5f0c2
+  Stored in directory: /root/.cache/pip/wheels/08/f8/88/3fa15d522b7f5583431cdada54c1b475b1c777af9e7e17fbb1
+Successfully built aws-glue-libs
+Installing collected packages: aws-glue-libs
+Successfully installed aws-glue-libs-4.0.0
+
+##SSH (Secure Shell) - Complete Explanation with Architecture & Real Use Case
+
+SSH is a cryptographic network protocol for secure remote login, command execution, and file transfer over insecure networks. It replaces insecure protocols like Telnet/FTP.
+
+SSH Architecture (3-Layer Protocol Stack)
+
+┌─────────────────────────────────────┐
+│ 1. Connection Protocol (RFC 4254)   │ ← Multiple channels (shell, SFTP, tunnels)
+├─────────────────────────────────────┤
+│ 2. User Authentication (RFC 4252)   │ ← Password, Public Key, Kerberos
+├─────────────────────────────────────┤
+│ 3. Transport Layer (RFC 4253)       │ ← Encryption, Key Exchange, TCP/22
+└─────────────────────────────────────┘
+       ↑ Runs over TCP (default port 22)
+
+Layer 1: Transport Layer
+
+- Server authentication (host keys)
+- Diffie-Hellman key exchange → Session keys
+- Symmetric encryption (AES) + MAC (integrity)
+- Perfect Forward Secrecy
+
+Layer 2: User Authentication
+
+Methods (client → server):
+✅ Public Key (RSA/Ed25519) ← Most secure
+✅ Password
+✅ Keyboard-Interactive
+✅ GSSAPI (Kerberos)
+
+Layer 3: Connection Protocol 
+
+Multiplexes 1 TCP connection → Multiple channels:
+- Channel 1: Interactive shell
+- Channel 2: SFTP file transfer  
+- Channel 3: Port forwarding (VPN tunnel)
+- Channel 4: X11 forwarding
+
+## How SSH Works (Step-by-Step)
+
+1. Client: ssh user@192.168.1.100
+2. TCP handshake (port 22)
+3. Version exchange: "SSH-2.0-OpenSSH_9.3"
+4. Transport Layer:
+   a. Server sends host key (Ed25519)
+   b. Diffie-Hellman: Generate shared session key
+   c. AES-256 encryption established
+5. User Auth: Client offers public key → Server verifies
+6. Connection: Shell channel opened → "$ " prompt
+7. Commands encrypted → Executed remotely
+8. Exit → Connection closed
+
+REAL USE CASE: Your Docker + GitHub Workflow
+
+YOUR LAPTOP ──SSH──→ Docker Container ──SSH──→ GitHub/EC2
+    │                    │                    │
+Windows CMD        ubuntu_cont_de       git@github.com
+H:\> ssh root@172.17.0.2  (container IP)
+(mypyvenv) root@ubundockhost# git push All_Notes_to_Share master:main
+
+## Step-by-Step Your Scenario:
+
+1. docker inspect       → Get container IP: 172.17.0.2
+2. ssh root@172.17.0.2  ← Enters container securely
+3. Inside container     : pip install boto3 aws-glue-libs
+4. git remote add origin git@github.com:nesancommitter/repo.git
+5. git push -u origin master:main  ← SSH to GitHub (passwordless)
+
+## SSH Key Setup (Your GitHub Success)
+
+1. Generate key pair
+ssh-keygen -t ed25519 -C "nesancommitter@gmail.com"
+-- Saves: ~/.ssh/id_ed25519 (private), ~/.ssh/id_ed25519.pub (public)
+
+2. Copy to GitHub
+cat ~/.ssh/id_ed25519.pub | clip  # Copy to GitHub SSH keys
+
+3. Test
+ssh -T git@github.com
+-- Hi nesancommitter! You've successfully authenticated
+
+## Common SSH Commands
+ssh user@host                    # Interactive shell
+ssh user@host "df -h"            # Single command
+scp file user@host:/path         # File copy (SFTP)
+ssh -L 8080:localhost:80 host    # Port forwarding
+rsync -avz -e ssh local/ host:   # Directory sync
+
+#### Setup local GIT project and sync it with Git hub repository. Keep changing the code and push them to github repo.
+
+Move into the .ssh folder
+(mypyvenv) root@ubundockhost:~/# cd ~/.ssh
+
+## Install Git (if not installed)
+(mypyvenv) root@ubundockhost:~/.ssh# sudo apt install -y git
+Reading package lists... Done
+
+## Configure Git Global Identity
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.name "Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# git config --global user.email "nesan.committer@gmail.com"
+
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_NAME="Sivanesan G"
+(mypyvenv) root@ubundockhost:~/.ssh# export GIT_AUTHOR_EMAIL="nesan.committer@gmail.com"
+
+## Set Up Authentication - Use ssh key method with github website for your mail ID registered with github website
+
+git@github
+
+# Generate SSH Key Pair - Uses ed25519 keygen algorithm which is better than RSA, Elliptic Curve math creates mathematically linked key pair.
+
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-keygen -t ed25519 -C "nesan.committer@gmail.com"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/root/.ssh/id_ed25519): githubweb
+Enter passphrase (empty for no passphrase): passxxx
+Enter same passphrase again: passxxx
+Your identification has been saved in githubweb
+Your public key has been saved in githubweb.pub
+The key fingerprint is:
+SHA256:Qlxyz nesan.committer@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|     ++=.o       |
+|    . *o* o      |
+|   o .o* =       |
+|    o.. * *      |
+|     o.=S* * .   |
+|    .  .+ * B   E|
+|         + = * o.|
+|          o o =oo|
+|             .o+=|
++----[SHA256]-----+
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+#check the files in the path /root/.ssh/
+(mypyvenv) root@ubundockhost:~/.ssh# ll
+total 28
+drwx------ 1 root root 4096 Dec 27 19:41 ./
+drwx------ 1 root root 4096 Dec 27 19:12 ../
+-rw------- 1 root root  464 Dec 27 19:35 githubweb
+-rw-r--r-- 1 root root  107 Dec 27 19:35 githubweb.pub
+-rw------- 1 root root 2240 Dec 21 23:33 known_hosts
+-rw------- 1 root root 1120 Dec 19 12:24 known_hosts.old
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+key generation is successful private key and public key are generated for the githubweb with files githubweb and githubweb.pub respectively
+
+/githubweb          ← PRIVATE KEY (SECRET - never share!)
+/githubweb.pub      ← PUBLIC KEY  (safe to copy to GitHub)
+
+#Copy Public Key
+
+(mypyvenv) root@ubundockhost:~/.ssh# cat githubweb.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQs4f9ZPhCAEoE3COGDT3IKxfDfaleiJnOFpcZWWnL5 nesan.committer@gmail.com
+
+#Add the public key to GitHub website
+GitHub.com → Settings → SSH and GPG keys → New SSH key
+Title: "Key from DE genie Docker"
+Key: [paste cat output]
+Add SSH key
+
+# Run the SSH agent in the docker 
+(mypyvenv) root@ubundockhost:~/.ssh# eval "$(ssh-agent -s)"
+Agent pid 1841
+
+## Add private key to ssh agent in the docker - SSH Agent Loads Private Key
+(mypyvenv) root@ubundockhost:~/.ssh# ssh-add githubweb
+Enter passphrase for githubweb: passxxx
+Identity added: githubweb (nesan.committer@gmail.com)
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+## Test Connection with github.com - ssh -T <user@hostname_or_IP>
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+The authenticity of host 'github.com (20.207.73.82)' can't be established.
+ED25519 key fingerprint is SHA256:+DiYabcde.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+## Test connection again 
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -T git@github.com
+Hi nesancommitter! You've successfully authenticated, but GitHub does not provide shell access.
+
+## How SSH works securly - Two keys mechanism
+Others use your public key to encrypt the message they are sending. That message can be decrypted only with your private key. So any message sent to you from any host or program is encrypted and only your SSH client can decrypt it with your private key. 
+
+1) - Anyone can encrypt data/message with your public Key
+2) - They Send the encrypted message to your SSH client
+3) - You (SSH client): Open the encrypted message with private key 🔑 → Read data/message
+
+## SSH Key Pair Math: Asymmetric Cryptography - How Different Keys Encrypt/Decrypt
+
+You're right about symmetric encryption (AES): same key encrypts/decrypts. SSH uses ASYMMETRIC (public-key crypto) - different keys with mathematical relationship.
+
+Public Operation:     EASY (anyone)
+Private Operation:    HARD (only key holder)
+
+SSH: Public key encrypts → Private key decrypts
+     OR Private signs → Public verifies
+
+There are multiple key algorithm we can use new Ed25519 Algorithm (Modern SSH Default) - Simplified Math it works as explained below
+
+1. Elliptic Curve Point Multiplication
+
+Elliptic Curve y² = x³ + ax + b (mod p)
+Point G (generator) on curve
+
+Private Key:   Random scalar k (256 random bits)
+Public Key:    k × G  (scalar multiply point G by k)
+
+"Easy": Anyone computes 2G, 3G (double/add points)
+"Hard": Reverse engineer k from k×G (Elliptic Curve Discrete Log Problem)
+
+2. Key Generation (ssh-keygen -t ed25519)
+
+ssh-keygen:
+1. Generate random k (private key): 1d4f5a2b... (256 bits)
+2. Compute Q = k × G              (public key point)
+3. Save: ~/.ssh/id_ed25519     ← k
+         ~/.ssh/id_ed25519.pub ← Q
+
+GitHub Authentication Flow (Math Visualized)
+
+Your Docker:                    GitHub:
+Private: k = 1d4f5a2b...       Public: Q = k×G
+
+1. git push
+2. GitHub: "Challenge: Random message M = abc123"
+3. Your Docker: 
+   Signature S = Sign(M, k) = H(M) × k
+4. Send: M + S to GitHub
+5. GitHub verifies:
+   Verify(S, M, Q) = Check if S × G == H(M) × Q
+                   = H(M) × k×G == H(M) × k×G ✓
+
+Math Proof: Both sides compute same value → authentication succeeds!
+
+## Why "Different Keys" Work Together
+
+Private signs:  S = H(message) × private_key
+Public verifies: Check S × G == H(message) × public_key
+
+Since public_key = private_key × G:
+S × G = H(msg) × private × G = H(msg) × public ✓
+
+## Encryption mechanism
+
+Public encrypts   :  Ciphertext = message + random × public_key
+Private decrypts  : message = Ciphertext - random × private_key
+
+## Real Numbers Example (Tiny Ed25519)
+
+G = Generator point (1, 2) on curve
+
+Private k = 7
+Public Q = 7 × G = (x: 15, y: 23)
+
+Sign message "hi":
+1. Hash("hi") = h = 42
+2. Signature S = 42 × 7 = 294
+3. Verify: 294 × G =? 42 × (7×G)
+   294 × G = 42 × 7 × G ✓ Equal!
+
+## Why Computationally Secure
+
+Given Q = k × G, find k:
+- Brute force: Try 1G, 2G, ... until Q (2^256 attempts)
+- Best attacks: 2^128 operations (NASA supercomputer = 10^15 sec)
+- Your SSH key = safer than US nuclear codes
+
+#### Setup the gitbub CLI in the container - Needed for creation of the repository in github automatically
+## Install Dependencies for gh github CLI
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Notes_to_Share# apt install -y gnupg ca-certificates software-properties-common
+Reading package lists... Done
+Building dependency tree... Done
+
+## Add GitHub CLI Repository
+# 1. Download GitHub CLI GPG key
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+4+1 records in
+4+1 records out
+2270 bytes (2.3 kB, 2.2 KiB) copied, 0.323552 s, 7.0 kB/s
+
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# ll
+total 36
+drwxr-xr-x 1 root root 4096 Jan  1 19:05 ./
+drwxr-xr-x 1 root root 4096 Jan  1 18:59 ../
+-rw-r--r-- 1 root root 2270 Jan  1 19:05 githubcli-archive-keyring.gpg
+-rw-r--r-- 1 root root  640 Dec 16 03:27 microsoft-archive-keyring.gpg
+-rw-r--r-- 1 root root 3607 Nov 26  2023 ubuntu-archive-keyring.gpg
+-rw-r--r-- 1 root root 1227 Nov 26  2023 ubuntu-archive-removed-keys.gpg
+-rw-r--r-- 1 root root 2444 Nov 26  2023 ubuntu-cloudimage-keyring.gpg
+-rw-r--r-- 1 root root    0 Nov 26  2023 ubuntu-cloudimage-removed-keys.gpg
+-rw-r--r-- 1 root root 1191 Nov 26  2023 ubuntu-master-keyring.gpg
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+# 2. Set read permissions for group/other
+chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+# 3. Generate repo line (dynamic arch)
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# REPO_LINE="deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "$REPO_LINE"
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+
+# 4. Write to sources file
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "$REPO_LINE" | tee /etc/apt/sources.list.d/github-cli.list
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cat /etc/apt/sources.list.d/github-cli.list
+deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+
+# 5. Update package list
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt update
+Hit:1 https://packages.microsoft.com/repos/azure-cli noble InRelease
+Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+
+# 6. Install GitHub CLI
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt install -y gh
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  gh
+
+# 7. Check GitHub CLI version
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh --version
+gh version 2.83.2 (2025-12-10)
+https://github.com/cli/cli/releases/tag/v2.83.2
+
+## Authenticate GitHub for Passwordless Access
+
+Open in browser to generate token and enter below https://github.com/settings/tokens
+
+Token Name  : tkngenie_ghCLI
+Description : this token is for using in Genie gh CLI 
+Expiration  : No expiration
+Repo Access : All repositories
+
+Under Account      : select all permissions : mark read & write where all its applicable
+Under Repositories : select all permissions : mark read & write where all its applicable
+
+Token is below : 
+xyzgithub_pat_xyz
+
+in the Docker DNS mapping is defaulted so fix that to reach and use right DNS 
+Root Cause: Docker DNS Hijacked → Google Public DNS
+
+Github access token for VS code authentication
+~~~~~~~~~~~~~~~~
+github_pat_abc
+
+Fix 1: Force Correct DNS (Immediate)
+## Take backup of the default /etc/resolv.conf DNS reslove file.
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cp /etc/resolv.conf /etc/old_resolv.conf
+## Force Correct DNS
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "nameserver 1.1.1.1" > /etc/resolv.conf
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# echo "nameserver 1.0.0.1" >> /etc/resolv.conf
+
+## Install dnsutils to check nslookup
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# apt install dnsutils
+Reading package lists... Done
+Building dependency tree... Done
+
+## Check nslookup is able to resolve api.github.com
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# nslookup api.github.com
+Server:         1.1.1.1
+Address:        1.1.1.1#53
+
+Non-authoritative answer:
+Name:   api.github.com
+Address: 20.207.73.85
+
+## check API.github.com is reachable with response 200
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# curl -I https://api.github.com
+HTTP/2 200
+
+## Now perform gh auth login
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh auth login
+? Where do you use GitHub? GitHub.com
+? What is your preferred protocol for Git operations on this host? SSH
+? Upload your SSH public key to your GitHub account? /root/.ssh/githubweb.pub
+? Title for your SSH key: githubwebsshtit
+? How would you like to authenticate GitHub CLI? Paste an authentication token
+Tip: you can generate a Personal Access Token here https://github.com/settings/tokens
+The minimum required scopes are 'repo', 'read:org', 'admin:public_key'.
+? Paste your authentication token: *********************************************************************************************
+- gh config set -h github.com git_protocol ssh
+✓ Configured git protocol
+! Authentication credentials saved in plain text
+✓ SSH key already existed on your GitHub account: /root/.ssh/githubweb.pub
+✓ Logged in as nesancommitter
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+## Check the Authentication status for password less access
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# gh auth status
+github.com
+  ✓ Logged in to github.com account nesancommitter (/root/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: ssh
+  - Token: github_pat_11AF4IOTI0oxyH5RYkR4tR_***********************************************************
+(mypyvenv) root@ubundockhost:/usr/share/keyrings#
+
+#### Now gh github is installed and configured so try to create a new repository in github portal using gh command
+
+## Create a project and create local git repo for the project
+(mypyvenv) root@ubundockhost:/usr/share/keyrings# cd /mnt/hdrive/git_repo/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo# mkdir geniebot
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo# cd geniebot/
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# touch geniebot.py
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git init
+Initialized empty Git repository in /mnt/hdrive/git_repo/geniebot/.git/
+
+## Add certain files in the .gitignore file so those files are always ignored from commit/push into the repository
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "~*" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "*~" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# echo "~\$*" >> .gitignore
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat .gitignore
+~*
+*~
+~$*
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot#
+
+## Check git status and commit in local repo
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git add .
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   .gitignore
+        new file:   geniebot.py
+
+## commit to local repo
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git commit -m "first version dt_2025_01_01"
+[main (root-commit) 536671c] first version dt_2025_01_01
+ 2 files changed, 3 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 geniebot.py
+
+## Check the branch name - it must be main (default for github) it must not be master (defalut for git)
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git branch
+* main
+
+## Create a remote repository in github 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# gh repo create geniebot --public --description "Bot for telegram group management"
+✓ Created repository nesancommitter/geniebot on github.com
+  https://github.com/nesancommitter/geniebot
+
+## Check if any remote repo is configured and connected to local repo -- nothing is connected yet
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote -v
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot#
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat ./.git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+
+# Add remote -- Links your local repo → GitHub repo nesancommitter/geniebot
+# Add remote with your preferred remote name which is same as repo name geniebot
+## Set the SSH URL to the remote repo associate it to the remote repo name geniebot configured locally
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote add geniebot git@github.com:nesancommitter/geniebot.git
+
+## Check if any remote repo is configured and connected to local repo -- nothing is connected yet
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git remote -v
+geniebot        git@github.com:nesancommitter/geniebot.git (fetch)
+geniebot        git@github.com:nesancommitter/geniebot.git (push)
+
+## Check the config file also once 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# cat ./.git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "geniebot"]
+        url = git@github.com:nesancommitter/geniebot.git
+        fetch = +refs/heads/*:refs/remotes/geniebot/*
+[branch "main"]
+        remote = geniebot
+        merge = refs/heads/main
+
+## Push local main to that remote and set tracking
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push -u geniebot main
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (4/4), 285 bytes | 14.00 KiB/s, done.
+Total 4 (delta 0), reused 0 (delta 0), pack-reused 0
+To github.com:nesancommitter/geniebot.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'geniebot/main'.
+
+## Going forward just below commands will work for remote push
+git push        # after the first time
+git pull
+
+## Try push immeditaly it says upto date
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push
+Everything up-to-date
+
+## Make changes to geniebot.py then add and commit locally before pushing again
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git add .
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git commit -m "v2 dt_2025_01_01"
+[main 523c1a7] v2 dt_2025_01_01
+ 1 file changed, 2 insertions(+)
+
+## push new changes to github 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 305 bytes | 25.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To github.com:nesancommitter/geniebot.git
+   536671c..523c1a7  main -> main
+(mypyvenv) root@ubundockhost:/mnt/hdrive/git_repo/geniebot# 
+
+## What happens when you git push
+if there are multiple commits in the local repository without push for each commit, when git push is issued All the commits on your local branch that are not yet on the remote will be pushed; nothing is lost or merged automatically. When you run git push, Git compares your local branch with the remote branch and sends all commits that the remote does not yet have, in the same order of commit.
+
+https://github.com/nesancommitter/geniebot/commits/main/  - to check all the commits on the branch main in remote github
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## cd to images folder
+H:\Docker_sharedfiles\images>cd \Docker_sharedfiles\images
+
+H:\Docker_sharedfiles\images>
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+H:\Docker_sharedfiles\images>docker ps -a
+CONTAINER ID   IMAGE                                                                            COMMAND                  CREATED       STATUS                     PORTS                                                                                                                           NAMES
+c3d718fcbe4f   nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws            "bash"                   9 days ago    Up 9 days                  0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 0.0.0.0:2222->22/tcp, [::]:2222->22/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   ubuntu_cont_DE
+abd820d82472   hello-world                                                                      "/hello"                 12 days ago   Exited (0) 12 days ago                                                                                                                                     serene_mclean
+b3daff9e5b27   nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22                  "bash"                   13 days ago   Exited (137) 9 days ago                                                                                                                                    ubuntu_cont_DE_old_v4
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"                   2 weeks ago   Exited (137) 13 days ago                                                                                                                                   ubuntu_cont_DE_old_v3
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin             "bash"                   2 weeks ago   Exited (137) 2 weeks ago                                                                                                                                   ubuntu_cont_DE_old_v2_1
+4da93d1f8bb8   ubuntu                                                                           "bash"                   2 weeks ago   Exited (137) 2 weeks ago                                                                                                                                   ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                                  "/docker-entrypoint.…"   3 weeks ago   Exited (255) 3 weeks ago   0.0.0.0:8080->80/tcp                                                                                                            helloworld
+
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+ubuntu_cont_DE  - c3d718fcbe4f
+
+## ubuntu_cont_DE container is present with container ID c3d718fcbe4f so commit that container into an image
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V6 of DE image version with pyspark github config" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v6]
+ecfa15f73da0: Pushed
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+f5528e7232ea: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+13b8b174407e: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+cf789a38f3f6: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v5
+v6-github-pyspark: digest: sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09 size: 1630
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+v6-github-pyspark: Pulling from nesancommitter/img_ubuntu_cont_de_v6
+Digest: sha256:f0f068a49b4242751032cc82fda6a0803b5b8807d4c83a753563214bb271ed09
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+docker.io/nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v6 > img_ubuntu_cont_de_v6.tar
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v6.tar 
+
+######### Continue to build the docker image #########
+nesancommitter/img_ubuntu_cont_de_v6
+nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v6
+###### stop the container and rename it so we can run new image with same name
+
+## Stop the container with name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v5
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v5
+
+## Stop the previous version container with ubuntu_cont_DE_old_v5
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE_old_v5
+
+## run it again with below command which mounts C:\Users\ADMIN\.aws\sso\cache host folder as /host_aws inside of container so SSO token for AWS is raised in host windows and used inside docker container. Mount the host's AWS directory inside the docker containers as /host_aws with (-v C:\Users\ADMIN\.aws:/host_aws/config) then set the environment variable AWS_CONFIG_FILE=/host_aws/config
+
+Then run the sso login first in the host which creates tokens
+Again if you run the sso login inside container, it skips browser prompts since tokens are shared.
+
+aws sso login --profile AWS-Mumbai-dev-SSO
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark bash
+91ff9ba9f59f4fe20c1ee413df204223d790737d02936d972f8413eaeb6184db
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/# 
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Check the SSH service is running in the container
+(mypyvenv) root@ubundockhost:/# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ + ]  ssh
+ [ - ]  unattended-upgrades
+ [ - ]  x11-common
+(mypyvenv) root@ubundockhost:/#
+
+## Fix the DNS resolution issue in the Container 
+
+# Kill container + recreate with proper DNS
+C:\WINDOWS\system32>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+C:\WINDOWS\system32>docker rm ubuntu_cont_DE
+ubuntu_cont_DE
+
+C:\WINDOWS\system32>docker run -it -d --name ubuntu_cont_DE --memory="4g" --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc --dns 1.1.1.1 --dns 1.0.0.1 nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark bash
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/#
+ 
+## Install some of the dependancies required
+
+apt install -y ca-certificates
+apt install -y software-properties-common
+apt install -y python3-httplib2 python3-lazr.restfulclient python3-launchpadlib python3-software-properties
+apt install -y python3-pip python3-pip-whl python3.12-venv
+apt install -y openjdk-11-jre openjdk-11-jre-headless
+apt install -y ca-certificates-java
+apt install -y phpmyadmin
+apt install -y ssh-import-id
+apt install -y iputils-ping
+
+# Set SnowSQL version and install location
+export SNOWSQL_VERSION="1.4.4"
+export SNOWSQL_DEST=/usr/local/bin
+export SNOWSQL_LOGIN_SHELL=/root/.bashrc
+
+# Download SnowSQL installer
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# curl -o snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash    https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 59.2M  100 59.2M    0     0  4859k      0  0:00:12  0:00:12 --:--:-- 5656k
+
+# Run SnowSQL installer
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# ll
+total 60724
+drwxrwxrwx 1 root root      512 Jan  3 14:07 ./
+drwxrwxrwx 1 root root      512 Jan  3 13:51 ../
+drwxr-xr-x 1 root root      512 Dec 29 22:00 aws-glue-libs/
+-rw------- 1 root root      464 Jan  1 13:44 githubweb
+-rw-r--r-- 1 root root      107 Jan  1 13:44 githubweb.pub
+drwxr-xr-x 1 root root      512 Dec 28 00:11 gitrep_test/
+-rw-r--r-- 1 root root 62161105 Jan  3 14:08 snowsql-1.4.4-linux_x86_64.bash
+-rw-r--r-- 1 root root    14291 Dec 25 15:13 training-demo.ansi
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# bash snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+**********************************************************************
+ Installing SnowSQL, Snowflake CLI.
+**********************************************************************
+
+Updating /root/.bashrc to have /usr/local/bin in PATH
+Open a new terminal session to make the updated PATH take effect.
+**********************************************************************
+ Congratulations! Follow the steps to connect to Snowflake DB.
+**********************************************************************
+
+1. Open a new terminal window.
+2. Execute the following command to test your connection:
+      snowsql -a <account_name> -u <login_name>
+
+      Enter your password when prompted. Enter !quit to quit the connection.
+
+3. Add your connection information to the ~/.snowsql/config file:
+      accountname = <account_name>
+                username = <login_name>
+                password = <password>
+
+4. Execute the following command to connect to Snowflake:
+
+      snowsql
+
+See the Snowflake documentation <https://docs.snowflake.net/manuals/user-guide/snowsql.html> for more information.
+
+## Check snowsql is installed properly
+s(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# snowsql --version
+Version: 1.4.4
+
+# Remove installer script
+rm snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+
+## install ODBC driver for Snowflake
+
+# Install unixODBC (required driver manager)
+(mypyvenv) root@ubundockhost:~/.snowsql# sudo apt-get update
+(mypyvenv) root@ubundockhost:~/.snowsql# sudo apt install unixodbc unixodbc-dev odbcinst -y
+Reading package lists... Done
+Building dependency tree... Done
+
+## Verify UNIXODBC is installed properly
+(mypyvenv) root@ubundockhost:~/.snowsql# dpkg -l | grep unixodbc
+ii  unixodbc                          2.3.12-1ubuntu0.24.04.1           amd64        Basic ODBC tools
+ii  unixodbc-common                   2.3.12-1ubuntu0.24.04.1           all          Common ODBC configuration files
+ii  unixodbc-dev:amd64                2.3.12-1ubuntu0.24.04.1           amd64        ODBC libraries for Unix (development files)
+
+## List all the packages installed in linux 
+
+(mypyvenv) root@ubundockhost:~/.snowsql# dpkg -l
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
+|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
+||/ Name                              Version                           Architecture Description
++++-=================================-=================================-============-================================================================================
+ii  adduser                           3.137ubuntu1                      all          add and remove users and groups
+ii  alsa-topology-conf                1.2.5.1-2                         all          ALSA topology configuration files
+ii  alsa-ucm-conf                     1.2.10-1ubuntu5.7                 all          ALSA Use Case Manager configuration files
+ii  apache2                           2.4.58-1ubuntu8.8                 amd64        Apache HTTP Server
+
+###  Continue Snowflake ODBC install
+## Download the deb file
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# wget https://sfc-repo.snowflakecomputing.com/odbc/linux/3.6.0/snowflake-odbc-3.6.0.x86_64.deb
+--2026-01-03 15:32:09--  https://sfc-repo.snowflakecomputing.com/odbc/linux/3.6.0/snowflake-odbc-3.6.0.x86_64.deb
+Resolving sfc-repo.snowflakecomputing.com (sfc-repo.snowflakecomputing.com)... 54.240.162.27, 54.240.162.88, 54.240.162.34, ...
+Connecting to sfc-repo.snowflakecomputing.com (sfc-repo.snowflakecomputing.com)|54.240.162.27|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 65344988 (62M) [binary/octet-stream]
+Saving to: 'snowflake-odbc-3.6.0.x86_64.deb'
+
+snowflake-odbc-3.6.0.x86_64.deb                 100%[=====================================================================================================>]  62.32M  1.31MB/s    in 49s
+
+2026-01-03 15:33:00 (1.28 MB/s) - 'snowflake-odbc-3.6.0.x86_64.deb' saved [65344988/65344988]
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# ll
+total 63832
+drwxrwxrwx 1 root root      512 Jan  3 15:32 ./
+drwxrwxrwx 1 root root      512 Jan  3 15:10 ../
+drwxr-xr-x 1 root root      512 Dec 29 22:00 aws-glue-libs/
+-rw------- 1 root root      464 Jan  1 13:44 githubweb
+-rw-r--r-- 1 root root      107 Jan  1 13:44 githubweb.pub
+drwxr-xr-x 1 root root      512 Dec 28 00:11 gitrep_test/
+-rw-r--r-- 1 root root 65344988 Apr 15  2025 snowflake-odbc-3.6.0.x86_64.deb
+-rw-r--r-- 1 root root    14291 Dec 25 15:13 training-demo.ansi
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap#
+
+## Install the snowflake odbc packages using dpkg command
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# dpkg -i snowflake-odbc-*.deb
+(Reading database ... 68196 files and directories currently installed.)
+Preparing to unpack snowflake-odbc-3.6.0.x86_64.deb ...
+SnowflakeDSIIDriver has been deleted (if it existed at all) because its usage count became zero
+odbcinst: DSN removed (if it existed at all). ODBC_SYSTEM_DSN was used as the search path.
+Unpacking snowflake-odbc (3.6.0) over (3.6.0) ...
+Setting up snowflake-odbc (3.6.0) ...
+[WARN] SF_ACCOUNT is not set, please manually update the odbc.ini file after installation
+Adding driver info to odbcinst.ini...
+odbcinst: Driver installed. Usage count increased to 1.
+    Target directory is /etc
+Adding connect info to odbc.ini...
+odbcinst: Sections and Entries from stdin have been added to ODBC.INI
+/usr/lib/snowflake/odbc/lib/simba.snowflake.ini already exists.
+CABundleFile=/usr/lib/snowflake/odbc/lib/cacert.pem
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap#
+
+## Fix any dependency issues
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# apt install -f
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+0 upgraded, 0 newly installed, 0 to remove and 18 not upgraded.
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap#
+
+## Check the the odbc install is successful
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# odbcinst -q -d | grep Snowflake
+[SnowflakeDSIIDriver]
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap#
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# isql --version
+unixODBC 2.3.12
+
+## Install snowpark - python API for snowflake 
+(mypyvenv) root@ubundockhost:/mnt/hdrive/scrap# pip install snowflake-snowpark-python
+Requirement already satisfied: snowflake-snowpark-python in /mypyvenv/lib/python3.12/site-packages (1.41.0)
+Requirement already satisfied: setuptools>=40.6.0 in /mypyvenv/lib/python3.12/site-packages (from snowflake-snowpark-python) (80.8.0)
+
+## Setup the snowsql config file in ~/.snowsql/config file
+(mypyvenv) root@ubundockhost:~# cat .snowsql/config
+[options]
+log_level = DEBUG
+header = true
+
+# If set to false auto-completion will not occur interactive mode.
+auto_completion = true
+
+# main log file location. The file includes the log from SnowSQL main
+# executable.
+log_file = ~/.snowsql/log
+
+# bootstrap log file location. The file includes the log from SnowSQL bootstrap
+# executable.
+log_bootstrap_file = ~/.snowsql/log_bootstrap
+
+# Timing of sql statments and table rendering.
+timing = true
+
+# Table format. Possible values: psql, plain, simple, grid, fancy_grid, pipe,
+# orgtbl, rst, mediawiki, html, latex, latex_booktabs, tsv.
+# Recommended: psql, fancy_grid and grid.
+output_format = psql
+
+# Keybindings: Possible values: emacs, vi.
+# Emacs mode: Ctrl-A is home, Ctrl-E is end. All emacs keybindings are available in the REPL.
+# When Vi mode is enabled you can use modal editing features offered by Vi in the REPL.
+key_bindings = emacs
+
+# OCSP Fail Open Mode.
+# The only OCSP scenario which will lead to connection failure would be OCSP response with a
+# revoked status. Any other errors or in the OCSP module will not raise an error.
+# ocsp_fail_open = true
+
+# Enable temporary credential file for Linux users
+# For Linux users, since there are no OS-key-store, an unsecure temporary credential for SSO can be enabled by this option. The default value for this option is False.
+# client_store_temporary_credential = true
+
+# Select statement split method (default is to use the sql_split method in snowsql, which does not support 'sql_delimiter')
+# sql_split = snowflake.connector.util_text # to use connector's statement_split which has legacy support to 'sql_delimiter'.
+
+# Force the result data to be decoded in utf-8. By default the value is set to false for compatibility with legacy data. It is recommended to set the value to true.
+json_result_force_utf8_decoding = true
+
+# Repository Base URL
+# The endpoint to download the SnowSQL main module.
+repository_base_url = https://sfc-repo.snowflakecomputing.com/snowsql
+
+[variables]
+# SnowSQL defines the variables in this section on startup.
+# You can use these variables in SQL statements. For details, see
+# https://docs.snowflake.com/en/user-guide/snowsql-use.html#using-variables
+
+# example_variable=27
+
+[connections]
+accountname = wpwwxrd-rg64757
+username = JOBFINDER
+password = passxy
+#region = AP_SOUTHEAST_1          # Optional: only if needed
+warehouse = COMPUTE_WH
+#database = interview
+#schema = PUBLIC
+#role = PUBLIC
+
+## Invoke snowsql without config file reference or with config file reference
+(mypyvenv) root@ubundockhost:~# snowsql
+* SnowSQL * v1.4.4
+Type SQL statements or !help
+JOBFINDER#COMPUTE_WH@(no database).(no schema)>
+
+(mypyvenv) root@ubundockhost:~# snowsql --config ~/.snowsql/config
+* SnowSQL * v1.4.4
+Type SQL statements or !help
+JOBFINDER#COMPUTE_WH@(no database).(no schema)>
+
+## Using copy of the same config file - you can keep multiple config files and connect with different options
+(mypyvenv) root@ubundockhost:~/.snowsql# snowsql --config ~/.snowsql/confcopy
+* SnowSQL * v1.4.4
+Type SQL statements or !help
+JOBFINDER#COMPUTE_WH@(no database).(no schema)>
+
+#### connect snowflake using python ODBC
+## install pyodbc lib
+(mypyvenv) root@ubundockhost:/# pip install pyodbc
+Collecting pyodbc
+  Downloading pyodbc-5.3.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Downloading pyodbc-5.3.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (340 kB)
+Installing collected packages: pyodbc
+Successfully installed pyodbc-5.3.0
+
+## Configure ODBC DSN
+(mypyvenv) root@ubundockhost:/etc# vi odbc.ini
+
+[snowflake]
+Description=SnowflakeDB
+Driver=SnowflakeDSIIDriver
+Server=wpwwxrd-rg64757.snowflakecomputing.com
+Account=wpwwxrd-rg64757
+Warehouse=COMPUTE_WH
+UID=JOBFINDER
+PWD=youpR@1ndr0pss
+Locale=en-US
+PORT=443
+SSL=on
+CharacterSet = UTF-8 
+DateFormat = Standard 
+
+## Configure ODBC Driver Registry - tells unixODBC where to find driver libraries. odbcinst.ini file
+(mypyvenv) root@ubundockhost:/etc# cat odbcinst.ini
+[SnowflakeDSIIDriver]
+APILevel=1
+ConnectFunctions=YYY
+Description=Snowflake DSII Driver
+Driver=/usr/lib/snowflake/odbc/lib/libSnowflake.so
+DriverODBCVer=03.52
+SQLLevel=1
+UsageCount=1
+
+## Check both settings are working - Verify configs
+(mypyvenv) root@ubundockhost:/etc# odbcinst -q -s         # Should show snowflake
+[snowflake]
+
+(mypyvenv) root@ubundockhost:/etc# odbcinst -q -d         # Should show SnowflakeDSIIDriver
+[SnowflakeDSIIDriver]
+
+
+## Test connection 
+(mypyvenv) root@ubundockhost:/etc# isql -v snowflake JOBFINDER pass
+[S1000][unixODBC][Snowflake][ODBC] (11560) Unable to locate SQLGetPrivateProfileString function: [Snowflake][Support] (50483) Could not load shared library, all attempted paths (<NULL>, "/usr/lib/x86_64-linux-gnu/libodbcinst.so.1") failed
+[ISQL]ERROR: Could not SQLConnect
+(mypyvenv) root@ubundockhost:/etc#
+
+## Check ODBC Configuration Paths
+(mypyvenv) root@ubundockhost:/etc# odbcinst -j
+unixODBC 2.3.12
+DRIVERS............: /etc/odbcinst.ini
+SYSTEM DATA SOURCES: /etc/odbc.ini
+FILE DATA SOURCES..: /etc/ODBCDataSources
+USER DATA SOURCES..: /root/.odbc.ini
+SQLULEN Size.......: 8
+SQLLEN Size........: 8
+SQLSETPOSIROW Size.: 8
+(mypyvenv) root@ubundockhost:/etc#
+
+## so.1 file is missing but snowflake is only looking for so.1 file so create a psudo link to so.2 from so.1
+ln -sf /usr/lib/x86_64-linux-gnu/libodbcinst.so.2 /usr/lib/x86_64-linux-gnu/libodbcinst.so.1
+
+lrwxrwxrwx 1 root root      42 Jan  4 15:48 /usr/lib/x86_64-linux-gnu/libodbcinst.so.1 -> /usr/lib/x86_64-linux-gnu/libodbcinst.so.2
+
+##Set Missing Environment Variables
+# Add to ~/.bashrc (permanent fix)
+echo 'export ODBCSYSINI=/etc' >> ~/.bashrc
+echo 'export ODBCINI=/etc/odbc.ini' >> ~/.bashrc
+echo 'export ODBCInstLib=/usr/lib/x86_64-linux-gnu/libodbcinst.so.2' >> ~/.bashrc
+
+source ~/.bashrc
+
+## Test connection to Snowflake
+(mypyvenv) root@ubundockhost:/etc# isql -v snowflake JOBFINDER youpR@1ndr0pss
++---------------------------------------+
+| Connected!                            |
+|                                       |
+| sql-statement                         |
+| help [tablename]                      |
+| echo [string]                         |
+| quit                                  |
+|                                       |
++---------------------------------------+
+SQL> quit
+(mypyvenv) root@ubundockhost:/etc#
+
+## install some Python libraries
+(mypyvenv) root@ubundockhost:/etc# pip install flask pandas werkzeug
+
+######## Take backup of all the work till now 
+
+######### Baseline the work and create a docker image ######### 
+
+## cd to images folder
+H:\Docker_sharedfiles\images>cd \Docker_sharedfiles\images
+
+H:\Docker_sharedfiles\images>
+
+## Checkout this Docker container and create a image and push it to dockerhub for later use
+C:\Users\ADMIN>docker ps -a
+CONTAINER ID   IMAGE                                                                            COMMAND                  CREATED       STATUS                      PORTS                  NAMES
+e3b93d23e285   nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark                           "bash"                   5 days ago    Exited (137) 28 hours ago                          ubuntu_cont_DE
+c3d718fcbe4f   nesancommitter/img_ubuntu_cont_de_v5:v5-added-ssologin-mount-host-aws            "bash"                   2 weeks ago   Exited (137) 5 days ago                            ubuntu_cont_DE_old_v5
+abd820d82472   hello-world                                                                      "/hello"                 2 weeks ago   Exited (0) 2 weeks ago                             serene_mclean
+b3daff9e5b27   nesancommitter/img_ubuntu_cont_de_v4:v4-added-ssh-portmapping22                  "bash"                   2 weeks ago   Exited (137) 2 weeks ago                           ubuntu_cont_DE_old_v4
+53ed1e47bc41   nesancommitter/img_ubuntu_cont_de_v3:v3-added-aznawscli-aznawspysdk-DBnShowcli   "bash"                   3 weeks ago   Exited (137) 2 weeks ago                           ubuntu_cont_DE_old_v3
+2ffd5b8cc2bf   nesancommitter/img_ubuntu_cont_de_v2:v2-added-apache2-php-phpmyadmin             "bash"                   3 weeks ago   Exited (137) 3 weeks ago                           ubuntu_cont_DE_old_v2_1
+4da93d1f8bb8   ubuntu                                                                           "bash"                   3 weeks ago   Exited (137) 3 weeks ago                           ubuntu_cont_DE_old_v2
+78595831c0aa   docker/welcome-to-docker:latest                                                  "/docker-entrypoint.…"   4 weeks ago   Exited (255) 3 weeks ago    0.0.0.0:8080->80/tcp   helloworld
+
+
+## login to docker hub
+H:\Docker_sharedfiles\images>docker login
+Authenticating with existing credentials... [Username: nesancommitter]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+
+ubuntu_cont_DE  - e3b93d23e285
+
+## ubuntu_cont_DE container is present with container ID e3b93d23e285 so commit that container into an image
+## docker commit <container-id-or-name> <your-dockerhub-username>/<image-name>:<tag>
+
+H:\Docker_sharedfiles\images>docker commit -a "SivanesanG" -m "V7 of DE image version with snowsql config" ubuntu_cont_DE nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+sha256:c8704f122c8121414adbb6c5abbdd61b20328671a89a4828af899aff0f9ef52d
+
+## Push the Image to Docker Hub
+H:\Docker_sharedfiles\images>docker push nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+The push refers to repository [docker.io/nesancommitter/img_ubuntu_cont_de_v7]
+f5528e7232ea: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+13b8b174407e: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+cf789a38f3f6: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+ecfa15f73da0: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+20043066d3d5: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+82ccedf04c59: Pushed
+8a1061ac7812: Mounted from nesancommitter/img_ubuntu_cont_de_v6
+v7-snowsql: digest: sha256:c8704f122c8121414adbb6c5abbdd61b20328671a89a4828af899aff0f9ef52d size: 1850
+
+
+## Pull the Image Later
+## Pull the image from dockerhub - this can be used by any users
+H:\Docker_sharedfiles\images>docker pull nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+v7-snowsql: Pulling from nesancommitter/img_ubuntu_cont_de_v7
+Digest: sha256:c8704f122c8121414adbb6c5abbdd61b20328671a89a4828af899aff0f9ef52d
+Status: Image is up to date for nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+docker.io/nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+
+## Just save the image as a tar ball
+H:\Docker_sharedfiles\images>docker save nesancommitter/img_ubuntu_cont_de_v7 > img_ubuntu_cont_de_v7.tar
+
+## Load an image from a tar ball in the local host
+docker load -i H:\Docker_sharedfiles\images\img_ubuntu_cont_de_v7.tar 
+
+######### Continue to build the docker image #########
+nesancommitter/img_ubuntu_cont_de_v7
+nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql
+
+## run the new image nesancommitter/img_ubuntu_cont_de_v7
+###### stop the container and rename it so we can run new image with same name
+
+## Stop the container with name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE
+ubuntu_cont_DE
+
+## rename the container with name ubuntu_cont_DE to ubuntu_cont_DE_old_v6
+H:\Docker_sharedfiles\images>docker rename ubuntu_cont_DE ubuntu_cont_DE_old_v6
+
+## Stop the previous version container with ubuntu_cont_DE_old_v6
+H:\Docker_sharedfiles\images>docker stop ubuntu_cont_DE_old_v6
+
+## Create and run the container with new version of image in name ubuntu_cont_DE
+H:\Docker_sharedfiles\images>docker run -it -d --name ubuntu_cont_DE --memory="4g" --detach-keys="ctrl-p,ctrl-q" --hostname=ubundockhost --env=dockerenv=thisisdockerenvval --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=AWS_CONFIG_FILE=/host_aws/config --volume=H:\:/mnt/hdrive --volume=C:\Users\ADMIN\.aws:/host_aws:ro --network=bridge -p 8080:80 -p 3306:3306 -p 2222:22 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --label='for.DataEngg.built.on.ubuntu' --runtime=runc --dns 1.1.1.1 --dns 1.0.0.1 nesancommitter/img_ubuntu_cont_de_v7:v7-snowsql bash
+234add6fa5cc1905d8d9ce627032e40938201b00a49a1540e42aecdc7c38844d
+
+## Attach to the container and access its shell - Incase you want to stop the container once you exit from shell
+C:\WINDOWS\system32>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/# 
+
+## To Start and use the container - This will start a stopped container or it can also restart running container
+docker restart ubuntu_cont_DE 
+
+## Check the SSH service is running in the container
+(mypyvenv) root@ubundockhost:/# service --status-all
+ [ - ]  apache-htcacheclean
+ [ + ]  apache2
+ [ - ]  dbus
+ [ + ]  mysql
+ [ - ]  procps
+ [ + ]  ssh
+ [ - ]  unattended-upgrades
+ [ - ]  x11-common
+(mypyvenv) root@ubundockhost:/#
+
+## Invoke new terminal session to the running container without distrubing the current terminal running bash 
+H:\Docker_sharedfiles\images>docker exec -it ubuntu_cont_DE tmux
+
+## Or you can also attach the active tmux session in the container always with below command
+H:\All_Notes_from_learning>docker exec -it ubuntu_cont_DE tmux a -t newsess2   ## use existing session newsess2
+[detached (from session newsess2)]
+
+## To Exit the Genie container without stopping the current contaner run 
+Press Ctrl+P followed by Ctrl+Q to detach from the interactive bash session. 
+
+H:\Docker_sharedfiles\images>docker attach ubuntu_cont_DE
+(mypyvenv) root@ubundockhost:/# read escape sequence
+
+H:\Docker_sharedfiles\images>
+
+Ctrl+P followed by Ctrl+Q is handled by the Docker client on the host machine, not by bash inside the container. Docker intercepts these keystrokes at the terminal level before they reach the container's stdin stream. When Ctrl+P is pressed first, Docker buffers it and watches for Ctrl+Q next—if matched, the client immediately detaches the TTY session while keeping the container's PID 1 process running. If Ctrl+Q doesn't follow, Docker forwards Ctrl+P normally to bash (like any other input).
+  Going forward to not forget this we will use --detach-keys="ctrl-p,ctrl-q" in our docker run explicitly though its not required.
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Check the various layers of the image build - having more layers will bloat the image size as much as possible combile all library installs with single commands 
+
+docker history your-image-name 
+
+docker history nesancommitter/img_ubuntu_cont_de_v6:v6-github-pyspark
+
+
+## Try to compact the entire Docker image file size with Docker file based build method Interactive build method increases the image disk size to great extent also multi layer incremental version builds increase the build size so much for each layer so try to combine all the steps and create one single version of the Docker Build to reduce the disk size. 
+
+
+
+
+docker exec <container_name> ss -tuln
+docker exec ubuntu_cont_DE ss -tuln
+
+
+
+
+## Invoke mysql as root then set password to phpmyadmin user with below SQL statement
+root@ubundockhost:/# mysql -u root -p
+mysql> ALTER USER 'phpmyadmin'@'localhost' IDENTIFIED BY 'phpmyadmin';
+
+## try to login with phpmyadmin and check if the phpmyadmin database is accessable
+root@ubundockhost:/# mysql -u phpmyadmin -p
+Enter password: phpmyadmin
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| phpmyadmin         |
++--------------------+
+3 rows in set (0.00 sec)
+
+## Enable phpMyAdmin in Apache
+
+
+
+/usr/sbin/mysqld &
+
+
+To do items
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+# include the command to start java in .bashrc                  -- 
+# include command to start python in .bashrc 
+# include the command to start phpmyadmin                       -- 
+
+
+In .bash_aliases convert the code to start all the services only of the service is not already running - no need to restart the service everytime a login happens 
+
+
+
+configure databricks account
+configure snowflake account
+configure azure account - to use from cli
+configure aws account - to use from cli
+configure azure account - to use from python
+configure aws account - to use from python
+install python lib for aws 
+install python lib for azure
+install pyspark 
+configure pyspark to run in client mode or cluster mode
+expose spark UI externaly and configure the same
+
+
+make all changes to the container so that it will invoke mysql server and apache webserver and phpmyadmin even when container is invoked in not interactive mode 
+
+
+
+ALTER USER 'phpmyadmin'@'localhost' IDENTIFIED BY 'phpmyadmin';
+
+
+
+# Install PySpark
+RUN pip3 install pyspark==${SPARK_VERSION}
+
+
+
+# Expose Spark ports (Master UI:8080, Worker UI:8081, App UI:4040)
+EXPOSE 8080 8081 4040 7077
+
+
+# Environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+ENV PYSPARK_PYTHON=python3
+

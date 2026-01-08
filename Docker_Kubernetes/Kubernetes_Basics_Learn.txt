@@ -1,0 +1,13 @@
+Kubernetes automates container orchestration, scaling, and management across clusters.
+
+Automated Scaling 	- Horizontally scales apps up/down based on CPU/memory demand
+Self-Healing 		- Auto-restarts failed containers, reschedules on healthy nodes
+Load Balancing 		- Built-in service discovery + traffic distribution across pods
+Rolling Updates 	- Zero-downtime deployments with gradual rollouts/rollbacks
+Resource Optimization - Efficient CPU/memory allocation across cluster nodes
+Multi-Cloud Portability - Run same apps on AWS, Azure, GCP, or on-premises
+Service Discovery 	- Automatic DNS + network policies between microservices
+Configuration Management - Secrets/ConfigMaps decouple config from code
+Batch Processing 	- Handles cron jobs, one-off tasks, stateful apps
+Disaster Recovery 	- Replicates apps across availability zones automatically
+

@@ -1,0 +1,157 @@
+﻿key,value,default,level,description,type
+ABORT_DETACHED_QUERY,false,false,,"If true, Snowflake will automatically abort queries when it detects that the client has disappeared.",BOOLEAN
+ACTIVE_PYTHON_PROFILER,,,,"Which profiler is currently active to analyze user code for Python sprocs. Possible values are ""LINE"" and ""MEMORY"".",STRING
+AUTOCOMMIT,true,true,,"The autocommit property determines whether is statement should to be implicitly
+wrapped within a transaction or not. If autocommit is set to true, then a 
+statement that requires a transaction is executed within a transaction 
+implicitly. If autocommit is off then an explicit commit or rollback is required
+to close a transaction. The default autocommit value is true.",BOOLEAN
+AUTOCOMMIT_API_SUPPORTED,true,true,,"Whether autocommit feature is enabled for this client. This parameter is for
+Snowflake use only.",BOOLEAN
+BINARY_INPUT_FORMAT,HEX,HEX,,input format for binary,STRING
+BINARY_OUTPUT_FORMAT,HEX,HEX,,display format for binary,STRING
+CLIENT_ENABLE_CONSERVATIVE_MEMORY_USAGE,true,true,,Enables conservative memory usage for JDBC,BOOLEAN
+CLIENT_ENABLE_DEFAULT_OVERWRITE_IN_PUT,false,false,,"Set default value of overwrite option to true for put command, if overwrite option is not specified in the sql command.",BOOLEAN
+CLIENT_ENABLE_LOG_INFO_STATEMENT_PARAMETERS,false,false,,Enable info-level logging for Prepared Statement binding parameters,BOOLEAN
+CLIENT_MEMORY_LIMIT,1536,1536,,Limit the amount of memory used by the client in MB,NUMBER
+CLIENT_METADATA_REQUEST_USE_CONNECTION_CTX,false,false,,"For client metadata request(getTables()), use session catalog and schema if set to true",BOOLEAN
+CLIENT_METADATA_USE_SESSION_DATABASE,false,false,,"For client metadata request(getTables()), use session catalog but multiple schemas if set to true (in conjunction with CLIENT_METADATA_REQUEST_USE_CONNECTION_CTX",BOOLEAN
+CLIENT_PREFETCH_THREADS,4,4,,"Customer parameter to control threads, 0=auto",NUMBER
+CLIENT_RESULT_CHUNK_SIZE,160,160,,Set the max result chunk size in MB on the client side,NUMBER
+CLIENT_RESULT_COLUMN_CASE_INSENSITIVE,false,false,,Column name search is case insensitive in clients,BOOLEAN
+CLIENT_SESSION_CLONE,false,false,,"If true, client clones a new session from the previously used tokens for the account and user.",BOOLEAN
+CLIENT_SESSION_KEEP_ALIVE,false,false,,"If true, client session will not expire automatically",BOOLEAN
+CLIENT_SESSION_KEEP_ALIVE_HEARTBEAT_FREQUENCY,3600,3600,,Heartbeat frequency in seconds for CLIENT_SESSION_KEEP_ALIVE.,NUMBER
+CLIENT_TIMESTAMP_TYPE_MAPPING,TIMESTAMP_LTZ,TIMESTAMP_LTZ,,"If a variable is bound to the TIMESTAMP data type using the bind API, determines which TIMESTAMP* type it should map to:
+  TIMESTAMP_LTZ (default), TIMESTAMP_NTZ",STRING
+CSV_TIMESTAMP_FORMAT,,,,"Display format for TIMESTAMP values in Snowsight downloaded CSV files. If empty, TIMESTAMP_LTZ_OUTPUT_FORMAT will be used for TIMESTAMP_LTZ values, TIMESTAMP_TZ_OUTPUT_FORMAT will be used for TIMESTAMP_TZ and TIMESTAMP_NTZ_OUTPUT_FORMAT for TIMESTAMP_NTZ values.",STRING
+C_API_QUERY_RESULT_FORMAT,JSON,JSON,,Format used to serialize query result to send back to C API,STRING
+DATE_INPUT_FORMAT,AUTO,AUTO,,input format for date,STRING
+DATE_OUTPUT_FORMAT,YYYY-MM-DD,YYYY-MM-DD,,display format for date,STRING
+DOTNET_QUERY_RESULT_FORMAT,JSON,JSON,,Format used to serialize query result to send back to .NET driver,STRING
+DYNAMIC_TABLES_VIEW_VERSION,9,9,,INFORMATION_SCHEMA.DYNAMIC_TABLES view definition version,NUMBER
+DYNAMIC_TABLE_GRAPH_HISTORY_VIEW_VERSION,9,9,,INFORMATION_SCHEMA.DYNAMIC_TABLE_GRAPH_HISTORY view definition version,NUMBER
+DYNAMIC_TABLE_REFRESH_HISTORY_VIEW_VERSION,12,12,,INFORMATION_SCHEMA.DYNAMIC_TABLE_REFRESH_HISTORY view definition version,NUMBER
+ENABLE_CONSOLE_OUTPUT,false,false,,Enable stdout/stderr fast path logging for anonyous stored procs. This is a public parameter (similar to LOG_LEVEL).,BOOLEAN
+ENABLE_PROVIDER_LISTING_PROGRAMMATIC_ACCESS_DESCRIBE_LISTING,true,true,,"If true, describe listing returns based on the listing programmatic access design.",BOOLEAN
+ENABLE_SNOW_API_FOR_COMPUTE_POOL,enable,enable,,Enable compute pool resource,STRING
+ENABLE_SNOW_API_FOR_COPILOT,enable,enable,,Enable copilot resource,STRING
+ENABLE_SNOW_API_FOR_DATABASE,enable,enable,,Enable database resource,STRING
+ENABLE_SNOW_API_FOR_FUNCTION,enable,enable,,Enable function resource,STRING
+ENABLE_SNOW_API_FOR_GRANT,enable,enable,,Enable grant resource,STRING
+ENABLE_SNOW_API_FOR_ICEBERG,enable,enable,,Enable Iceberg resource,STRING
+ENABLE_SNOW_API_FOR_IMAGE_REPOSITORY,enable,enable,,Enable image repository resource,STRING
+ENABLE_SNOW_API_FOR_RESULT,enable,enable,,Enable result resource,STRING
+ENABLE_SNOW_API_FOR_ROLE,enable,enable,,Enable role resource,STRING
+ENABLE_SNOW_API_FOR_SCHEMA,enable,enable,,Enable schema resource,STRING
+ENABLE_SNOW_API_FOR_SERVICE,enable,enable,,Enable service resource,STRING
+ENABLE_SNOW_API_FOR_SESSION,enable,enable,,Enable session resource,STRING
+ENABLE_SNOW_API_FOR_STAGE,enable,enable,,Enable stage resource,STRING
+ENABLE_SNOW_API_FOR_TABLE,enable,enable,,Enable table resource,STRING
+ENABLE_SNOW_API_FOR_TASK,enable,enable,,Enable task resource,STRING
+ENABLE_SNOW_API_FOR_USER,enable,enable,,Enable user resource,STRING
+ENABLE_SNOW_API_FOR_WAREHOUSE,enable,enable,,Enable warehouse resource,STRING
+ENABLE_UNHANDLED_EXCEPTIONS_REPORTING,true,true,,Enables reporting of unhandled exceptions thrown by UDFs and procedures,BOOLEAN
+ENABLE_UNLOAD_PHYSICAL_TYPE_OPTIMIZATION,true,true,,Enable physical-type optimizations used in Snowflake to affect the Parquet output,BOOLEAN
+ERROR_ON_NONDETERMINISTIC_MERGE,true,true,,raise an error when attempting to merge-update a row that joins many rows,BOOLEAN
+ERROR_ON_NONDETERMINISTIC_UPDATE,false,false,,raise an error when attempting to update a row that joins many rows,BOOLEAN
+GEOGRAPHY_OUTPUT_FORMAT,GeoJSON,GeoJSON,,"GEOGRAPHY display format: GeoJSON, WKT, or WKB(case-insensitive)",STRING
+GEOMETRY_OUTPUT_FORMAT,GeoJSON,GeoJSON,,"GEOMETRY display format: GeoJSON, WKT, or WKB(case-insensitive)",STRING
+GO_QUERY_RESULT_FORMAT,ARROW,ARROW,,Format used to serialize query result to send back to golang driver,STRING
+HYBRID_TABLE_LOCK_TIMEOUT,3600,3600,,"Number of seconds to wait while trying to acquire locks, before timing out and
+aborting the statement. A value of 0 turns off lock waiting i.e. the statement
+must acquire the lock immediately or abort.",NUMBER
+INCLUDE_DT_WITH_TABLE_KIND_IN_SHOW_OBJECTS,true,true,,"Whether to include dynamic tables, is_dynamic column, table kind in show objects",BOOLEAN
+INCLUDE_DYNAMIC_TABLES_WITH_TABLE_KIND,true,true,,"Whether to include dynamic tables, is_dynamic column, table kind in show commands",BOOLEAN
+JDBC_FORMAT_DATE_WITH_TIMEZONE,true,true,,"When true, ResultSet#getDate(int columnIndex, Calendar cal) and getDate(String columnName, Calendar cal) will display the date using the Calendar's output.",BOOLEAN
+JDBC_QUERY_RESULT_FORMAT,ARROW,ARROW,,Format used to serialize query result to send back to jdbc,STRING
+JDBC_TREAT_DECIMAL_AS_INT,true,true,,"When scale is 0, whether to treat Decimal as Int in JDBC",BOOLEAN
+JDBC_TREAT_TIMESTAMP_NTZ_AS_UTC,false,false,,"When true, Timestamp_NTZ values are always stored in UTC timezone",BOOLEAN
+JDBC_USE_SESSION_TIMEZONE,true,true,,"When true, JDBC driver will not display timezone offset between JVM and session.",BOOLEAN
+JSON_INDENT,2,2,,Width of indentation in JSON output (0 for compact),NUMBER
+JS_TREAT_INTEGER_AS_BIGINT,false,false,,"If true, the nodejs client will convert all integer columns to bigint type",BOOLEAN
+LANGUAGE,en,en,,"The selected language that will be used by UI, GS, Query Coordination and XP. The input languages should be in BCP-47 format. AKA. dash format.See LocaleUtil.java for the details.",STRING
+LOCK_TIMEOUT,43200,43200,,"Number of seconds to wait while trying to lock a resource, before timing out 
+and aborting the statement. A value of 0 turns off lock waiting i.e. the 
+statement must acquire the lock immediately or abort. If multiple resources 
+need to be locked by the statement, the timeout applies separately to each 
+lock attempt.",NUMBER
+LOG_LEVEL,OFF,OFF,,LOG_LEVEL to use when filtering events,STRING
+METRIC_LEVEL,NONE,NONE,,METRIC_LEVEL value to control whether to emit metrics to Event Table,STRING
+MULTI_STATEMENT_COUNT,1,1,,"Number of statement included in submitted query text.
+This parameter is submitted by user to avoid sql injection.
+Value 1 means one statement, value > 1 means n statement
+can be executed, if not equal to the value will raise the
+exception. Value 0 means any number of statement can be
+ executed",NUMBER
+NOORDER_SEQUENCE_AS_DEFAULT,true,true,,Whether we make NOORDER the default option for creating new sequences,BOOLEAN
+ODBC_QUERY_RESULT_FORMAT,ARROW,ARROW,,Format used to serialize query result to send back to odbc,STRING
+ODBC_SCHEMA_CACHING,false,false,,"When true, enables schema caching in ODBC. This can speed up SQLColumns API calls.",BOOLEAN
+ODBC_TREAT_DECIMAL_AS_INT,false,false,,"When scale is 0, whether to treat Decimal as Int in ODBC",BOOLEAN
+ODBC_USE_CUSTOM_SQL_DATA_TYPES,false,false,,ODBC return snowflake specific sql data types in result set metadata,BOOLEAN
+PYTHON_CONNECTOR_QUERY_RESULT_FORMAT,ARROW,ARROW,,Format used to serialize query result to send back to python connector ,STRING
+PYTHON_CONNECTOR_USE_NANOARROW,true,true,,True = Python Connector will use nanoarrow to convert data. False =  client will use vendored pyarrow to convert data.Only affects Python Connector >= 3.3.0,BOOLEAN
+PYTHON_PROFILER_MODULES,,,,"A comma separated list of modules to profile in addition to the user code, which is always profiled",STRING
+PYTHON_PROFILER_TARGET_STAGE,,,,The fully qualified stage name where the profiler output will be saved.,STRING
+PYTHON_SNOWPARK_AUTO_CLEAN_UP_TEMP_TABLE_ENABLED,false,false,,"When True, Snowpark Python client will automatically clean up unused temp tables in the current session. When False, unused temp tables will not be cleaned up until the end of session.",BOOLEAN
+PYTHON_SNOWPARK_COMPILATION_STAGE_ENABLED,true,true,,"When True, Snowpark Python client will enable the extra compilation stage that appliesoptimizations like repeated subquery elimination, large query breakdown etc.",BOOLEAN
+PYTHON_SNOWPARK_ELIMINATE_NUMERIC_SQL_VALUE_CAST_ENABLED,true,false,SYSTEM,True = Snowpark Python client will try to eliminate the type cast for numeric literals during query generation for binary expression and in expression. False = Snowpark Python client will always add a type cast for numeric literals for query generation.,BOOLEAN
+PYTHON_SNOWPARK_ENABLE_THREAD_SAFE_SESSION,false,false,,"When True, Snowpark Python client will use locks and thread local objects to protect updates of session object.",BOOLEAN
+PYTHON_SNOWPARK_LARGE_QUERY_BREAKDOWN_COMPLEXITY_LOWER_BOUND,10000000,10000000,,"Parameter to control the complexity score lower bound used by large query breakdown. When the plan complexity is below this complexity bound, the plan node will not be considered a valid candidate for the optimization.",NUMBER
+PYTHON_SNOWPARK_LARGE_QUERY_BREAKDOWN_COMPLEXITY_UPPER_BOUND,12000000,12000000,,"Parameter to control the complexity score upper bound used by large query breakdown. When the plan complexity is above this bound, the plan will be broken down util plan complexity is below is bound, or no valid nodes can be found.",NUMBER
+PYTHON_SNOWPARK_USE_CTE_OPTIMIZATION,false,false,,True = Snowpark Python client will use the CTE optimization for query generation. False = Snowpark Python client will not use CTE optimization for query generation.,BOOLEAN
+PYTHON_SNOWPARK_USE_LARGE_QUERY_BREAKDOWN_OPTIMIZATION,false,false,,"When True, Snowpark Python client will use the large query breakdown optimization for breaking down complex snowpark dataframe queries into smaller ones for achieving higher performance. When False, do not breakdown the generated sql queries.",BOOLEAN
+PYTHON_SNOWPARK_USE_LOGICAL_TYPE_FOR_CREATE_DATAFRAME,true,true,,True = Snowpark Python client will use logical type by default in session.create_dataframe to infer timestamp types correctly. False = Snowpark client will fallback to the old behavior. Only affects Python Snowpark version > 1.10.0,BOOLEAN
+PYTHON_SNOWPARK_USE_SCOPED_TEMP_OBJECTS,true,true,,True = Python Snowpark will create job scoped temp objects. False = Snowpark will create session temp objects. Only affects Python Snowpark versions > 0.9.0,BOOLEAN
+PYTHON_SNOWPARK_USE_SQL_SIMPLIFIER,true,true,,True = Snowpark Python client will use the SQL simplifier. False = Snowpark Python client will not use SQL simplifier.,BOOLEAN
+QA_TEST_NAME,,,,Test name if running in QA mode. Used as a diversifier for shared pools,STRING
+QUERY_RESULT_FORMAT,JSON,JSON,,Format used to serialize query result to send back to client ,STRING
+QUERY_TAG,,,,String (up to 2000 characters) used to tag statements executed by the session,STRING
+QUOTED_IDENTIFIERS_IGNORE_CASE,false,false,,"If true, the case of quoted identifiers is ignored",BOOLEAN
+READ_LATEST_WRITES,false,false,,"If true, queries that read hybrid tables will always see the latest committed writes",BOOLEAN
+ROWS_PER_RESULTSET,0,0,,maxium number of rows in a result set,NUMBER
+S3_STAGE_VPCE_DNS_NAME,,,,S3 VPCE DNS name to access internal stage bucket over privatelink,STRING
+SEARCH_PATH,"$current, $public","$current, $public",,Search path for unqualified object references.,STRING
+SHOW_EXTERNAL_TABLE_KIND_AS_TABLE,true,true,,"Change the way external table KIND info is displayed by SHOW TABLES and SHOW OBJECTS. The KIND column of external tables is displayed as TABLE if true, EXTERNAL_TABLE otherwise.",BOOLEAN
+SIMULATED_DATA_SHARING_CONSUMER,,,,Data sharing views will return rows as if executed in the specified consumer account.,STRING
+SNOWPARK_HIDE_INTERNAL_ALIAS,true,true,,Display the original column names after automatic aliased by Snowpark client. e.g. Join two dataframes with conflicting column names.,BOOLEAN
+SNOWPARK_LAZY_ANALYSIS,true,true,,Enable lazy result schema analysis for Snowpark,BOOLEAN
+SNOWPARK_REQUEST_TIMEOUT_IN_SECONDS,86400,86400,,Client side timeout for Snowpark requests in seconds. Currently this parameter only applies to UDF jar (Java/Scala) or zip (Python) file uploading.,NUMBER
+SNOWPARK_STORED_PROC_IS_FINAL_TABLE_QUERY,false,false,,"If true, it indicates that the query is the final query of table sproc which is used as the result for the client",BOOLEAN
+SNOWPARK_USE_SCOPED_TEMP_OBJECTS,true,true,,True = Snowpark will create job scoped temp objects. False = Snowpark will create session temp objects. Only affects JVM Snowpark versions > 1.5.0,BOOLEAN
+SQL_API_NULLABLE_IN_RESULT_SET,true,true,,"The result set may include JSON null if true, otherwise it includes string 'null'",BOOLEAN
+SQL_API_QUERY_RESULT_FORMAT,JSON,JSON,,The result set will use the format provided with the default of JSON,STRING
+STATEMENT_QUEUED_TIMEOUT_IN_SECONDS,0,0,,Timeout in seconds for queued statements: statements will automatically be canceled if they are queued on a warehouse for longer than this amount of time; disabled if set to zero.,NUMBER
+STATEMENT_TIMEOUT_IN_SECONDS,172800,172800,,"Timeout in seconds for statements: statements are automatically canceled if they run for longer; if set to zero, max value (604800) is enforced.",NUMBER
+STRICT_JSON_OUTPUT,false,false,,JSON output is strictly compliant to the specification,BOOLEAN
+TIMESTAMP_DAY_IS_ALWAYS_24H,false,false,,"If set, arithmetic on days always uses 24 hours per day,
+possibly not preserving the time (due to DST changes)",BOOLEAN
+TIMESTAMP_INPUT_FORMAT,AUTO,AUTO,,input format for timestamp,STRING
+TIMESTAMP_LTZ_OUTPUT_FORMAT,,,,"Display format for TIMESTAMP_LTZ values. If empty, TIMESTAMP_OUTPUT_FORMAT is used.",STRING
+TIMESTAMP_NTZ_OUTPUT_FORMAT,YYYY-MM-DD HH24:MI:SS.FF3,YYYY-MM-DD HH24:MI:SS.FF3,,"Display format for TIMESTAMP_NTZ values. If empty, TIMESTAMP_OUTPUT_FORMAT is used.",STRING
+TIMESTAMP_OUTPUT_FORMAT,YYYY-MM-DD HH24:MI:SS.FF3 TZHTZM,YYYY-MM-DD HH24:MI:SS.FF3 TZHTZM,,Default display format for all timestamp types.,STRING
+TIMESTAMP_TYPE_MAPPING,TIMESTAMP_NTZ,TIMESTAMP_NTZ,,"If TIMESTAMP type is used, what specific TIMESTAMP* type it should map to:
+  TIMESTAMP_LTZ, TIMESTAMP_NTZ (default) or TIMESTAMP_TZ",STRING
+TIMESTAMP_TZ_OUTPUT_FORMAT,,,,"Display format for TIMESTAMP_TZ values. If empty, TIMESTAMP_OUTPUT_FORMAT is used.",STRING
+TIMEZONE,America/Los_Angeles,America/Los_Angeles,,time zone,STRING
+TIME_INPUT_FORMAT,AUTO,AUTO,,input format for time,STRING
+TIME_OUTPUT_FORMAT,HH24:MI:SS,HH24:MI:SS,,display format for time,STRING
+TRACE_LEVEL,OFF,OFF,,Trace level value to use when generating/filtering trace events,STRING
+TRANSACTION_ABORT_ON_ERROR,false,false,,"If this parameter is true, and a statement issued within a non-autocommit
+transaction returns with an error, then the non-autocommit transaction is
+aborted. All statements issued inside that transaction will fail until an
+commit or rollback statement is executed to close that transaction.",BOOLEAN
+TRANSACTION_DEFAULT_ISOLATION_LEVEL,READ COMMITTED,READ COMMITTED,,"The default isolation level when starting a starting a transaction, when no
+isolation level was specified",STRING
+TWO_DIGIT_CENTURY_START,1970,1970,,"For 2-digit dates, defines a century-start year.
+For example, when set to 1980:
+  - parsing a string '79' will produce 2079
+  - parsing a string '80' will produce 1980",NUMBER
+UI_QUERY_RESULT_FORMAT,JSON,JSON,,Format used to serialize query result to send back to python connector ,STRING
+UNSUPPORTED_DDL_ACTION,ignore,ignore,,The action to take upon encountering an unsupported ddl statement,STRING
+USE_CACHED_RESULT,true,true,,"If enabled, query results can be reused between successive invocations of the same query as long as the original result has not expired",BOOLEAN
+WEEK_OF_YEAR_POLICY,0,0,,"Defines the policy of assigning weeks to years:
+0: the week needs to have 4 days in a given year;
+1: a week with January 1st always belongs to a given year.",NUMBER
+WEEK_START,0,0,,"Defines the first day of the week:
+0: legacy Snowflake behavior; 1: Monday .. 7: Sunday.",NUMBER

@@ -1,0 +1,4221 @@
+
+ESS-DWW Badge 1: Data Warehousing Workshop - all queries used 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WORKSHEET
+~~~~~~~~~~~~~
+select 'Hello!' as Greeting;
+show schemas;
+show databases;
+SHOW SCHEMAS IN ACCOUNT;
+SHOW Tables IN ACCOUNT;
+
+alter table GARDEN_PLANTS.VEGGIES.ROOTDEPTH
+rename to GARDEN_PLANTS.VEGGIES.ROOT_DEPTH;
+
+create or replace table ROOT_DEPTH (
+   ROOT_DEPTH_ID number(1), 
+   ROOT_DEPTH_CODE text(1), 
+   ROOT_DEPTH_NAME text(7), 
+   UNIT_OF_MEASURE text(2),
+   RANGE_MIN number(2),
+   RANGE_MAX number(2)
+   ); 
+
+   insert into root_depth 
+values
+(
+    1,
+    'S',
+    'Shallow',
+    'cm',
+    30,
+    45
+)
+;
+
+   insert into root_depth 
+values
+(
+    2,
+    'M',
+    'Medium',
+    'cm',
+    45,
+    60
+)
+;
+
+   insert into root_depth 
+values
+(
+    3,
+    'D',
+    'Deep',
+    'cm',
+    60,
+    90
+)
+;
+
+SELECT *
+FROM ROOT_DEPTH;
+
+SELECT *
+FROM ROOT_DEPTH
+LIMIT 1;
+
+--  To add more than one row at a time
+insert into root_depth (root_depth_id, root_depth_code
+                        , root_depth_name, unit_of_measure
+                        , range_min, range_max)  
+values
+                        (5,'X','short','in',66,77)
+                       ,(8,'Y','tall','cm',98,99)
+;
+
+-- To remove a row you do not want in the table
+delete from root_depth
+where root_depth_id = 9;
+
+select * from GARDEN_PLANTS.VEGGIES.ROOT_DEPTH;
+
+-- To remove a row you do not want in the table
+delete from GARDEN_PLANTS.VEGGIES.root_depth
+where root_depth_id in (5,8);
+
+--To change a value in a column for one particular row
+update root_depth
+set root_depth_id = 7
+where root_depth_id = 9;
+
+--To remove all the rows and start over
+truncate table root_depth;
+
+use role accountadmin;
+
+create or replace api integration dora_api_integration
+api_provider = aws_api_gateway
+api_aws_role_arn = 'arn:aws:iam::321463406630:role/snowflakeLearnerAssumedRole'
+enabled = true
+api_allowed_prefixes = ('https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora');
+
+
+create or replace external function util_db.public.grader(
+      step varchar
+    , passed boolean
+    , actual integer
+    , expected integer
+    , description varchar)
+returns variant
+api_integration = dora_api_integration 
+context_headers = (current_timestamp, current_account, current_statement, current_account_name) 
+as 'https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora/grader';
+
+
+use role accountadmin;
+use database util_db; 
+use schema public; 
+
+select grader(step, (actual = expected), actual, expected, description) as graded_results from
+(SELECT 
+ 'DORA_IS_WORKING' as step
+ ,(select 123) as actual
+ ,123 as expected
+ ,'Dora is working!' as description
+); 
+
+show functions in account;
+
+
+select * 
+from garden_plants.information_schema.schemata;
+
+ALTER SCHEMA GARDEN_PLANTS.WEGGIES RENAME TO GARDEN_PLANTS.VEGGIES;
+ALTER SCHEMA DEMO_DB.VEGGIES RENAME TO GARDEN_PLANTS.VEGGIES;
+
+SELECT * 
+FROM GARDEN_PLANTS.INFORMATION_SCHEMA.SCHEMATA
+where schema_name in ('FLOWERS','FRUITS','VEGGIES'); 
+
+
+select count(*) as schemas_found, '3' as schemas_expected 
+from GARDEN_PLANTS.INFORMATION_SCHEMA.SCHEMATA
+where schema_name in ('FLOWERS','FRUITS','VEGGIES'); 
+
+--You can run this code, or you can use the drop lists in your worksheet to get the context settings right.
+use database UTIL_DB;
+use schema PUBLIC;
+use role ACCOUNTADMIN;
+
+--Do NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT
+ 'DWW01' as step
+ ,( select count(*)  
+   from GARDEN_PLANTS.INFORMATION_SCHEMA.SCHEMATA 
+   where schema_name in ('FLOWERS','VEGGIES','FRUITS')) as actual
+  ,3 as expected
+  ,'Created 3 Garden Plant schemas' as description
+); 
+
+--Remember that every time you run a DORA check, the context needs to be set to the below settings. 
+use database UTIL_DB;
+use schema PUBLIC;
+use role ACCOUNTADMIN;
+
+--Do NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW02' as step 
+ ,( select count(*) 
+   from GARDEN_PLANTS.INFORMATION_SCHEMA.SCHEMATA 
+   where schema_name = 'PUBLIC') as actual 
+ , 0 as expected 
+ ,'Deleted PUBLIC schema.' as description
+); 
+
+
+-- Do NOT EDIT ANYTHING BELOW THIS LINE 
+-- Remember to set your WORKSHEET context (do not add context to the grader call)
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW03' as step 
+ ,( select count(*) 
+   from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+   where table_name = 'ROOT_DEPTH') as actual 
+ , 1 as expected 
+ ,'ROOT_DEPTH Table Exists' as description
+); 
+
+--Set your worksheet drop list role to ACCOUNTADMIN
+--Set your worksheet drop list database and schema to the location of your GRADER function
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW04' as step
+ ,( select count(*) as SCHEMAS_FOUND 
+   from UTIL_DB.INFORMATION_SCHEMA.SCHEMATA) as actual
+ , 2 as expected
+ , 'UTIL_DB Schemas' as description
+); 
+
+
+--Set your worksheet drop list role to ACCOUNTADMIN
+--Set your worksheet drop list database and schema to the location of your GRADER function
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from ( 
+ SELECT 'DWW05' as step 
+,( select row_count 
+  from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+  where table_name = 'ROOT_DEPTH') as actual 
+, 3 as expected 
+,'ROOT_DEPTH row count' as description
+);  
+
+
+create table garden_plants.veggies.vegetable_details
+(
+plant_name varchar(25)
+, root_depth_code varchar(1)    
+);
+
+TRUNCATE TABLE GARDEN_PLANTS.VEGGIES.VEGETABLE_DETAILS;
+
+--Set your worksheet drop list role to ACCOUNTADMIN
+--Set your worksheet drop list database and schema to the location of your GRADER function
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW06' as step
+ ,( select count(*) 
+   from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+   where table_name = 'VEGETABLE_DETAILS') as actual
+ , 1 as expected
+ ,'VEGETABLE_DETAILS Table' as description
+); 
+
+select * from  GARDEN_PLANTS.VEGGIES.VEGETABLE_DETAILS;
+
+select * from  GARDEN_PLANTS.VEGGIES.VEGETABLE_DETAILS;
+
+-- To remove a row you do not want in the table
+delete from GARDEN_PLANTS.VEGGIES.vegetable_details
+where plant_name='Spinach' and root_depth_code='D';
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW07' as step
+ ,( select row_count 
+   from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+   where table_name = 'VEGETABLE_DETAILS') as actual
+ , 41 as expected
+ , 'VEG_DETAILS row count' as description
+); 
+
+drop table GARDEN_PLANTS.VEGGIES.FLOWER_DETAILS;
+
+create or replace TABLE GARDEN_PLANTS.FLOWERS.FLOWER_DETAILS (
+	PLANT_NAME VARCHAR(25),
+	ROOT_DEPTH_CODE VARCHAR(1)
+);
+
+insert into garden_plants.flowers.flower_details
+select 'Petunia','M';
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from ( 
+   SELECT 'DWW08' as step 
+   ,( select iff(count(*)=0, 0, count(*)/count(*))
+      from table(information_schema.query_history())
+      where query_text like 'execute notebook%Uncle Yer%') as actual 
+   , 1 as expected 
+   , 'Notebook success!' as description 
+); 
+
+create or replace TABLE GARDEN_PLANTS.FRUITS.FRUIT_DETAILS (
+	PLANT_NAME VARCHAR(25),
+	ROOT_DEPTH_CODE VARCHAR(1)
+);
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW09' as step
+ ,( select iff(count(*)=0, 0, count(*)/count(*)) 
+    from snowflake.account_usage.query_history
+    where query_text like 'execute streamlit "GARDEN_PLANTS"."FRUITS".%'
+   ) as actual
+ , 1 as expected
+ ,'SiS App Works' as description
+); 
+
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DWW10' as step
+  ,( select count(*) 
+    from UTIL_DB.INFORMATION_SCHEMA.stages
+    where stage_name='MY_INTERNAL_STAGE' 
+    and stage_type is null) as actual
+  , 1 as expected
+  , 'Internal stage created' as description
+ ); 
+
+
+create or replace table GARDEN_PLANTS.VEGGIES.vegetable_details_soil_type
+( 
+  plant_name varchar(25),
+  soil_type number(1,0)
+);
+
+
+create file format garden_plants.veggies.PIPECOLSEP_ONEHEADROW 
+    type = 'CSV'--csv is used for any flat file (tsv, pipe-separated, etc)
+    field_delimiter = '|' --pipes as column separators
+    skip_header = 1 --one header row to skip
+    ;
+
+copy into GARDEN_PLANTS.VEGGIES.vegetable_details_soil_type
+from @util_db.public.my_internal_stage
+files = ('VEG_NAME_TO_SOIL_TYPE_PIPE.txt')
+file_format = ( format_name=GARDEN_PLANTS.VEGGIES.PIPECOLSEP_ONEHEADROW );
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+  SELECT 'DWW11' as step
+  ,( select row_count 
+    from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+    where table_name = 'VEGETABLE_DETAILS_SOIL_TYPE') as actual
+  , 42 as expected
+  , 'Veg Det Soil Type Count' as description
+ ); 
+
+ create file format garden_plants.veggies.COMMASEP_DBLQUOT_ONEHEADROW 
+    TYPE = 'CSV'--csv for comma separated files
+    FIELD_DELIMITER = ',' --commas as column separators
+    SKIP_HEADER = 1 --one header row  
+    FIELD_OPTIONALLY_ENCLOSED_BY = '"' --this means that some values will be wrapped in double-quotes bc they have commas in them
+
+-- The data in the file, with no FILE FORMAT specified
+select $1, $2 from @util_db.public.my_internal_stage/LU_SOIL_TYPE.tsv;
+
+--Same file but with one of the file formats we created earlier  
+select $1, $2, $3
+from @util_db.public.my_internal_stage/LU_SOIL_TYPE.tsv
+(file_format => garden_plants.veggies.COMMASEP_DBLQUOT_ONEHEADROW);
+
+--Same file but with the other file format we created earlier
+select $1, $2, $3
+from @util_db.public.my_internal_stage/LU_SOIL_TYPE.tsv
+(file_format => garden_plants.veggies.PIPECOLSEP_ONEHEADROW);
+
+--Same file but with the other file format we created earlier
+select $1, $2, $3
+from @util_db.public.my_internal_stage/LU_SOIL_TYPE.tsv
+(file_format => garden_plants.veggies.L9_CHALLENGE_FF);
+
+drop table LU_SOIL_TYPE;
+
+create or replace table garden_plants.veggies.LU_SOIL_TYPE(
+SOIL_TYPE_ID number,	
+SOIL_TYPE varchar(15),
+SOIL_DESCRIPTION varchar(75)
+ );
+
+ 
+ create OR REPLACE file format garden_plants.veggies.L9_CHALLENGE_FF 
+    TYPE = 'CSV'--csv for comma separated files
+    FIELD_DELIMITER = '\t' --Tab as column separators
+    SKIP_HEADER = 1 --one header row  
+    TRIM_SPACE = TRUE 
+    ERROR_ON_COLUMN_COUNT_MISMATCH = TRUE 
+    FIELD_OPTIONALLY_ENCLOSED_BY = '"' --this means that some values will be wrapped in double-quotes bc they have commas in them;
+
+copy into GARDEN_PLANTS.VEGGIES.LU_SOIL_TYPE
+from @util_db.public.my_internal_stage
+files = ('LU_SOIL_TYPE.tsv')
+file_format = ( format_name=GARDEN_PLANTS.VEGGIES.L9_CHALLENGE_FF );
+
+select * from GARDEN_PLANTS.VEGGIES.LU_SOIL_TYPE;
+
+create or replace table garden_plants.veggies.VEGETABLE_DETAILS_PLANT_HEIGHT(
+plant_name varchar(35),	
+UOM varchar(1),
+Low_End_of_Range number,
+High_End_of_Range number
+);
+
+ create OR REPLACE file format garden_plants.veggies.L9_CHALLENGE_FF 
+    TYPE = 'CSV'--csv for comma separated files
+    FIELD_DELIMITER = '\t' --Tab as column separators
+    SKIP_HEADER = 1 --one header row  
+    TRIM_SPACE = TRUE 
+    ERROR_ON_COLUMN_COUNT_MISMATCH = TRUE 
+    FIELD_OPTIONALLY_ENCLOSED_BY = '"' --this means that some values will be wrapped in double-quotes bc they have commas in them;
+
+--Same file but with the other file format we created earlier
+select $1, $2, $3
+from @util_db.public.my_internal_stage/veg_plant_height.csv
+(file_format => garden_plants.veggies.COMMASEP_DBLQUOT_ONEHEADROW);
+
+copy into GARDEN_PLANTS.VEGGIES.VEGETABLE_DETAILS_PLANT_HEIGHT
+from @util_db.public.my_internal_stage
+files = ('veg_plant_height.csv')
+file_format = ( format_name=GARDEN_PLANTS.VEGGIES.COMMASEP_DBLQUOT_ONEHEADROW);
+
+select * from GARDEN_PLANTS.VEGGIES.VEGETABLE_DETAILS_PLANT_HEIGHT;
+
+--Set your worksheet drop list role to ACCOUNTADMIN
+--Set your worksheet drop list database and schema to the location of your GRADER function
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (  
+      SELECT 'DWW12' as step 
+      ,( select row_count 
+        from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+        where table_name = 'VEGETABLE_DETAILS_PLANT_HEIGHT') as actual 
+      , 41 as expected 
+      , 'Veg Detail Plant Height Count' as description   
+); 
+
+--Set your worksheet drop list role to ACCOUNTADMIN
+--Set your worksheet drop list database and schema to the location of your GRADER function
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE. THE CODE MUST BE RUN EXACTLY AS IT IS WRITTEN
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (  
+     SELECT 'DWW13' as step 
+     ,( select row_count 
+       from GARDEN_PLANTS.INFORMATION_SCHEMA.TABLES 
+       where table_name = 'LU_SOIL_TYPE') as actual 
+     , 8 as expected 
+     ,'Soil Type Look Up Table' as description   
+); 
+
+
+-- Set your worksheet drop lists
+-- DO NOT EDIT THE CODE 
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from ( 
+     SELECT 'DWW14' as step 
+     ,( select count(*) 
+       from GARDEN_PLANTS.INFORMATION_SCHEMA.FILE_FORMATS 
+       where FILE_FORMAT_NAME='L9_CHALLENGE_FF' 
+       and FIELD_DELIMITER = '\t') as actual 
+     , 1 as expected 
+     ,'Challenge File Format Created' as description  
+); 
+
+use role sysadmin;
+
+// Create a new database and set the context to use the new database
+create database library_card_catalog comment = 'DWW Lesson 10 ';
+
+//Set the worksheet context to use the new database
+use database library_card_catalog;
+
+use database library_card_catalog;
+use role sysadmin;
+
+// Create the book table and use AUTOINCREMENT to generate a UID for each new row
+
+create or replace table book
+( book_uid number autoincrement
+ , title varchar(50)
+ , year_published number(4,0)
+);
+
+// Insert records into the book table
+// You don't have to list anything for the
+// BOOK_UID field because the AUTOINCREMENT property 
+// will take care of it for you
+
+insert into book(title, year_published)
+values
+ ('Food',2001)
+,('Food',2006)
+,('Food',2008)
+,('Food',2016)
+,('Food',2015);
+
+// Check your table. Does each row have a unique id? 
+select * from book;
+
+// Create Author table
+create or replace table author (
+   author_uid number 
+  ,first_name varchar(50)
+  ,middle_name varchar(50)
+  ,last_name varchar(50)
+);
+
+// Insert the first two authors into the Author table
+insert into author(author_uid, first_name, middle_name, last_name)  
+values
+(1, 'Fiona', '','Macdonald')
+,(2, 'Gian','Paulo','Faleschini');
+
+// Look at your table with it's new rows
+select * 
+from author;
+
+use role sysadmin;
+
+create OR REPLACE sequence SEQ_AUTHOR_UID
+    start = 1
+    increment = 1
+    ORDER
+    comment = 'Use this to fill Author_UID';
+
+//See how the nextval function works
+select seq_author_uid.nextval, seq_author_uid.nextval;
+
+//Drop and recreate the counter (sequence) so that it starts at 3 
+// then we'll add the other author records to our author table
+create or replace sequence library_card_catalog.public.seq_author_uid
+start = 3 
+increment = 1 
+ORDER
+comment = 'Use this to fill in the AUTHOR_UID every time you add a row';
+
+insert into author(author_uid,first_name, middle_name, last_name) 
+values
+(seq_author_uid.nextval, 'Laura', 'K','Egendorf')
+,(seq_author_uid.nextval, 'Jan', '','Grover')
+,(seq_author_uid.nextval, 'Jennifer', '','Clapp')
+,(seq_author_uid.nextval, 'Kathleen', '','Petelinsek');
+
+-- It is also possible to use the sequence as part of the table definition the same way we did with the autoincrement property. If we wanted to do that we could define the default value of that column as seq_author_uid.nextval().
+
+
+// Create the relationships table
+// this is sometimes called a "Many-to-Many table"
+create table book_to_author
+( book_uid number
+  ,author_uid number
+);
+
+//Insert rows of the known relationships
+insert into book_to_author(book_uid, author_uid)
+values
+ (1,1)  // This row links the 2001 book to Fiona Macdonald
+,(1,2)  // This row links the 2001 book to Gian Paulo Faleschini
+,(2,3)  // Links 2006 book to Laura K Egendorf
+,(3,4)  // Links 2008 book to Jan Grover
+,(4,5)  // Links 2016 book to Jennifer Clapp
+,(5,6); // Links 2015 book to Kathleen Petelinsek
+
+//Check your work by joining the 3 tables together
+//You should get 1 row for every author
+select * 
+from book_to_author ba 
+join author a 
+on ba.author_uid = a.author_uid 
+join book b 
+on b.book_uid=ba.book_uid; 
+
+
+-- Set your worksheet drop lists
+-- DO NOT EDIT THE CODE 
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (  
+     SELECT 'DWW15' as step 
+     ,( select count(*) 
+      from LIBRARY_CARD_CATALOG.PUBLIC.Book_to_Author ba 
+      join LIBRARY_CARD_CATALOG.PUBLIC.author a 
+      on ba.author_uid = a.author_uid 
+      join LIBRARY_CARD_CATALOG.PUBLIC.book b 
+      on b.book_uid=ba.book_uid) as actual 
+     , 6 as expected 
+     , '3NF DB was Created.' as description  
+); 
+
+
+// JSON DDL Scripts
+use database library_card_catalog;
+use role sysadmin;
+
+// Create an Ingestion Table for JSON Data
+create table library_card_catalog.public.author_ingest_json
+(
+  raw_author variant
+);
+
+
+create file format library_card_catalog.public.json_file_format
+type = 'JSON' 
+compression = 'AUTO' 
+enable_octal = FALSE
+allow_duplicate = FALSE
+strip_outer_array = TRUE
+strip_null_values = FALSE 
+ignore_utf8_errors = FALSE; 
+
+
+--Same file but with the other file format we created earlier
+select $1
+from @util_db.public.my_internal_stage/author_with_header.json
+(file_format => library_card_catalog.public.json_file_format);
+
+
+copy into library_card_catalog.public.author_ingest_json
+from @util_db.public.my_internal_stage
+files = ('author_with_header.json')
+file_format = ( format_name=library_card_catalog.public.json_file_format );
+
+select * from library_card_catalog.public.author_ingest_json;
+
+//returns AUTHOR_UID value from top-level object's attribute
+select raw_author:AUTHOR_UID
+from author_ingest_json;
+
+-- Set your worksheet drop lists. DO NOT EDIT THE DORA CODE.
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT 'DWW16' as step
+  ,( select row_count 
+    from LIBRARY_CARD_CATALOG.INFORMATION_SCHEMA.TABLES 
+    where table_name = 'AUTHOR_INGEST_JSON') as actual
+  ,6 as expected
+  ,'Check number of rows' as description
+ ); 
+
+//returns the data in a way that makes it look like a normalized table
+SELECT 
+ raw_author:AUTHOR_UID
+,raw_author:FIRST_NAME::STRING as FIRST_NAME
+,raw_author:MIDDLE_NAME::STRING as MIDDLE_NAME
+,raw_author:LAST_NAME::STRING as LAST_NAME
+FROM AUTHOR_INGEST_JSON;
+
+create or replace table library_card_catalog.public.nested_ingest_json 
+(
+  raw_nested_book VARIANT
+);
+
+
+--Same file but with the other file format we created earlier
+select $1
+from @util_db.public.my_internal_stage/json_book_author_nested.txt
+(file_format => library_card_catalog.public.json_file_format);
+
+copy into library_card_catalog.public.nested_ingest_json
+from @util_db.public.my_internal_stage
+files = ('json_book_author_nested.txt')
+file_format = ( format_name=library_card_catalog.public.json_file_format );
+
+-- Query the Nested JSON Data
+
+//a few simple queries
+select raw_nested_book
+from nested_ingest_json;
+
+select raw_nested_book:year_published
+from nested_ingest_json;
+
+select raw_nested_book:authors
+from nested_ingest_json;
+
+-- Use the FLATTEN COMMAND on Nested Data
+
+//Use these example flatten commands to explore flattening the nested book and author data
+select value:first_name
+from nested_ingest_json
+,lateral flatten(input => raw_nested_book:authors);
+
+select value:first_name
+from nested_ingest_json
+,table(flatten(raw_nested_book:authors));
+
+//Add a CAST command to the fields returned
+SELECT value:first_name::varchar, value:last_name::varchar
+from nested_ingest_json
+,lateral flatten(input => raw_nested_book:authors);
+
+//Assign new column  names to the columns using "AS"
+select value:first_name::varchar as first_nm
+, value:last_name::varchar as last_nm
+from nested_ingest_json
+,lateral flatten(input => raw_nested_book:authors);
+
+-- Set your worksheet drop lists. DO NOT EDIT THE DORA CODE.
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (   
+     SELECT 'DWW17' as step 
+      ,( select row_count 
+        from LIBRARY_CARD_CATALOG.INFORMATION_SCHEMA.TABLES 
+        where table_name = 'NESTED_INGEST_JSON') as actual 
+      , 5 as expected 
+      ,'Check number of rows' as description  
+); 
+
+
+Create database SOCIAL_MEDIA_FLOODGATES;
+use database SOCIAL_MEDIA_FLOODGATES;
+use schema public; 
+
+
+// Create an Ingestion Table for JSON Data
+create table SOCIAL_MEDIA_FLOODGATES.public.TWEET_INGEST
+(
+  RAW_STATUS variant
+);
+
+create file format SOCIAL_MEDIA_FLOODGATES.public.json_file_format
+type = 'JSON' 
+compression = 'AUTO' 
+enable_octal = FALSE
+allow_duplicate = FALSE
+strip_outer_array = TRUE
+strip_null_values = FALSE 
+ignore_utf8_errors = FALSE; 
+
+--Same file but with the other file format we created earlier
+select $1
+from @util_db.public.my_internal_stage/nutrition_tweets.json
+(file_format => SOCIAL_MEDIA_FLOODGATES.public.json_file_format);
+
+copy into SOCIAL_MEDIA_FLOODGATES.public.TWEET_INGEST
+from @util_db.public.my_internal_stage
+files = ('nutrition_tweets.json')
+file_format = ( format_name=SOCIAL_MEDIA_FLOODGATES.public.json_file_format );
+
+//simple select statements -- are you seeing 9 rows?
+select raw_status
+from tweet_ingest;
+
+select raw_status:entities
+from tweet_ingest;
+
+select raw_status:entities:hashtags
+from tweet_ingest;
+
+//Explore looking at specific hashtags by adding bracketed numbers
+//This query returns just the first hashtag in each tweet
+select raw_status:entities:hashtags[0].text
+from tweet_ingest;
+
+//This version adds a WHERE clause to get rid of any tweet that 
+//doesn't include any hashtags
+select raw_status:entities:hashtags[0].text
+from tweet_ingest
+where raw_status:entities:hashtags[0].text is not null;
+
+//Perform a simple CAST on the created_at key
+//Add an ORDER BY clause to sort by the tweet's creation date
+select raw_status:created_at::date
+from tweet_ingest
+order by raw_status:created_at::date;
+
+//Flatten statements can return nested entities only (and ignore the higher level objects)
+select value
+from tweet_ingest
+,lateral flatten
+(input => raw_status:entities:urls);
+
+select value
+from tweet_ingest
+,table(flatten(raw_status:entities:urls));
+
+//Flatten and return just the hashtag text, CAST the text as VARCHAR
+select value:text::varchar as hashtag_used
+from tweet_ingest
+,lateral flatten
+(input => raw_status:entities:hashtags);
+
+//Add the Tweet ID and User ID to the returned table so we could join the hashtag back to it's source tweet
+select raw_status:user:name::text as user_name
+,raw_status:id as tweet_id
+,value:text::varchar as hashtag_used
+from tweet_ingest
+,lateral flatten
+(input => raw_status:entities:hashtags);
+
+-- Set your worksheet drop lists. DO NOT EDIT THE DORA CODE.
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+   SELECT 'DWW18' as step
+  ,( select row_count 
+    from SOCIAL_MEDIA_FLOODGATES.INFORMATION_SCHEMA.TABLES 
+    where table_name = 'TWEET_INGEST') as actual
+  , 9 as expected
+  ,'Check number of rows' as description  
+ ); 
+
+
+  -- Create a View of the URL Data Looking "Normalized"
+create or replace view social_media_floodgates.public.urls_normalized as
+(select raw_status:user:name::text as user_name
+,raw_status:id as tweet_id
+,value:url::varchar as url_used
+from tweet_ingest
+,lateral flatten
+(input => raw_status:entities:urls)
+);
+
+select * from social_media_floodgates.public.urls_normalized;
+
+create or replace view social_media_floodgates.public.HASHTAGS_NORMALIZED as
+(select raw_status:user:name::text as user_name
+,raw_status:id as tweet_id
+, value:text::varchar as hashtags
+from tweet_ingest
+,lateral flatten
+(input => raw_status:entities:hashtags)
+);
+
+select * from social_media_floodgates.public.HASHTAGS_NORMALIZED ;
+
+-- Set your worksheet drop lists. DO NOT EDIT THE DORA CODE.
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT 'DWW19' as step
+  ,( select count(*) 
+    from SOCIAL_MEDIA_FLOODGATES.INFORMATION_SCHEMA.VIEWS 
+    where table_name = 'HASHTAGS_NORMALIZED') as actual
+  , 1 as expected
+  ,'Check number of rows' as description
+ ); 
+
+NOTEBOOK
+~~~~~~~~~~~~~
+set rdc = 'M';
+set fn = 'Tulip';
+select $fn, $rdc;
+insert into garden_plants.flowers.flower_details
+select  $fn, $rdc;
+
+select * from garden_plants.flowers.flower_details
+
+STREAMLIT
+~~~~~~~~~~~~~
+# Import python packages
+import streamlit as st
+from snowflake.snowpark.context import get_active_session
+
+# Write directly to the app
+st.title(":apple: Uncle Yer's Fruit details :apple:")
+st.write(
+    """Enter Fruit name and Root depth code below.
+    """)
+
+# Get the current credentials
+session = get_active_session()
+
+fn = st.text_input('Fruit Name:')
+rdc = st.selectbox('Root Depth:', ('S','M','D'))
+
+if st.button('Submit'):
+    # st.write('Fruit Name entered is ' + fn)
+    # st.write('Root Depth Code chosen is ' + rdc)
+    sql_insert = 'insert into garden_plants.fruits.fruit_details select \''+fn+'\', \''+rdc+'\'' 
+    # st.write(sql_insert)
+    result = session.sql(sql_insert)
+    st.write(result)
+
+
+CMCW - Badge 2: Collaboration, Marketplace & Cost Estimation Workshop - all queries used 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WORKSHEET
+~~~~~~~~~~~~~
+Main Account - worksheet
+~~~~~~~~~~~~~~~~
+select current_account() as account_locator;
+
+select current_organization_name()||'.'||current_account_name() as account_id;
+
+alter database SNOWFLAKE_SAMPLE_DATA
+rename to SNOWFLAKE_SAMPLE_DATA1;
+
+alter database SNOWFLAKE_SAMPLE_DATA1
+rename to SNOWFLAKE_SAMPLE_DATA;
+
+-- Imported privileges Because privileges for a shared database are pre-defined for maximum data security
+grant imported privileges
+on database SNOWFLAKE_SAMPLE_DATA
+to role SYSADMIN;
+
+-- Use Select Statements to Look at Sample Data
+--Check the range of values in the Market Segment Column
+SELECT DISTINCT c_mktsegment
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.CUSTOMER;
+
+--Find out which Market Segments have the most customers
+SELECT c_mktsegment, COUNT(*)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.CUSTOMER
+GROUP BY c_mktsegment
+ORDER BY COUNT(*);
+
+--  Join and Aggregate Shared Data
+
+-- Nations Table
+SELECT N_NATIONKEY, N_NAME, N_REGIONKEY
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION;
+
+-- Regions Table
+SELECT R_REGIONKEY, R_NAME
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION;
+
+-- Join the Tables and Sort
+SELECT R_NAME as Region, N_NAME as Nation
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION 
+JOIN SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION 
+ON N_REGIONKEY = R_REGIONKEY
+ORDER BY R_NAME, N_NAME ASC;
+
+--Group and Count Rows Per Region
+SELECT R_NAME as Region, count(N_NAME) as NUM_COUNTRIES
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION 
+JOIN SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION 
+ON N_REGIONKEY = R_REGIONKEY
+GROUP BY R_NAME;
+
+-- 
+grant usage 
+on warehouse COMPUTE_WH
+to role SYSADMIN;
+
+use role accountadmin;
+
+create or replace api integration dora_api_integration api_provider = aws_api_gateway api_aws_role_arn = 'arn:aws:iam::321463406630:role/snowflakeLearnerAssumedRole' enabled = true api_allowed_prefixes = ('https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora');
+
+create or replace external function util_db.public.grader(        
+ step varchar     
+ , passed boolean     
+ , actual integer     
+ , expected integer    
+ , description varchar) 
+ returns variant 
+ api_integration = dora_api_integration 
+ context_headers = (current_timestamp, current_account, current_statement, current_account_name) 
+ as 'https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora/grader'  
+;  
+
+-- where did you put the function?
+show user functions in account;
+
+-- did you put it here?
+select * 
+from util_db.information_schema.functions
+where function_name = 'GRADER'
+and function_catalog = 'UTIL_DB'
+and function_owner = 'ACCOUNTADMIN';
+
+grant usage 
+on function UTIL_DB.PUBLIC.GRADER(VARCHAR, BOOLEAN, NUMBER, NUMBER, VARCHAR) 
+to SYSADMIN;
+
+-- Check if Dora API integration thru GRADER function is working
+select GRADER(step,(actual = expected), actual, expected, description) as graded_results from (
+SELECT 'DORA_IS_WORKING' as step
+ ,(select 223 ) as actual
+ ,223 as expected
+ ,'Dora is working!' as description
+); 
+
+use role SYSADMIN;
+
+create database INTL_DB;
+
+use schema INTL_DB.PUBLIC;
+
+use role SYSADMIN;
+
+create warehouse INTL_WH 
+with 
+warehouse_size = 'XSMALL' 
+warehouse_type = 'STANDARD' 
+auto_suspend = 600 --600 seconds/10 mins
+auto_resume = TRUE;
+
+use warehouse INTL_WH;
+
+create or replace table intl_db.public.INT_STDS_ORG_3166 
+(iso_country_name varchar(100), 
+ country_name_official varchar(200), 
+ sovreignty varchar(40), 
+ alpha_code_2digit varchar(2), 
+ alpha_code_3digit varchar(3), 
+ numeric_country_code integer,
+ iso_subdivision varchar(15), 
+ internet_domain_code varchar(10)
+);
+
+create or replace file format util_db.public.PIPE_DBLQUOTE_HEADER_CR 
+  type = 'CSV' --use CSV for any flat file
+  compression = 'AUTO' 
+  field_delimiter = '|' --pipe or vertical bar
+  record_delimiter = '\r' --carriage return
+  skip_header = 1  --1 header row
+  field_optionally_enclosed_by = '\042'  --double quotes
+  trim_space = FALSE;
+
+CREATE STAGE uni_cmcw 
+	URL = 's3://uni-cmcw' 
+	DIRECTORY = ( ENABLE = true );
+
+create stage util_db.public.aws_s3_bucket url = 's3://uni-cmcw';
+
+show stages in account; 
+
+LIST @util_db.public.UNI_CMCW;
+LS @util_db.public.UNI_CMCW;
+
+LIST @util_db.public.aws_s3_bucket;
+
+--command to list all the files in the stage for the current user:
+LS @~;
+
+--  AWS is very case sensitive so file names must be used as such in present case
+
+copy into intl_db.public.INT_STDS_ORG_3166 
+from @util_db.public.aws_s3_bucket
+files = ('ISO_Countries_UTF8_pipe.csv')
+file_format = ( format_name=util_db.public.PIPE_DBLQUOTE_HEADER_CR);
+
+select count(*) as found, '249' as expected 
+from INTL_DB.PUBLIC.INT_STDS_ORG_3166; 
+
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from( 
+ SELECT 'CMCW01' as step
+ ,( select count(*) 
+   from snowflake.account_usage.databases
+   where database_name = 'INTL_DB' 
+   and deleted is null) as actual
+ , 1 as expected
+ ,'Created INTL_DB' as description
+ );
+
+ -- Check if the Table is in Right place with Right Name
+select count(*) as OBJECTS_FOUND
+from <database name>.INFORMATION_SCHEMA.TABLES 
+where table_schema=<schema name> 
+and table_name= <table name>;
+
+-- looking for INTL_DB.PUBLIC.INT_STDS_ORG_3166 
+
+select count(*) as OBJECTS_FOUND
+from INTL_DB.INFORMATION_SCHEMA.TABLES 
+where table_schema='PUBLIC'
+and table_name= 'INT_STDS_ORG_3166';
+
+select *
+from INTL_DB.INFORMATION_SCHEMA.TABLES;
+
+-- to see how many rows are contained in INTL_DB.PUBLIC.INT_STDS_ORG_3166
+
+select row_count
+from INTL_DB.INFORMATION_SCHEMA.TABLES 
+where table_schema='PUBLIC'
+and table_name= 'INT_STDS_ORG_3166';
+
+select * 
+from INTL_DB.INFORMATION_SCHEMA.TABLES 
+where table_schema='PUBLIC'
+and table_name= 'INT_STDS_ORG_3166';
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from(
+SELECT 'CMCW02' as step
+ ,( select count(*) 
+   from INTL_DB.INFORMATION_SCHEMA.TABLES 
+   where table_schema = 'PUBLIC' 
+   and table_name = 'INT_STDS_ORG_3166') as actual
+ , 1 as expected
+ ,'ISO table created' as description
+);
+
+-- set your worksheet drop lists to the location of your GRADER function 
+-- either role can be used
+
+-- DO NOT EDIT BELOW THIS LINE 
+select grader(step, (actual = expected), actual, expected, description) as graded_results from( 
+SELECT 'CMCW03' as step 
+ ,(select row_count 
+   from INTL_DB.INFORMATION_SCHEMA.TABLES  
+   where table_name = 'INT_STDS_ORG_3166') as actual 
+ , 249 as expected 
+ ,'ISO Table Loaded' as description 
+); 
+
+--  Join Local Data with Shared Data
+select  
+     iso_country_name
+    ,country_name_official,alpha_code_2digit
+    ,r_name as region
+from INTL_DB.PUBLIC.INT_STDS_ORG_3166 i
+left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION n
+on upper(i.iso_country_name)= n.n_name
+left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION r
+on n_regionkey = r_regionkey;
+
+-- Convert the Select Statement into a View
+create view intl_db.public.NATIONS_SAMPLE_PLUS_ISO 
+( iso_country_name
+  ,country_name_official
+  ,alpha_code_2digit
+  ,region) AS
+  select  
+     iso_country_name
+    ,country_name_official,alpha_code_2digit
+    ,r_name as region
+from INTL_DB.PUBLIC.INT_STDS_ORG_3166 i
+left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION n
+on upper(i.iso_country_name)= n.n_name
+left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION r
+on n_regionkey = r_regionkey
+;
+
+select * from intl_db.public.NATIONS_SAMPLE_PLUS_ISO;
+
+-- SET YOUR DROPLISTS PRIOR TO RUNNING THE CODE BELOW 
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from(
+SELECT 'CMCW04' as step
+ ,( select count(*) 
+   from INTL_DB.PUBLIC.NATIONS_SAMPLE_PLUS_ISO) as actual
+ , 249 as expected
+ ,'Nations Sample Plus Iso' as description
+);
+
+create table intl_db.public.CURRENCIES 
+(
+  currency_ID integer, 
+  currency_char_code varchar(3), 
+  currency_symbol varchar(4), 
+  currency_digital_code varchar(3), 
+  currency_digital_name varchar(30)
+)
+  comment = 'Information about currencies including character codes, symbols, digital codes, etc.';
+
+
+create table intl_db.public.COUNTRY_CODE_TO_CURRENCY_CODE 
+  (
+    country_char_code varchar(3), 
+    country_numeric_code integer, 
+    country_name varchar(100), 
+    currency_name varchar(100), 
+    currency_char_code varchar(3), 
+    currency_numeric_code integer
+  ) 
+  comment = 'Mapping table currencies to countries';
+
+create file format util_db.public.CSV_COMMA_LF_HEADER
+  type = 'CSV' 
+  field_delimiter = ',' 
+  record_delimiter = '\n' -- the n represents a Line Feed character
+  skip_header = 1 
+;
+
+copy into intl_db.public.COUNTRY_CODE_TO_CURRENCY_CODE  
+from @util_db.public.aws_s3_bucket
+files = ('country_code_to_currency_code.csv')
+file_format = ( format_name=util_db.public.CSV_COMMA_LF_HEADER);
+
+copy into intl_db.public.CURRENCIES  
+from @util_db.public.aws_s3_bucket
+files = ('currencies.csv')
+file_format = ( format_name=util_db.public.CSV_COMMA_LF_HEADER);
+
+-- set your worksheet drop lists
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from(
+SELECT 'CMCW05' as step
+ ,(select row_count 
+  from INTL_DB.INFORMATION_SCHEMA.TABLES 
+  where table_schema = 'PUBLIC' 
+  and table_name = 'COUNTRY_CODE_TO_CURRENCY_CODE') as actual
+ , 265 as expected
+ ,'CCTCC Table Loaded' as description
+);
+
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from(
+SELECT 'CMCW06' as step
+ ,(select row_count 
+  from INTL_DB.INFORMATION_SCHEMA.TABLES 
+  where table_schema = 'PUBLIC' 
+  and table_name = 'CURRENCIES') as actual
+ , 151 as expected
+ ,'Currencies table loaded' as description
+);
+
+select * from intl_db.public.COUNTRY_CODE_TO_CURRENCY_CODE;
+
+select * from intl_db.public.CURRENCIES;
+
+create view intl_db.public.simple_CURRENCy
+(CTY_CODE, CUR_CODE)
+as 
+select country_char_code, currency_char_code from intl_db.public.COUNTRY_CODE_TO_CURRENCY_CODE;
+
+select * from intl_db.public.simple_CURRENCy;
+
+--DO NOT EDIT BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from(
+ SELECT 'CMCW07' as step 
+,( select count(*) 
+  from INTL_DB.PUBLIC.SIMPLE_CURRENCY ) as actual
+, 265 as expected
+,'Simple Currency Looks Good' as description
+);
+
+alter view intl_db.public.NATIONS_SAMPLE_PLUS_ISO
+set secure; 
+
+alter view intl_db.public.SIMPLE_CURRENCY
+set secure; 
+
+-- set your worksheet drop lists to the location of your GRADER function
+--DO NOT EDIT ANYTHING BELOW THIS LINE
+
+--This DORA Check Requires that you RUN two Statements, one right after the other
+show shares in account;
+
+--the above command puts information into memory that can be accessed using result_scan(last_query_id())
+-- If you have to run this check more than once, always run the SHOW command immediately prior
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'CMCW08' as step
+ ,( select IFF(count(*)>0,1,0) 
+    from table(result_scan(last_query_id())) 
+    where "kind" = 'OUTBOUND'
+    and "database_name" = 'INTL_DB') as actual
+ , 1 as expected
+ ,'Outbound Share Created From INTL_DB' as description
+); 
+
+alter database GLOBAL_WEATHER__CLIMATE_DATA_FOR_BI 
+rename to WEATHERSOURCE;
+
+
+--This DORA Check Requires that you RUN two Statements, one right after the other
+show resource monitors in account;
+
+--the above command puts information into memory that can be accessed using result_scan(last_query_id())
+-- If you have to run this check more than once, always run the SHOW command immediately prior
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'CMCW09' as step
+ ,( select IFF(count(*)>0,1,0) 
+    from table(result_scan(last_query_id())) 
+    where "name" = 'DAILY_3_CREDIT_LIMIT'
+    and "credit_quota" = 3
+    and "frequency" = 'DAILY') as actual
+ , 1 as expected
+ ,'Resource Monitors Exist' as description
+); 
+
+show tables in account;
+
+select distinct country from HISTORY_DAY;
+
+select distinct postal_code from HISTORY_DAY where  substr(postal_code,1,3) in ('481','482') limit 20;
+
+select distinct postal_code from HISTORY_DAY where  LEFT(postal_code,3) in ('481','482') limit 20;
+
+select distinct postal_code from HISTORY_DAY where  postal_code like '481%' limit 20;
+
+create database MARKETING;
+
+create schema MARKETING.MAILERS;
+
+create view MARKETING.MAILERS.DETROIT_ZIPS 
+(Detroit_zip_codes) as 
+select distinct postal_code from WEATHERSOURCE.Standard_tile.HISTORY_DAY where  substr(postal_code,1,3) in ('481','482') limit 20;
+
+select count(*) from WEATHERSOURCE.Standard_tile.HISTORY_DAY;
+
+select count(*) from WEATHERSOURCE.Standard_tile.HISTORY_DAY, MARKETING.MAILERS.DETROIT_ZIPS ;
+
+select count(*) from MARKETING.MAILERS.DETROIT_ZIPS b  left join WEATHERSOURCE.Standard_tile.HISTORY_DAY a 
+on a.postal_code = b.Detroit_zip_codes;
+
+select count(*) from MARKETING.MAILERS.DETROIT_ZIPS b join WEATHERSOURCE.Standard_tile.HISTORY_DAY a 
+on a.postal_code = b.Detroit_zip_codes;
+
+select date_valid_std, avg(AVG_CLOUD_COVER_TOT_PCT) as myavg from WEATHERSOURCE.Standard_tile.forecast_day fd 
+join marketing.mailers.detroit_zips dz on 
+fd.postal_code = dz.detroit_zip_codes group by date_valid_std order by myavg ; 
+
+
+
+-- set the worksheet drop lists to match the location of your GRADER function
+--DO NOT MAKE ANY CHANGES BELOW THIS LINE
+
+--RUN THIS DORA CHECK IN YOUR ORIGINAL TRIAL ACCOUNT
+select grader(step, (actual = expected), actual, expected, description) as graded_results from ( SELECT 'CMCW12' as step ,( select count(*) from SNOWFLAKE.ORGANIZATION_USAGE.ACCOUNTS where account_name = 'ACME' 
+ and region like 'AZURE_%' and deleted_on is null) as actual , 1 as expected ,'ACME Account Added on Azure Platform' as description ); 
+
+ 
+ select *
+   from SNOWFLAKE.ORGANIZATION_USAGE.ACCOUNTS ;
+
+-- set the worksheet drop lists to match the location of your GRADER function
+--DO NOT MAKE ANY CHANGES BELOW THIS LINE
+
+--RUN THIS DORA CHECK IN YOUR ORIGINAL TRIAL ACCOUNT
+
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+SELECT 
+  'CMCW13' as step
+ ,( select count(*) 
+   from SNOWFLAKE.ORGANIZATION_USAGE.ACCOUNTS 
+   where account_name = 'AUTO_DATA_UNLIMITED' 
+   and region like 'GCP_%'
+   and deleted_on is null) as actual
+ , 1 as expected
+ ,'ADU Account Added on GCP' as description
+); 
+
+
+ACME Account - worksheet
+~~~~~~~~~~~~~~~~
+drop warehouse ACME_WH;
+
+create warehouse ACME_WH 
+with 
+warehouse_size = 'XSMALL' 
+warehouse_type = 'STANDARD' 
+auto_suspend = 600 --600 seconds/10 mins
+auto_resume = TRUE;
+
+
+create database UTIL_DB;
+
+use role accountadmin;
+create or replace api integration dora_api_integration api_provider = aws_api_gateway api_aws_role_arn = 'arn:aws:iam::321463406630:role/snowflakeLearnerAssumedRole' enabled = true api_allowed_prefixes = ('https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora');
+
+create or replace external function util_db.public.grader(        
+ step varchar     
+ , passed boolean     
+ , actual integer     
+ , expected integer    
+ , description varchar) 
+ returns variant 
+ api_integration = dora_api_integration 
+ context_headers = (current_timestamp, current_account, current_statement, current_account_name) 
+ as 'https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora/grader'  
+;  
+
+alter database GLOBAL_WEATHER__CLIMATE_DATA_FOR_BI 
+rename to WEATHERSOURCE;
+
+create database MARKETING;
+
+create schema MARKETING.MAILERS;
+
+create view MARKETING.MAILERS.DETROIT_ZIPS 
+(Detroit_zip_codes) as 
+select distinct postal_code from WEATHERSOURCE.Standard_tile.HISTORY_DAY where  substr(postal_code,1,3) in ('481','482') limit 20;
+
+select *
+    from snowflake.account_usage.databases
+    where (database_name in ('WEATHERSOURCE','INTERNATIONAL_CURRENCIES')
+           and type = 'IMPORTED DATABASE'
+           and deleted is null)
+    or (database_name = 'MARKETING'
+          and type = 'STANDARD'
+          and deleted is null);           ;
+
+
+-- set your worksheet drop lists to the location of your GRADER function
+--DO NOT EDIT ANYTHING BELOW THIS LINE
+
+--THIS DORA CHECK MUST BE RUN IN THE ACME ACCOUNT!!!!!
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'CMCW10' as step
+ ,( select count(*)
+    from snowflake.account_usage.databases
+    where (database_name in ('WEATHERSOURCE','INTERNATIONAL_CURRENCIES')
+           and type = 'IMPORTED DATABASE'
+           and deleted is null)
+    or (database_name = 'MARKETING'
+          and type = 'STANDARD'
+          and deleted is null)
+   ) as actual
+ , 3 as expected
+ ,'ACME Account Set up nicely' as description
+); 
+
+select count(*) 
+   from MARKETING.MAILERS.DETROIT_ZIPS;
+
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+SELECT 
+  'CMCW11' as step
+ ,( select count(*) 
+   from MARKETING.MAILERS.DETROIT_ZIPS) as actual
+ , 9 as expected
+ ,'Detroit Zips' as description
+); 
+
+create database STOCK;
+drop schema STOCK.public;
+create schema STOCK.UNSOLD;
+
+create or replace table stock.unsold.lotstock
+(
+  vin varchar(25)
+, exterior varchar(50)	
+, interior varchar(50)
+, manuf_name varchar(25)
+, vehicle_type varchar(25)
+, make_name varchar(25)
+, plant_name varchar(25)
+, model_year varchar(25)
+, model_name varchar(25)
+, desc1 varchar(25)
+, desc2 varchar(25)
+, desc3 varchar(25)
+, desc4 varchar(25)
+, desc5 varchar(25)
+, engine varchar(25)
+, drive_type varchar(25)
+, transmission varchar(25)
+, mpg varchar(25)
+);
+
+-- Fill in the rest of the file name by looking at the files in your new stage
+-- Replace the question marks with the file name (remember AWS is case sensitive)
+select $1, $2, $3
+from @stock.unsold.aws_s3_bucket/Lotties_LotStock_Data.csv;
+
+CREATE FILE FORMAT UTIL_DB.PUBLIC.CSV_COMMA_LF_HEADER  
+type = 'CSV' 
+field_delimiter = ',' 
+record_delimiter = '\n' 
+skip_header = 1 
+field_optionally_enclosed_by = '"'  
+trim_space = TRUE;
+
+select $1 as VIN
+, $2 as Exterior, $3 as Interior
+from @stock.unsold.aws_s3_bucket/Lotties_LotStock_Data.csv
+(file_format => util_db.public.csv_comma_lf_header);
+
+CREATE FILE FORMAT util_db.public.CSV_COL_COUNT_DIFF 
+type = 'CSV' 
+field_delimiter = ',' 
+record_delimiter = '\n' 
+field_optionally_enclosed_by = '"'
+trim_space = TRUE
+error_on_column_count_mismatch = FALSE
+parse_header = TRUE;
+
+-- 300
+copy into stock.unsold.lotstock
+from @stock.unsold.aws_s3_bucket/Lotties_LotStock_Data.csv
+file_format = (format_name = util_db.public.csv_col_count_diff)
+match_by_column_name='CASE_INSENSITIVE';
+
+select * from stock.unsold.lotstock;
+
+
+select * 
+from table(ADU_VIN.DECODE.PARSE_AND_ENHANCE_VIN('5UXCR6C0XL9C77256'));
+
+--A simple select from Lot Stock (choose any VIN from the LotStock table)
+select * 
+from stock.unsold.lotstock
+where vin = '5J8YD4H86LL013641';
+
+-- here we use ls for lotstock table and pf for parse function
+-- this more complete statement lets us combine the data already in the table 
+-- with the data returned from the parse function
+select ls.vin, ls.exterior, ls.interior, pf.*
+from
+(select * 
+from table(ADU_VIN.DECODE.PARSE_AND_ENHANCE_VIN('5J8YD4H86LL013641'))
+) pf
+join stock.unsold.lotstock ls
+where pf.vin = ls.vin;
+;
+
+
+set my_vin = '5J8YD4H86LL013641';
+
+select $my_vin;
+
+select ls.vin, pf.manuf_name, pf.vehicle_type
+        , pf.make_name, pf.plant_name, pf.model_year
+        , pf.desc1, pf.desc2, pf.desc3, pf.desc4, pf.desc5
+        , pf.engine, pf.drive_type, pf.transmission, pf.mpg
+from stock.unsold.lotstock ls
+join 
+    (   select 
+          vin, manuf_name, vehicle_type
+        , make_name, plant_name, model_year
+        , desc1, desc2, desc3, desc4, desc5
+        , engine, drive_type, transmission, mpg
+        from table(ADU_VIN.DECODE.PARSE_AND_ENHANCE_VIN($my_vin))
+    ) pf
+on pf.vin = ls.vin;
+
+
+update stock.unsold.lotstock t
+set manuf_name = s.manuf_name
+, vehicle_type = s.vehicle_type
+, make_name = s.make_name
+, plant_name = s.plant_name
+, model_year = s.model_year
+, desc1 = s.desc1
+, desc2 = s.desc2
+, desc3 = s.desc3
+, desc4 = s.desc4
+, desc5 = s.desc5
+, engine = s.engine
+, drive_type = s.drive_type
+, transmission = s.transmission
+, mpg = s.mpg
+from 
+(
+    select ls.vin, pf.manuf_name, pf.vehicle_type
+        , pf.make_name, pf.plant_name, pf.model_year
+        , pf.desc1, pf.desc2, pf.desc3, pf.desc4, pf.desc5
+        , pf.engine, pf.drive_type, pf.transmission, pf.mpg
+    from stock.unsold.lotstock ls
+    join 
+    (   select 
+          vin, manuf_name, vehicle_type
+        , make_name, plant_name, model_year
+        , desc1, desc2, desc3, desc4, desc5
+        , engine, drive_type, transmission, mpg
+        from table(ADU_VIN.DECODE.PARSE_AND_ENHANCE_VIN($my_vin))
+    ) pf
+    on pf.vin = ls.vin
+) s
+where t.vin = s.vin;
+
+
+-- We can count the number of rows in the LotStock table that have not yet been updated.  
+ 
+set row_count = (select count(*) 
+                from stock.unsold.lotstock
+                where manuf_name is null);
+
+select $row_count;
+
+-- This scripting block runs very slow, but it shows how blocks work for people who are new to using them
+DECLARE
+    update_stmt varchar(2000);
+    res RESULTSET;
+    cur CURSOR FOR select vin from stock.unsold.lotstock where manuf_name is null;
+BEGIN
+    OPEN cur;
+    FOR each_row IN cur DO
+        update_stmt := 'update stock.unsold.lotstock t '||
+            'set manuf_name = s.manuf_name ' ||
+            ', vehicle_type = s.vehicle_type ' ||
+            ', make_name = s.make_name ' ||
+            ', plant_name = s.plant_name ' ||
+            ', model_year = s.model_year ' ||
+            ', desc1 = s.desc1 ' ||
+            ', desc2 = s.desc2 ' ||
+            ', desc3 = s.desc3 ' ||
+            ', desc4 = s.desc4 ' ||
+            ', desc5 = s.desc5 ' ||
+            ', engine = s.engine ' ||
+            ', drive_type = s.drive_type ' ||
+            ', transmission = s.transmission ' ||
+            ', mpg = s.mpg ' ||
+            'from ' ||
+            '(       select ls.vin, pf.manuf_name, pf.vehicle_type ' ||
+                    ', pf.make_name, pf.plant_name, pf.model_year ' ||
+                    ', pf.desc1, pf.desc2, pf.desc3, pf.desc4, pf.desc5 ' ||
+                    ', pf.engine, pf.drive_type, pf.transmission, pf.mpg ' ||
+                'from stock.unsold.lotstock ls ' ||
+                'join ' ||
+                '(   select' || 
+                '     vin, manuf_name, vehicle_type' ||
+                '    , make_name, plant_name, model_year ' ||
+                '    , desc1, desc2, desc3, desc4, desc5 ' ||
+                '    , engine, drive_type, transmission, mpg ' ||
+                '    from table(ADU_VIN.DECODE.PARSE_AND_ENHANCE_VIN(\'' ||
+                  each_row.vin || '\')) ' ||
+                ') pf ' ||
+                'on pf.vin = ls.vin ' ||
+            ') s ' ||
+            'where t.vin = s.vin;';
+        res := (EXECUTE IMMEDIATE :update_stmt);
+    END FOR;
+    CLOSE cur;   
+END;
+
+
+use role accountadmin;
+
+create or replace api integration dora_api_integration api_provider = aws_api_gateway api_aws_role_arn = 'arn:aws:iam::321463406630:role/snowflakeLearnerAssumedRole' enabled = true api_allowed_prefixes = ('https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora');
+
+create or replace external function util_db.public.grader(        
+ step varchar     
+ , passed boolean     
+ , actual integer     
+ , expected integer    
+ , description varchar) 
+ returns variant 
+ api_integration = dora_api_integration 
+ context_headers = (current_timestamp, current_account, current_statement, current_account_name) 
+ as 'https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora/grader'  
+;  
+
+-- where did you put the function?
+show user functions in account;
+
+-- set the worksheet drop lists to match the location of your GRADER function
+--DO NOT MAKE ANY CHANGES BELOW THIS LINE
+
+--RUN THIS DORA CHECK IN YOUR ACME ACCOUNT
+
+select grader(step, (actual = expected), actual, expected, description) as graded_results from (
+SELECT 
+  'CMCW14' as step
+ ,( select count(*) 
+   from STOCK.UNSOLD.LOTSTOCK
+   where engine like '%.5 L%'
+   or plant_name like '%z, Sty%'
+   or desc2 like '%xDr%') as actual
+ , 145 as expected
+ ,'Intentionally cryptic test' as description
+); 
+
+
+ADU Account - worksheet
+~~~~~~~~~~~~~~~~
+create database VIN;
+
+drop schema VIN.public;
+
+create schema VIN.DECODE;
+
+--We need a table that will allow WMIs to be decoded into Manufacturer Name, Country and Vehicle Type
+CREATE TABLE vin.decode.wmi_to_manuf 
+(
+     wmi	    varchar(6)
+    ,manuf_id	    number(6)
+    ,manuf_name	    varchar(50)
+    ,country	    varchar(50)
+    ,vehicle_type    varchar(50)
+ );
+ 
+--We need a table that will allow you to go from Manufacturer to Make
+--For example, Mercedes AG of Germany and Mercedes USA both roll up into Mercedes
+--But they use different WMI Codes
+CREATE TABLE vin.decode.manuf_to_make
+(
+     manuf_id	number(6)
+    ,make_name	varchar(50)
+    ,make_id	number(5)
+);
+
+--We need a table that can decode the model year
+-- The year 2001 is represented by the digit 1
+-- The year 2020 is represented by the letter L
+CREATE TABLE vin.decode.model_year
+(
+     model_year_code	varchar(1)
+    ,model_year_name	varchar(4)
+);
+
+--We need a table that can decode which plant at which 
+--the vehicle was assembled
+--You might have code "A" for Honda and code "A" for Ford
+--so you need both the Make and the Plant Code to properly decode 
+--the plant code
+CREATE TABLE vin.decode.manuf_plants
+(
+     make_id	number(5)
+    ,plant_code	varchar(1)
+    ,plant_name	varchar(75)
+ );
+ 
+--We need to use a combination of both the Make and VDS 
+--to decode many attributes including the engine, transmission, etc
+CREATE TABLE vin.decode.make_model_vds
+(
+     make_id	  number(3)
+    ,model_id	  number(6)
+    ,model_name	  varchar(50)
+    ,vds	  varchar(5)
+    ,desc1	  varchar(25)
+    ,desc2	  varchar(25)
+    ,desc3	  varchar(50)
+    ,desc4	  varchar(25)
+    ,desc5	  varchar(25)
+    ,body_style	  varchar(25)
+    ,engine	  varchar(100)
+    ,drive_type	  varchar(50)
+    ,transmission varchar(50)
+    ,mpg  	varchar(25)
+);
+
+--Create a file format and then load each of the 5 Lookup Tables
+--You need a file format if you want to load the table
+CREATE FILE FORMAT vin.decode.comma_sep_oneheadrow 
+type = 'CSV' 
+field_delimiter = ',' 
+record_delimiter = '\n' 
+skip_header = 1 
+field_optionally_enclosed_by = '"'  
+trim_space = TRUE;
+
+
+list @vin.decode.aws_s3_bucket;
+
+-- 193
+COPY INTO vin.decode.wmi_to_manuf
+from @vin.decode.aws_s3_bucket
+files = ('Maxs_WMIToManuf_data.csv')
+file_format =(format_name = vin.decode.comma_sep_oneheadrow);
+
+-- 33
+COPY INTO vin.decode.manuf_to_make
+from @vin.decode.aws_s3_bucket
+files = ('Maxs_ManufToMake_Data.csv')
+file_format =(format_name = vin.decode.comma_sep_oneheadrow);
+
+-- 25
+COPY INTO vin.decode.model_year
+from @vin.decode.aws_s3_bucket
+files = ('Maxs_ModelYear_Data.csv')
+file_format =(format_name = vin.decode.comma_sep_oneheadrow);
+
+--33
+--there's a typo in the stage name here. Remember that AWS is case-sensitive and fix the file name
+COPY INTO vin.decode.manuf_plants
+from @vin.decode.aws_s3_bucket
+files = ('Maxs_ManufPlants_Data.csv')
+file_format =(format_name = vin.decode.comma_sep_oneheadrow);
+
+--102
+--there's one table left to load, and one file left to be loaded. 
+--figure out what goes in each of the <bracketed> areas to make the final load
+COPY INTO vin.decode.make_model_vds
+from @vin.decode.aws_s3_bucket
+files = ('Maxs_MMVDS_Data.csv')
+file_format = (format_name = vin.decode.comma_sep_oneheadrow);
+
+--create a variable and set the value
+set sample_vin = 'SAJAJ4FX8LCP55916';
+
+--check to make sure you set the variable above
+select $sample_vin;
+
+--parse the vin into it's important pieces
+SELECT $sample_vin as VIN
+  , LEFT($sample_vin,3) as WMI
+  , SUBSTR($sample_vin,4,5) as VDS
+  , SUBSTR($sample_vin,10,1) as model_year_code
+  , SUBSTR($sample_vin,11,1) as plant_code
+;
+
+
+-- This code must be run in the same worksheet (session) as the [set sample_vin =] statement, otherwise the variable will not 'exist'
+select VIN
+, manuf_name
+, vehicle_type
+, make_name
+, plant_name
+, model_year_name as model_year
+, model_name
+, desc1
+, desc2
+, desc3
+, desc4
+, desc5
+, engine
+, drive_type
+, transmission
+, mpg
+from
+  ( SELECT $sample_vin as VIN
+  , LEFT($sample_vin,3) as WMI
+  , SUBSTR($sample_vin,4,5) as VDS
+  , SUBSTR($sample_vin,10,1) as model_year_code
+  , SUBSTR($sample_vin,11,1) as plant_code
+  ) vin
+JOIN vin.decode.wmi_to_manuf w 
+    ON vin.wmi = w.wmi
+JOIN vin.decode.manuf_to_make m
+    ON w.manuf_id=m.manuf_id
+JOIN vin.decode.manuf_plants p
+    ON vin.plant_code=p.plant_code
+    AND m.make_id=p.make_id
+JOIN vin.decode.model_year y
+    ON vin.model_year_code=y.model_year_code
+JOIN vin.decode.make_model_vds vds
+    ON vds.vds=vin.vds 
+    AND vds.make_id = m.make_id;
+
+
+--This will get the outline of the function ready to go
+--notice that we added "or replace" and "secure" to this code that was not shown in the screenshot
+create or replace secure function vin.decode.parse_and_enhance_vin(this_vin varchar(25))
+returns table (
+    VIN varchar(25)
+    , manuf_name varchar(25)
+    , vehicle_type varchar(25)
+    , make_name varchar(25)
+    , plant_name varchar(25)
+    , model_year varchar(25)
+    , model_name varchar(25)
+    , desc1 varchar(25)
+    , desc2 varchar(25)
+    , desc3 varchar(25)
+    , desc4 varchar(25)
+    , desc5 varchar(25)
+    , engine varchar(25)
+    , drive_type varchar(25)
+    , transmission varchar(25)
+    , mpg varchar(25)
+)
+as $$
+select this_vin
+, manuf_name
+, vehicle_type
+, make_name
+, plant_name
+, model_year_name as model_year
+, model_name
+, desc1
+, desc2
+, desc3
+, desc4
+, desc5
+, engine
+, drive_type
+, transmission
+, mpg
+from
+  ( SELECT this_vin as VIN
+  , LEFT(this_vin,3) as WMI
+  , SUBSTR(this_vin,4,5) as VDS
+  , SUBSTR(this_vin,10,1) as model_year_code
+  , SUBSTR(this_vin,11,1) as plant_code
+  ) vin
+JOIN vin.decode.wmi_to_manuf w 
+    ON vin.wmi = w.wmi
+JOIN vin.decode.manuf_to_make m
+    ON w.manuf_id=m.manuf_id
+JOIN vin.decode.manuf_plants p
+    ON vin.plant_code=p.plant_code
+    AND m.make_id=p.make_id
+JOIN vin.decode.model_year y
+    ON vin.model_year_code=y.model_year_code
+JOIN vin.decode.make_model_vds vds
+    ON vds.vds=vin.vds 
+    AND vds.make_id = m.make_id
+$$;
+
+
+--In each function call below, we pass in a different VIN as THIS_VIN
+select *
+from table(vin.decode.PARSE_AND_ENHANCE_VIN('SAJAJ4FX8LCP55916'));
+
+select *
+from table(vin.decode.PARSE_AND_ENHANCE_VIN('19UUB2F34LA001631'));
+ 
+select *
+from table(vin.decode.PARSE_AND_ENHANCE_VIN('5UXCR6C0XL9C77256'));
+
+select *
+from table(vin.decode.PARSE_AND_ENHANCE_VIN($sample_vin));
+
+show stages in account;
+
+list @vin.decode.AWS_S3_BUCKET;
+
+
+ESS-DABW - Badge 3: Data Application Builders Workshop - all queries used 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WORKSHEET
+~~~~~~~~~~~~~
+SHOW GRANTS;
+
+GRANT OWNERSHIP ON COMPUTE_WH TO SYSADMIN REVOKE CURRENT GRANTS;  -- Not working
+
+USE ROLE ACCOUNTADMIN;
+DROP WAREHOUSE COMPUTE_WH;
+
+USE ROLE SYSADMIN;
+CREATE OR REPLACE WAREHOUSE COMPUTE_WH
+    WITH WAREHOUSE_SIZE= XSMALL;
+
+create database SMOOTHIES;
+
+create or replace table SMOOTHIES.PUBLIC.FRUIT_OPTIONS
+(
+FRUIT_NAME varchar(25),
+FRUIT_ID number(3)
+);
+
+create file format smoothies.public.two_headerrow_pct_delim
+   type = CSV,
+   skip_header = 2,   
+   field_delimiter = '%',
+   trim_space = TRUE;
+
+   
+CREATE STAGE my_uploaded_files 
+	DIRECTORY = ( ENABLE = true );
+
+
+SELECT $1, $2, $3, $4, $5
+FROM @smoothies.public.my_uploaded_files/fruits_available_for_smoothies.txt
+(FILE_FORMAT => smoothies.public.two_headerrow_pct_delim);
+
+COPY INTO smoothies.public.fruit_options
+from @smoothies.public.my_uploaded_files
+files = ('fruits_available_for_smoothies.txt')
+file_format = (format_name = smoothies.public.two_headerrow_pct_delim)
+on_error = abort_statement
+validation_mode = return_errors
+purge = true;
+
+COPY INTO smoothies.public.fruit_options
+from 
+(select $1 as FRUIT_NAME, $2 as FRUIT_ID
+from @smoothies.public.my_uploaded_files/fruits_available_for_smoothies.txt)
+file_format = (format_name = smoothies.public.two_headerrow_pct_delim)
+on_error = abort_statement
+purge = true;  -- Purge means file will be removed once loaded in table
+
+
+select * from smoothies.public.fruit_options;
+
+-- Remember that you MUST USE ACCOUNTADMIN and UTIL_DB.PUBLIC as your context anytime you run DORA checks!!
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select grader(step, (actual = expected), actual, expected, description) as graded_results from 
+  ( SELECT 
+  'DORA_IS_WORKING' as step
+ ,(select 223) as actual
+ , 223 as expected
+ ,'Dora is working!' as description
+); 
+
+-- Set your worksheet drop lists
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+  SELECT 'DABW001' as step
+ ,( select count(*) 
+   from SMOOTHIES.PUBLIC.FRUIT_OPTIONS) as actual
+ , 25 as expected
+ ,'Fruit Options table looks good' as description
+);
+
+create or replace table SMOOTHIES.PUBLIC.ORDERS
+(
+ingredients varchar(200)
+);
+
+select * from SMOOTHIES.PUBLIC.ORDERS;
+
+-- truncate table SMOOTHIES.PUBLIC.ORDERS;
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+SELECT 'DABW002' as step
+ ,(select IFF(count(*)>=5,5,0)
+    from (select ingredients from smoothies.public.orders
+    group by ingredients)
+ ) as actual
+ ,  5 as expected
+ ,'At least 5 different orders entered' as description
+);
+
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+  SELECT 'DABW003' as step
+ ,(select ascii(fruit_name) from smoothies.public.fruit_options
+where fruit_name ilike 'z%') as actual
+ , 90 as expected
+ ,'A mystery check for the inquisitive' as description
+);
+
+alter table SMOOTHIES.PUBLIC.ORDERS add column NAME_ON_ORDER  varchar(100);
+
+select * from SMOOTHIES.PUBLIC.ORDERS;
+
+alter table SMOOTHIES.PUBLIC.ORDERS add column ORDER_FILLED BOOLEAN DEFAULT FALSE;
+
+update smoothies.public.orders
+       set order_filled = true
+       where name_on_order is null;
+
+-- Set your worksheet drop lists
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+  SELECT 'DABW004' as step
+ ,( select count(*) from smoothies.information_schema.columns
+    where table_schema = 'PUBLIC' 
+    and table_name = 'ORDERS'
+    and column_name = 'ORDER_FILLED'
+    and column_default = 'FALSE'
+    and data_type = 'BOOLEAN') as actual
+ , 1 as expected
+ ,'Order Filled is Boolean' as description
+);
+
+create sequence order_seq
+    start = 1
+    increment = 2
+    comment = 'Provide a unique ID for each smoothi order';
+
+-- truncate table SMOOTHIES.PUBLIC.ORDERS;   
+
+alter table SMOOTHIES.PUBLIC.ORDERS 
+add column order_uid integer --adds the column
+default smoothies.public.order_seq.nextval  --sets the value of the column to sequence
+constraint order_uid unique enforced; --makes sure there is always a unique value in the column
+
+
+create or replace table smoothies.public.orders (
+       order_uid integer default smoothies.public.order_seq.nextval,
+       order_filled boolean default false,
+       name_on_order varchar(100),
+       ingredients varchar(200),
+       constraint order_uid unique (order_uid),
+       order_ts timestamp_ltz default current_timestamp()
+);
+
+
+-- Set your worksheet drop lists
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DABW005' as step
+ ,(select count(*) from SMOOTHIES.INFORMATION_SCHEMA.STAGES
+where stage_name like '%(Stage)') as actual
+ , 2 as expected
+ ,'There seem to be 2 SiS Apps' as description
+);
+
+Create function sum_mystery_bag_vars (var1 number, var2 number, 
+Var3 number)
+    Returns number as 'select var1+var2+var3';
+
+select sum_mystery_bag_vars(12,36,204);
+
+set win_rev = 20;
+set cloud_rev = 35;
+set D365_rev = 1.4;
+
+select sum_mystery_bag_vars($win_rev,$cloud_rev,$D365_rev);
+
+set this = -10.5;
+set that = 2;
+set the_other =  1000;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+  SELECT 'DABW006' as step
+ ,( select util_db.public.sum_mystery_bag_vars($this,$that,$the_other)) as actual
+ , 991.5 as expected
+ ,'Mystery Bag Function Output' as description
+);
+
+show functions in account;
+
+set alternating_caps_phrase = 'wOW SnoWFLake Can do A LoT oF THINgs wItH InBUilt FunCTiOnS';
+
+select $alternating_caps_phrase;
+select initcap($alternating_caps_phrase);
+
+Create function UTIL_DB.PUBLIC.NEUTRALIZE_WHINING (str_in varchar)
+    Returns varchar as 'select initcap(str_in)';
+
+select UTIL_DB.PUBLIC.NEUTRALIZE_WHINING($alternating_caps_phrase);
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+ SELECT 'DABW007' as step
+ ,( select hash(neutralize_whining('bUt mOm i wAsHeD tHe dIsHes yEsTeRdAy'))) as actual
+ , -4759027801154767056 as expected
+ ,'WHINGE UDF Works' as description
+);
+
+-- DO NOT EDIT ANYTHING BELOW THIS LINE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from (
+   SELECT 'DABW008' as step 
+   ,( select sum(hash_ing) from
+      (select hash(ingredients) as hash_ing
+       from smoothies.public.orders
+       where order_ts is not null 
+       and name_on_order is not null 
+       and (name_on_order = 'Kevin' and order_filled = FALSE and hash_ing = 7976616299844859825) 
+       or (name_on_order ='Divya' and order_filled = TRUE and hash_ing = -6112358379204300652)
+       or (name_on_order ='Xi' and order_filled = TRUE and hash_ing = 1016924841131818535))
+     ) as actual 
+   , 2881182761772377708 as expected 
+   ,'Followed challenge lab directions' as description
+); 
+
+select hash(ingredients) as hash_ing
+       from smoothies.public.orders
+       where order_ts is not null 
+       and name_on_order is not null and name_on_order in ('Kevin','Divya','Xi');
+
+
+select hash(ingredients) as hash_ing,* from smoothies.public.orders where name_on_order in ('Kevin','Divya','Xi');
+
+select hash(ingredients) as hash_ing,* from smoothies.public.orders where name_on_order = 'Kevin' and order_filled = FALSE;
+
+update smoothies.public.orders  
+set ingredients = 'Vanilla Fruit Nectarine '
+where name_on_order = 'Xi';
+
+select  hash('ApplesLimeXimenia');    -- -4177026788988446040   7976616299844859825
+select  hash('Dragon FruitGuavaFigsJackfruitBlueberries');  -- 2531626804498130288 -6112358379204300652
+select  hash('Vanilla FruitNectarine');   -- 1387875872849438362  1016924841131818535
+
+select  hash('Apples Lime Ximenia ');    -- -4177026788988446040   7976616299844859825
+select  hash('Dragon Fruit Guava Figs Jackfruit Blueberries ');  -- 2531626804498130288 -6112358379204300652
+select  hash('Vanilla Fruit Nectarine ');   -- 1387875872849438362  1016924841131818535
+
+STREAMLIT APP for Order placeing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Import python packages
+import streamlit as st
+from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.functions import col
+
+# Write directly to the app
+st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
+st.write(
+    """Choose the Fruits you want in your custome Smoothie!
+    """
+)
+
+name_on_order = st.text_input('Name on Smoothie:')
+st.write('The name on your Smoothie will be :', name_on_order)
+
+session = get_active_session() 
+# Instead of hardcoded choices bring data from table
+
+# option = st.selectbox ('What is your Fav Fruit?',('Banana', 'Strawberries', 'Peaches') )
+# st.write('Your Fav Fruit is : ', option)
+
+# Fetch only the Fruit_name column from table
+# my_dataframe = session.table("smoothies.public.fruit_options")
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+
+# Add a Multiselect instead of table display
+#st.dataframe(data=my_dataframe,use_container_width=True)
+
+ingredients_list = st.multiselect (
+    'Choose upto 5 ingredients:',
+    my_dataframe,
+    max_selections = 5
+)
+# Display the choices by customer only when atleast one fruit is selected
+# Take all the choices as string in ingredients_string
+if ingredients_list:
+    #st.write(ingredients_list)
+    #st.text(ingredients_list)
+    ingredients_string=''
+
+    for fruit_chosen in ingredients_list:
+        ingredients_string += fruit_chosen
+    #st.write(ingredients_string)
+
+    my_insert_stmt = """ insert into smoothies.public.orders(ingredients,NAME_ON_ORDER)
+            values ('""" + ingredients_string + """','"""+ name_on_order + """')"""
+
+    #st.write(my_insert_stmt)
+    #st.stop()
+    time_to_insert = st.button("Submit Order")
+    
+    #if ingredients_string:
+    if time_to_insert:
+        session.sql(my_insert_stmt).collect()
+        st.success('Your Smoothie is ordered!', icon="✅")
+
+
+st.write(my_dataframe.queries)
+
+STREAMLIT APP for Order Serving
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Import python packages
+import time
+import streamlit as st
+from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.functions import col, when_matched
+
+# Write directly to the app
+st.title(":cup_with_straw: Pending Smoothie Orders :cup_with_straw:")
+st.write(
+    """Orders that need to be filled 
+    """
+)
+
+session = get_active_session() 
+Pend_dataframe = session.table("smoothies.public.orders").filter(col("ORDER_FILLED")==0).collect()
+
+if Pend_dataframe:
+    editable_df = st.data_editor(Pend_dataframe)
+    time_to_insert = st.button("Submit")
+
+    if time_to_insert:
+        og_dataset = session.table("smoothies.public.orders")
+        edited_dataset = session.create_dataframe(editable_df)
+        try:
+            og_dataset.merge(edited_dataset
+                     , (og_dataset['ORDER_UID'] == edited_dataset['ORDER_UID'])
+                     , [when_matched().update({'ORDER_FILLED': edited_dataset['ORDER_FILLED']})]
+                    )
+            st.success('Order(s) update!', icon = '👍')
+            time.sleep(2)
+            st.rerun()
+        except:
+            st.write('Something went wrong')
+
+st.stop()
+
+STREAMLIT APP for Order placeing - Outside of Snowflake in Github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Import python packages
+import streamlit as st
+import requests 
+#from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.functions import col
+
+# Write directly to the app
+st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
+st.write(
+    """Choose the Fruits you want in your custome Smoothie!
+    """
+)
+
+name_on_order = st.text_input('Name on Smoothie:')
+st.write('The name on your Smoothie will be :', name_on_order)
+
+cnx = st.connection("snowflake")
+session = cnx.session()
+#session = get_active_session() 
+# Instead of hardcoded choices bring data from table
+
+# option = st.selectbox ('What is your Fav Fruit?',('Banana', 'Strawberries', 'Peaches') )
+# st.write('Your Fav Fruit is : ', option)
+
+# Fetch only the Fruit_name column from table
+# my_dataframe = session.table("smoothies.public.fruit_options")
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+
+# Add a Multiselect instead of table display
+#st.dataframe(data=my_dataframe,use_container_width=True)
+
+ingredients_list = st.multiselect (
+    'Choose upto 5 ingredients:',
+    my_dataframe,
+    max_selections = 5
+)
+# Display the choices by customer only when atleast one fruit is selected
+# Take all the choices as string in ingredients_string
+if ingredients_list:
+    #st.write(ingredients_list)
+    #st.text(ingredients_list)
+    ingredients_string=''
+
+    for fruit_chosen in ingredients_list:
+        ingredients_string += fruit_chosen + ' '
+        st.subheader(fruit_chosen + 'Nutrition Information')
+        fruityvice_response = requests.get('https://fruityvice.com/api/fruit/' + fruit_chosen)
+        fv_df = st.dataframe(data= fruityvice_response.json(), use_container_width=True)  # convert the response JSON into dataframe
+st.text(fruityvice_response)
+
+    #st.write(ingredients_string)
+
+    my_insert_stmt = """ insert into smoothies.public.orders(ingredients,NAME_ON_ORDER)
+            values ('""" + ingredients_string + """','"""+ name_on_order + """')"""
+
+    #st.write(my_insert_stmt)
+    #st.stop()
+    time_to_insert = st.button("Submit Order")
+    
+    #if ingredients_string:
+    if time_to_insert:
+        session.sql(my_insert_stmt).collect()
+        st.success('Your Smoothie is ordered!', icon="✅")
+
+#st.write(my_dataframe.queries)
+
+# environment.yml - for Streamlit app in Snowflake
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+name: app_environment
+channels:
+  - snowflake
+dependencies:
+  - python=3.8.*
+  - snowflake-snowpark-python=
+  - streamlit=
+
+# requirements.txt - for Streamlit app in Github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+snowflake-snowpark-python
+streamlit
+requests
+
+Connection Secret - for Streamlit app in Github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[connections.snowflake]
+account = "SJB46229"        - Account locator (SJB46229) or can use (YJEYNPL-XEB15069) - Account ID with - instead of . in URL - YJEYNPL.XEB15069 - https://yjeynpl-xeb15069.snowflakecomputing.com/console/login
+user = "nesanawsenter"      - User name
+password = "youpR@1ndr0p"   - Password
+role = "SYSADMIN"           - Role
+warehouse = "COMPUTE_WH"    - Warehouse to use
+database = "SMOOTHIES"      - Database
+schema = "PUBLIC"           - Schema
+client_session_keep_alive = true
+
+
+
+ESS-DLKW - Badge 4: Data Lake Workshop - all queries used 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WORKSHEET
+~~~~~~~~~~~~~
+use role accountadmin;
+
+select util_db.public.grader(step, (actual = expected), actual, expected, description) as graded_results from
+(SELECT 
+ 'DORA_IS_WORKING' as step
+ ,(select 123 ) as actual
+ ,123 as expected
+ ,'Dora is working!' as description
+); 
+
+create or replace table util_db.public.my_data_types
+(
+  my_number number
+, my_text varchar(10)
+, my_bool boolean
+, my_float float
+, my_date date
+, my_timestamp timestamp_tz
+, my_variant variant
+, my_array array
+, my_object object
+, my_geography geography
+, my_geometry geometry
+, my_vector vector(int,16)
+);
+
+create database ZENAS_ATHLEISURE_DB;
+drop schema ZENAS_ATHLEISURE_DB.PUBLIC;
+create schema ZENAS_ATHLEISURE_DB.PRODUCTS;
+
+CREATE STAGE sweatsuits 
+	DIRECTORY = ( ENABLE = true ) 
+	ENCRYPTION = ( TYPE = 'SNOWFLAKE_SSE' );
+
+    
+CREATE STAGE PRODUCT_METADATA 
+	DIRECTORY = ( ENABLE = true );
+	
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+ SELECT
+ 'DLKW01' as step
+  ,( select count(*)  
+      from ZENAS_ATHLEISURE_DB.INFORMATION_SCHEMA.STAGES 
+      where stage_schema = 'PRODUCTS'
+      and 
+      (stage_type = 'Internal Named' 
+      and stage_name = ('PRODUCT_METADATA'))
+      or stage_name = ('SWEATSUITS')
+   ) as actual
+, 2 as expected
+, 'Zena stages look good' as description
+); 
+
+list @product_metadata;
+
+
+list @zenas_athleisure_db.products.product_metadata;
+
+select $1
+from @product_metadata;   -- Selects first column from all three files in the stage
+
+-- One file at a time view first column
+select $1
+from @product_metadata/product_coordination_suggestions.txt;   -- ^
+select $1
+from @product_metadata/sweatsuit_sizes.txt;   -- ;
+select $1
+from @product_metadata/swt_product_line.txt;  -- |
+
+create file format zmd_file_format_1
+RECORD_DELIMITER = '^';
+
+select $1
+from @product_metadata/product_coordination_suggestions.txt
+(file_format => zmd_file_format_1);
+
+create or replace file format zmd_file_format_3
+FIELD_DELIMITER = '='
+RECORD_DELIMITER = '^'
+ trim_space = true; 
+
+select $1, $2
+from @product_metadata/product_coordination_suggestions.txt
+(file_format => zmd_file_format_3);
+
+create or replace file format zmd_file_format_1
+-- FIELD_DELIMITER = ';';
+ RECORD_DELIMITER = ';'
+  trim_space = true;
+
+select $1 as sizes_available
+from @product_metadata/sweatsuit_sizes.txt
+(file_format => zmd_file_format_1 );
+
+create or replace file format zmd_file_format_2
+ RECORD_DELIMITER = ';'
+ FIELD_DELIMITER = '|'
+ trim_space = true;
+
+ select $1, $2,$3 
+from @product_metadata/swt_product_line.txt
+(file_format => zmd_file_format_2 );
+ 
+Select REPLACE($1, chr(13)||char(10)) as size, $2,$3 
+from @product_metadata/swt_product_line.txt
+(file_format => zmd_file_format_2);
+
+create view zenas_athleisure_db.products.sweatsuit_sizes as 
+Select REPLACE($1, chr(13)||char(10)) as sizes_available 
+from @product_metadata/sweatsuit_sizes.txt
+(file_format => zmd_file_format_1 )
+where sizes_available <> '';
+
+select * from zenas_athleisure_db.products.sweatsuit_sizes;
+
+create or replace view  zenas_athleisure_db.products.SWEATBAND_PRODUCT_LINE as
+Select REPLACE($1, chr(13)||char(10)) as product_code, $2 as HEADBAND_DESCRIPTION ,$3 as WRISTBAND_DESCRIPTION 
+from @product_metadata/swt_product_line.txt
+(file_format => zmd_file_format_2);
+
+select * from zenas_athleisure_db.products.SWEATBAND_PRODUCT_LINE;
+
+create or replace view  zenas_athleisure_db.products.SWEATBAND_COORDINATION as
+select $1 as PRODUCT_CODE , $2 as HAS_MATCHING_SWEATSUIT
+from @product_metadata/product_coordination_suggestions.txt
+(file_format => zmd_file_format_3);
+
+select * from zenas_athleisure_db.products.SWEATBAND_COORDINATION;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+ SELECT
+   'DLKW02' as step
+   ,( select sum(tally) from
+        (select count(*) as tally
+        from ZENAS_ATHLEISURE_DB.PRODUCTS.SWEATBAND_PRODUCT_LINE
+        where length(product_code) > 7 
+        union
+        select count(*) as tally
+        from ZENAS_ATHLEISURE_DB.PRODUCTS.SWEATSUIT_SIZES
+        where LEFT(sizes_available,2) = char(13)||char(10))     
+     ) as actual
+   ,0 as expected
+   ,'Leave data where it lands.' as description
+); 
+
+select product_code, has_matching_sweatsuit
+from zenas_athleisure_db.products.sweatband_coordination;
+
+select product_code, headband_description, wristband_description
+from zenas_athleisure_db.products.sweatband_product_line;
+
+select sizes_available
+from zenas_athleisure_db.products.sweatsuit_sizes;
+
+list @zenas_athleisure_db.products.sweatsuits;
+
+select $1 from @sweatsuits; -- Trying to select first col of image file in stage
+
+select $1
+from @sweatsuits/purple_sweatsuit.png;  -- Try on just one file
+
+-- 🥋 Query with 2 Built-In Meta-Data Columns
+select metadata$filename, metadata$file_row_number
+from @sweatsuits/purple_sweatsuit.png;
+
+select metadata$filename, count(metadata$file_row_number)
+from @sweatsuits group by 1;
+
+select * 
+from directory(@sweatsuits);
+
+select REPLACE(relative_path, '_', ' ') as no_underscores_filename
+, REPLACE(no_underscores_filename, '.png') as just_words_filename
+, INITCAP(just_words_filename) as product_name
+from directory(@sweatsuits);
+
+select INITCAP(REPLACE(REPLACE(relative_path, '_', ' '),'.png')) as product_name
+from directory(@sweatsuits);
+
+--create an internal table for some sweatsuit info
+create or replace table zenas_athleisure_db.products.sweatsuits (
+	color_or_style varchar(25),
+	file_name varchar(50),
+	price number(5,2)
+);
+
+--fill the new table with some data
+insert into  zenas_athleisure_db.products.sweatsuits 
+          (color_or_style, file_name, price)
+values
+ ('Burgundy', 'burgundy_sweatsuit.png',65)
+,('Charcoal Grey', 'charcoal_grey_sweatsuit.png',65)
+,('Forest Green', 'forest_green_sweatsuit.png',64)
+,('Navy Blue', 'navy_blue_sweatsuit.png',65)
+,('Orange', 'orange_sweatsuit.png',65)
+,('Pink', 'pink_sweatsuit.png',63)
+,('Purple', 'purple_sweatsuit.png',64)
+,('Red', 'red_sweatsuit.png',68)
+,('Royal Blue',	'royal_blue_sweatsuit.png',65)
+,('Yellow', 'yellow_sweatsuit.png',67);
+
+select * from zenas_athleisure_db.products.sweatsuits;
+truncate table zenas_athleisure_db.products.sweatsuits;
+
+select * 
+from directory(@sweatsuits);
+
+select INITCAP(REPLACE(REPLACE(relative_path, '_', ' '),'.png')) as product_name,
+ * from  directory(@sweatsuits) d
+ join zenas_athleisure_db.products.sweatsuits s 
+ on d.relative_path = s.file_name;
+
+select INITCAP(REPLACE(REPLACE(d.relative_path, '_', ' '),'.png')) as product_name,
+ s.file_name, s.color_or_style, s.price, d.file_URL from  directory(@sweatsuits) d
+ join zenas_athleisure_db.products.sweatsuits s 
+ on d.relative_path = s.file_name;
+ 
+create view zenas_athleisure_db.products.PRODUCT_LIST as 
+select INITCAP(REPLACE(REPLACE(d.relative_path, '_', ' '),'.png')) as product_name,
+ s.file_name, s.color_or_style, s.price, d.file_URL from  directory(@sweatsuits) d
+ join zenas_athleisure_db.products.sweatsuits s 
+ on d.relative_path = s.file_name;
+
+select * from zenas_athleisure_db.products.PRODUCT_LIST;
+
+select * from zenas_athleisure_db.products.SWEATSUIT_SIZES;
+
+select * 
+from product_list p
+cross join sweatsuit_sizes;
+
+create view zenas_athleisure_db.products.catalog as 
+select * 
+from product_list p
+cross join sweatsuit_sizes;
+
+select * from zenas_athleisure_db.products.catalog;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+ SELECT
+ 'DLKW03' as step
+ ,( select count(*) from ZENAS_ATHLEISURE_DB.PRODUCTS.CATALOG) as actual
+ ,180 as expected
+ ,'Cross-joined view exists' as description
+); 
+
+-- Add a table to map the sweatsuits to the sweat band sets
+create table zenas_athleisure_db.products.upsell_mapping
+(
+sweatsuit_color_or_style varchar(25)
+,upsell_product_code varchar(10)
+);
+
+--populate the upsell table
+insert into zenas_athleisure_db.products.upsell_mapping
+(
+sweatsuit_color_or_style
+,upsell_product_code 
+)
+VALUES
+('Charcoal Grey','SWT_GRY')
+,('Forest Green','SWT_FGN')
+,('Orange','SWT_ORG')
+,('Pink', 'SWT_PNK')
+,('Red','SWT_RED')
+,('Yellow', 'SWT_YLW');
+
+-- Zena needs a single view she can query for her website prototype
+create view catalog_for_website as 
+select color_or_style
+,price
+,file_name
+, get_presigned_url(@sweatsuits, file_name, 3600) as file_url
+,size_list
+,coalesce('Consider: ' ||  headband_description || ' & ' || wristband_description, 'Consider: White, Black or Grey Sweat Accessories')  as upsell_product_desc
+from
+(   select color_or_style, price, file_name
+    ,listagg(sizes_available, ' | ') within group (order by sizes_available) as size_list
+    from catalog
+    group by color_or_style, price, file_name
+) c
+left join upsell_mapping u
+on u.sweatsuit_color_or_style = c.color_or_style
+left join sweatband_coordination sc
+on sc.product_code = u.upsell_product_code
+left join sweatband_product_line spl
+on spl.product_code = sc.product_code;
+
+
+select * from zenas_athleisure_db.products.catalog_for_website;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DLKW04' as step
+ ,( select count(*) 
+  from zenas_athleisure_db.products.catalog_for_website 
+  where upsell_product_desc not like '%e, Bl%') as actual
+ ,6 as expected
+ ,'Relentlessly resourceful' as description
+); 
+
+
+FILE_URL
+ZENAS_ATHLEISURE_DB.PRODUCTS."JZPON3NQZPC5BV5B (Stage)"burgundy_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/charcoal_grey_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/forest_green_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/navy_blue_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/orange_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/pink_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/purple_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/red_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/royal_blue_sweatsuit%2epng
+https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/yellow_sweatsuit%2epng
+
+create database MELS_SMOOTHIE_CHALLENGE_DB;
+drop schema MELS_SMOOTHIE_CHALLENGE_DB.PUBLIC;
+create schema MELS_SMOOTHIE_CHALLENGE_DB.TRAILS;
+
+CREATE STAGE MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.TRAILS_GEOJSON 
+	DIRECTORY = ( ENABLE = true );
+
+CREATE STAGE MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.TRAILS_PARQUET 
+	DIRECTORY = ( ENABLE = true );
+    
+PUT file://C:\Users\ADMIN\Downloads\environment.yml @MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.TRAILS_GEOJSON AUTO_COMPRESS = FALSE;
+    
+select * from @TRAILS_GEOJSON (file_format => MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.FF_JSOM );
+
+select $1 from @TRAILS_PARQUET (file_format => MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.FF_PARQUET );
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DLKW05' as step
+ ,( select sum(tally)
+   from
+     (select count(*) as tally
+      from mels_smoothie_challenge_db.information_schema.stages 
+      union all
+      select count(*) as tally
+      from mels_smoothie_challenge_db.information_schema.file_formats)) as actual
+ ,4 as expected
+ ,'Camila\'s Trail Data is Ready to Query' as description
+ ); 
+
+select $1 from @TRAILS_PARQUET (file_format => MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.FF_PARQUET );
+ 
+select 
+$1:sequence_1 as point_id,
+$1:trail_name::varchar as trail_name,
+$1:latitude::number(11,8) as lng,
+$1:longitude::number(11,8) as lat,
+from @TRAILS_PARQUET (file_format => MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.FF_PARQUET )
+order by point_id;
+
+--Using concatenate to prepare the data for plotting on a map
+select top 100 
+ lng||' '||lat as coord_pair
+,'POINT('||coord_pair||')' as trail_point
+from cherry_creek_trail;
+
+create view MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.CHERRY_CREEK_TRAIL 
+as 
+select 
+$1:sequence_1 as point_id,
+$1:trail_name::varchar as trail_name,
+$1:latitude::number(11,8) as lng,
+$1:longitude::number(11,8) as lat,
+from @TRAILS_PARQUET (file_format => MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.FF_PARQUET )
+order by point_id;
+
+--Using concatenate to prepare the data for plotting on a map
+select top 100 
+ lng||' '||lat as coord_pair
+,'POINT('||coord_pair||')' as trail_point
+from cherry_creek_trail;
+
+--To add a column, we have to replace the entire view
+--changes to the original are shown in red
+create or replace view cherry_creek_trail as
+select 
+ $1:sequence_1 as point_id,
+ $1:trail_name::varchar as trail_name,
+ $1:latitude::number(11,8) as lng,
+ $1:longitude::number(11,8) as lat,
+ lng||' '||lat as coord_pair
+from @trails_parquet
+(file_format => ff_parquet)
+order by point_id;
+
+select 
+'LINESTRING('||
+listagg(coord_pair, ',') 
+within group (order by point_id)
+||')' as my_linestring
+from cherry_creek_trail
+where point_id <= 10
+group by trail_name;
+
+select
+$1:features[0]:properties:Name::string as feature_name
+,$1:features[0]:geometry:coordinates::string as feature_coordinates
+,$1:features[0]:geometry::string as geometry
+,$1:features[0]:properties::string as feature_properties
+,$1:crs:properties:name::string as specs
+,$1 as whole_object
+from @trails_geojson (file_format => ff_jsom);
+
+
+create or replace view DENVER_AREA_TRAILS as
+select
+$1:features[0]:properties:Name::string as feature_name
+,$1:features[0]:geometry:coordinates::string as feature_coordinates
+,$1:features[0]:geometry::string as geometry
+,$1:features[0]:properties::string as feature_properties
+,$1:crs:properties:name::string as specs
+,$1 as whole_object
+from @trails_geojson (file_format => ff_jsom);
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DLKW06' as step
+ ,( select count(*) as tally
+      from mels_smoothie_challenge_db.information_schema.views 
+      where table_name in ('CHERRY_CREEK_TRAIL','DENVER_AREA_TRAILS')) as actual
+ ,2 as expected
+ ,'Mel\'s views on the geospatial data from Camila' as description
+ ); 
+
+--Remember this code? 
+select 
+'LINESTRING('||
+listagg(coord_pair, ',') 
+within group (order by point_id)
+||')' as my_linestring
+,st_length(TO_GEOGRAPHY(my_linestring)) as length_of_trail --this line is new! but it won't work!
+from cherry_creek_trail
+group by trail_name;
+
+select get_ddl('view', 'DENVER_AREA_TRAILS');
+
+select * from DENVER_AREA_TRAILS;
+
+create or replace view DENVER_AREA_TRAILS(
+	FEATURE_NAME,
+	FEATURE_COORDINATES,
+	GEOMETRY,
+    trail_length,
+	FEATURE_PROPERTIES,
+	SPECS,
+	WHOLE_OBJECT
+) as
+select
+$1:features[0]:properties:Name::string as feature_name
+,$1:features[0]:geometry:coordinates::string as feature_coordinates
+,$1:features[0]:geometry::string as geometry
+,st_length(TO_GEOGRAPHY(geometry)) as trail_length
+,$1:features[0]:properties::string as feature_properties
+,$1:crs:properties:name::string as specs
+,$1 as whole_object
+from @trails_geojson (file_format => ff_jsom);
+
+select * from DENVER_AREA_TRAILS;
+
+--Create a view that will have similar columns to DENVER_AREA_TRAILS 
+--Even though this data started out as Parquet, and we're joining it with geoJSON data
+--So let's make it look like geoJSON instead.
+create or replace view DENVER_AREA_TRAILS_2 as
+select 
+trail_name as feature_name
+,'{"coordinates":['||listagg('['||lng||','||lat||']',',') within group (order by point_id)||'],"type":"LineString"}' as geometry
+,st_length(to_geography(geometry))  as trail_length
+from cherry_creek_trail
+group by trail_name;
+
+select * from DENVER_AREA_TRAILS_2;
+
+--Create a view that will have similar columns to DENVER_AREA_TRAILS 
+select feature_name, geometry, trail_length
+from DENVER_AREA_TRAILS
+union all
+select feature_name, geometry, trail_length
+from DENVER_AREA_TRAILS_2;
+
+
+select feature_name
+, to_geography(geometry) as my_linestring
+, st_xmin(my_linestring) as min_eastwest
+, st_xmax(my_linestring) as max_eastwest
+, st_ymin(my_linestring) as min_northsouth
+, st_ymax(my_linestring) as max_northsouth
+, trail_length
+from DENVER_AREA_TRAILS
+union all
+select feature_name
+, to_geography(geometry) as my_linestring
+, st_xmin(my_linestring) as min_eastwest
+, st_xmax(my_linestring) as max_eastwest
+, st_ymin(my_linestring) as min_northsouth
+, st_ymax(my_linestring) as max_northsouth
+, trail_length
+from DENVER_AREA_TRAILS_2;
+
+create view trails_and_boundaries as 
+select feature_name
+, to_geography(geometry) as my_linestring
+, st_xmin(my_linestring) as min_eastwest
+, st_xmax(my_linestring) as max_eastwest
+, st_ymin(my_linestring) as min_northsouth
+, st_ymax(my_linestring) as max_northsouth
+, trail_length
+from DENVER_AREA_TRAILS
+union all
+select feature_name
+, to_geography(geometry) as my_linestring
+, st_xmin(my_linestring) as min_eastwest
+, st_xmax(my_linestring) as max_eastwest
+, st_ymin(my_linestring) as min_northsouth
+, st_ymax(my_linestring) as max_northsouth
+, trail_length
+from DENVER_AREA_TRAILS_2;
+
+select * from trails_and_boundaries;
+
+select 'POLYGON(('|| 
+    min(min_eastwest)||' '||max(max_northsouth)||','|| 
+    max(max_eastwest)||' '||max(max_northsouth)||','|| 
+    max(max_eastwest)||' '||min(min_northsouth)||','|| 
+    min(min_eastwest)||' '||min(min_northsouth)||'))' AS my_polygon
+from trails_and_boundaries;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+ SELECT
+  'DLKW07' as step
+   ,( select round(max(max_northsouth))
+      from MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.TRAILS_AND_BOUNDARIES)
+      as actual
+ ,40 as expected
+ ,'Trails Northern Extent' as description
+ ); 
+
+ select * from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_AMENITY_FINANCIAL;
+select * from  OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_AMENITY_HEALTHCARE;
+select * from  OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_STREET;
+
+-- Melanie's Location into a 2 Variables (mc for melanies cafe)
+set mc_lng='-104.97300245114094';
+set mc_lat='39.76471253574085';
+
+--Confluence Park into a Variable (loc for location)
+set loc_lng='-105.00840763333615'; 
+set loc_lat='39.754141917497826';
+
+--Test your variables to see if they work with the Makepoint function
+select st_makepoint($mc_lng,$mc_lat) as melanies_cafe_point;
+select st_makepoint($loc_lng,$loc_lat) as confluent_park_point;
+
+--use the variables to calculate the distance from 
+--Melanie's Cafe to Confluent Park
+select st_distance(
+        st_makepoint($mc_lng,$mc_lat)
+        ,st_makepoint($loc_lng,$loc_lat)
+        ) as mc_to_cp;
+
+
+create schema MELS_SMOOTHIE_CHALLENGE_DB.LOCATIONS;
+
+CREATE OR REPLACE FUNCTION MELS_SMOOTHIE_CHALLENGE_DB.LOCATIONS.distance_to_mc(loc_lng number(38,32),loc_lat number(38,32))
+  RETURNS FLOAT
+  AS
+  $$
+   st_distance(
+        st_makepoint('-104.97300245114094','39.76471253574085')
+        ,st_makepoint(loc_lng,loc_lat)
+        )
+  $$
+  ;        
+
+--Tivoli Center into the variables 
+set tc_lng='-105.00532059763648'; 
+set tc_lat='39.74548137398218';
+
+select distance_to_mc($tc_lng,$tc_lat);
+
+select * 
+from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_AMENITY_SUSTENANCE
+where 
+    ((amenity in ('fast_food','cafe','restaurant','juice_bar'))
+    and 
+    (name ilike '%jamba%' or name ilike '%juice%'
+     or name ilike '%superfruit%'))
+ or 
+    (cuisine like '%smoothie%' or cuisine like '%juice%');
+
+create view MELS_SMOOTHIE_CHALLENGE_DB.LOCATIONS.COMPETITION  as 
+select * 
+from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_AMENITY_SUSTENANCE
+where 
+    ((amenity in ('fast_food','cafe','restaurant','juice_bar'))
+    and 
+    (name ilike '%jamba%' or name ilike '%juice%'
+     or name ilike '%superfruit%'))
+ or 
+    (cuisine like '%smoothie%' or cuisine like '%juice%');
+
+select * from MELS_SMOOTHIE_CHALLENGE_DB.LOCATIONS.COMPETITION;
+
+SELECT
+ name
+ ,cuisine
+ , ST_DISTANCE(
+    st_makepoint('-104.97300245114094','39.76471253574085')
+    , coordinates
+  ) AS distance_to_melanies
+ ,*
+FROM  MELS_SMOOTHIE_CHALLENGE_DB.LOCATIONS.competition
+ORDER by distance_to_melanies;
+
+CREATE OR REPLACE FUNCTION distance_to_mc(lng_and_lat GEOGRAPHY)
+  RETURNS FLOAT
+  AS
+  $$
+   st_distance(
+        st_makepoint('-104.97300245114094','39.76471253574085')
+        ,lng_and_lat
+        )
+  $$
+  ;
+
+  SELECT
+ name
+ ,cuisine
+ ,distance_to_mc(coordinates) AS distance_to_melanies
+ ,*
+FROM  competition
+ORDER by distance_to_melanies;
+
+
+-- Tattered Cover Bookstore McGregor Square
+set tcb_lng='-104.9956203'; 
+set tcb_lat='39.754874';
+
+--this will run the first version of the UDF
+select distance_to_mc($tcb_lng,$tcb_lat);
+
+--this will run the second version of the UDF, bc it converts the coords 
+--to a geography object before passing them into the function
+select distance_to_mc(st_makepoint($tcb_lng,$tcb_lat));
+
+--this will run the second version bc the Sonra Coordinates column
+-- contains geography objects already
+select name
+, distance_to_mc(coordinates) as distance_to_melanies 
+, ST_ASWKT(coordinates)
+from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_SHOP
+where shop='books' 
+and name like '%Tattered Cover%'
+and addr_street like '%Wazee%';
+
+select * from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_SHOP_OUTDOORS_AND_SPORT_VEHICLES where shop = 'bicycle';
+
+CREATE OR REPLACE view mels_smoothie_challenge_db.locations.denver_bike_shops  as 
+select name, 
+  st_distance(
+        st_makepoint('-104.97300245114094','39.76471253574085')
+        ,coordinates 
+        ) as distance_to_melanies
+        ,coordinates
+from OPENSTREETMAP_DENVER.DENVER.V_OSM_DEN_SHOP_OUTDOORS_AND_SPORT_VEHICLES where shop = 'bicycle';    
+
+select * from denver_bike_shops;
+
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT
+  'DLKW08' as step
+  ,( select truncate(distance_to_melanies)
+      from mels_smoothie_challenge_db.locations.denver_bike_shops
+      where name like '%Mojo%') as actual
+  ,14084 as expected
+  ,'Bike Shop View Distance Calc works' as description
+ ); 
+
+ 
+create or replace external table T_CHERRY_CREEK_TRAIL(
+	my_filename varchar(100) as (metadata$filename::varchar(100))
+) 
+location= @trails_parquet
+auto_refresh = true
+file_format = (type = parquet);
+
+create or replace external table T_CHERRY_CREEK_TRAIL(
+	my_filename varchar(100) as (metadata$filename::varchar(100))
+) 
+location= @EXTERNAL_AWS_DLKW
+auto_refresh = true
+file_format = (type = parquet);
+
+select * from T_CHERRY_CREEK_TRAIL;
+
+create secure materialized view MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.SMV_CHERRY_CREEK_TRAIL(
+	POINT_ID,
+	TRAIL_NAME,
+	LNG,
+	LAT,
+	COORD_PAIR,
+    DISTANCE_TO_MELANIES
+) as
+select 
+ value:sequence_1 as point_id,
+ value:trail_name::varchar as trail_name,
+ value:latitude::number(11,8) as lng,
+ value:longitude::number(11,8) as lat,
+ lng||' '||lat as coord_pair,
+ locations.distance_to_mc(lng,lat) as distance_to_melanies
+from t_cherry_creek_trail;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT
+  'DLKW09' as step
+  ,( select row_count
+     from mels_smoothie_challenge_db.information_schema.tables
+     where table_schema = 'TRAILS'
+    and table_name = 'SMV_CHERRY_CREEK_TRAIL')   
+   as actual
+  ,3526 as expected
+  ,'Secure Materialized View Created' as description
+ ); 
+
+ -- For the remainder of this workshop, you should do your work using the ACCOUNTADMIN Snowflake role.
+
+ CREATE OR REPLACE EXTERNAL VOLUME iceberg_external_volume
+   STORAGE_LOCATIONS =
+      (
+         (
+            NAME = 'iceberg-s3-us-west-2'
+            STORAGE_PROVIDER = 'S3'
+            STORAGE_BASE_URL = 's3://uni-dlkw-iceberg'
+            STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::321463406630:role/dlkw_iceberg_role'
+            STORAGE_AWS_EXTERNAL_ID = 'dlkw_iceberg_id'
+         )
+      );
+
+DESC EXTERNAL VOLUME iceberg_external_volume;
+
+-- {"NAME":"iceberg-s3-us-west-2","STORAGE_PROVIDER":"S3","STORAGE_BASE_URL":"s3://uni-dlkw-iceberg","STORAGE_ALLOWED_LOCATIONS":["s3://uni-dlkw-iceberg/*"],"STORAGE_AWS_ROLE_ARN":"arn:aws:iam::321463406630:role/dlkw_iceberg_role","STORAGE_AWS_IAM_USER_ARN":"arn:aws:iam::841162691199:user/ejvr0000-s","STORAGE_AWS_EXTERNAL_ID":"dlkw_iceberg_id","ENCRYPTION_TYPE":"NONE","ENCRYPTION_KMS_KEY_ID":""}
+
+create database my_iceberg_db
+ catalog = 'SNOWFLAKE'
+ external_volume = 'iceberg_external_volume';
+
+set table_name = 'CCT_'||current_account();
+
+select $table_name;
+select current_user();
+
+show functions in account;
+
+-- select current_Organization();
+
+create iceberg table identifier($table_name) (
+    point_id number(10,0)
+    , trail_name string
+    , coord_pair string
+    , distance_to_melanies decimal(20,10)
+    , user_name string
+)
+  BASE_LOCATION = $table_name
+  AS SELECT top 100
+    point_id
+    , trail_name
+    , coord_pair
+    , distance_to_melanies
+    , current_user()
+  FROM MELS_SMOOTHIE_CHALLENGE_DB.TRAILS.SMV_CHERRY_CREEK_TRAIL;
+
+select * from CCT_SJB46229;
+-- Same as above query
+select * from identifier($table_name); 
+
+update identifier($table_name)
+set user_name = 'I am amazing!!'
+where point_id = 1;
+
+update identifier($table_name)
+set TRAIL_NAME = 'I am amazing!!'
+where point_id = 1;
+
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT
+  'DLKW10' as step
+  ,( select row_count
+      from MY_ICEBERG_DB.INFORMATION_SCHEMA.TABLES
+      where table_catalog = 'MY_ICEBERG_DB'
+      and table_name like 'CCT_%'
+      and table_type = 'BASE TABLE')   
+   as actual
+  ,100 as expected
+  ,'Iceberg table created and populated!' as description
+ ); 
+ 
+
+
+
+ESS-DNGW - Badge 5: Data Engineering Workshop - all queries used 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WORKSHEET
+~~~~~~~~~~~~~
+
+USE ROLE ACCOUNTADMIN;
+
+CREATE DATABASE SNOW_PANDAS_DE_QS;
+CREATE SCHEMA SNOW_PANDAS_DE_QS.NOTEBOOKS;
+CREATE SCHEMA SNOW_PANDAS_DE_QS.DATA;
+
+CREATE WAREHOUSE SNOW_PANDAS_DE_QS_WH;
+
+alter user current_user() set default_role = 'SYSADMIN';
+alter user current_user() set default_warehouse = 'COMPUTE_WH';
+alter user current_user() set default_namespace = 'UTIL_DB.PUBLIC';
+
+select util_db.public.grader(step, (actual = expected), actual, expected, description) as graded_results from
+(SELECT 
+ 'DORA_IS_WORKING' as step
+ ,(select 123 ) as actual
+ ,123 as expected
+ ,'Dora is working!' as description
+); 
+
+use role sysadmin;
+
+create database AGS_GAME_AUDIENCE;
+drop schema AGS_GAME_AUDIENCE.public;
+create schema AGS_GAME_AUDIENCE.RAW;
+
+create table game_logs(
+    RAW_LOG variant
+   );
+
+list @UNI_KISHORE/kickoff;
+
+-- s3://uni-kishore/kickoff/DNGW_Sample_from_Agnies_Game.json
+
+create file format AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS
+type = 'JSON' 
+compression = 'AUTO' 
+enable_octal = FALSE
+allow_duplicate = FALSE
+strip_outer_array = TRUE
+strip_null_values = FALSE 
+ignore_utf8_errors = FALSE; 
+
+--Same file but with the other file format we created earlier
+select $1
+from @UNI_KISHORE/kickoff/DNGW_Sample_from_Agnies_Game.json
+(file_format => AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS);
+
+copy into AGS_GAME_AUDIENCE.RAW.game_logs
+from @UNI_KISHORE/kickoff
+file_format = AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS;
+
+-- Did you notice that we did not write out the file name in the FROM line? This is because there is only one file in the kickoff folder. A COPY INTO statement like the one shown above will load EVERY file in the folder if more than one file is there, and the file name is not specified. This will come in very handy later in the course. 
+
+select raw_log, 
+  raw_log:agent::text,
+  raw_log:ip_address::text,
+  raw_log:user_login::text,
+  raw_log:user_event::text,
+  raw_log:datetime_iso8601::TIMESTAMP_NTZ,
+  raw_log:game_subscription_type::text
+  from 
+AGS_GAME_AUDIENCE.RAW.game_logs;
+
+copy into AGS_GAME_AUDIENCE.RAW.game_logs
+from @UNI_KISHORE/updated_feed
+file_format = AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS;
+
+select count(*) from AGS_GAME_AUDIENCE.RAW.game_logs;
+
+select 
+$1:user_login::STRING as user_login,
+$1:user_event::STRING as user_event,
+$1:agent::STRING as agent, 
+$1:game_subscription_type::STRING as game_subscription_type, 
+$1:datetime_iso8601::TIMESTAMP_NTZ as datetime_iso8601,
+$1::STRING as RAW_LOG
+from @UNI_KISHORE/kickoff/DNGW_Sample_from_Agnies_Game.json
+(file_format => AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS);
+
+
+CREATE or replace VIEW AGS_GAME_AUDIENCE.RAW.LOGS as 
+select raw_log as raw_log, 
+  raw_log:agent::text as agent,
+  raw_log:ip_address::text as ip_address,
+  raw_log:user_login::text as user_login,
+  raw_log:user_event::text as user_event,
+  raw_log:datetime_iso8601::TIMESTAMP_NTZ as datetime_iso8601,
+  raw_log:game_subscription_type::text as game_subscription_type
+  from 
+AGS_GAME_AUDIENCE.RAW.game_logs;
+
+select * from AGS_GAME_AUDIENCE.RAW.LOGS;
+
+-- DO NOT EDIT THIS CODE
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+ SELECT
+ 'DNGW01' as step
+  ,(
+      select count(*)  
+      from ags_game_audience.raw.logs
+      where is_timestamp_ntz(to_variant(datetime_iso8601))= TRUE 
+   ) as actual
+, 250 as expected
+, 'Project DB and Log File Set Up Correctly' as description
+); 
+
+select current_timestamp();
+
+--what time zone is your account(and/or session) currently set to? Is it -0700?
+select current_timestamp();   -- 2024-10-31 09:16:40.278 -0700
+
+--worksheets are sometimes called sessions -- we'll be changing the worksheet time zone
+alter session set timezone = 'UTC';
+select current_timestamp();   -- 2024-10-31 16:14:58.494 +0000
+
+--how did the time differ after changing the time zone for the worksheet?
+alter session set timezone = 'Africa/Nairobi';
+select current_timestamp();   -- 2024-10-31 19:15:34.885 +0300
+
+alter session set timezone = 'Pacific/Funafuti';
+select current_timestamp();   -- 2024-11-01 04:15:51.441 +1200
+
+alter session set timezone = 'Asia/Shanghai';
+select current_timestamp();   -- 2024-11-01 00:16:06.977 +0800
+
+--show the account parameter called timezone
+show parameters like 'timezone';
+
+show parameters;
+
+alter session set timezone = 'Asia/Kolkata';
+select current_timestamp();   -- 2024-10-31 21:51:04.568 +0530
+
+alter session set timezone = 'ABC/Kolkata';   -- What are the valid values for each parameter where to find that?
+show parameters;
+
+select $1
+from @UNI_KISHORE/updated_feed/DNGW_updated_feed_0_0_0.json
+(file_format => AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS);
+
+select * from AGS_GAME_AUDIENCE.RAW.LOGS where agent is NULL;  -- New records
+
+select * from AGS_GAME_AUDIENCE.RAW.LOGS where agent is NOT NULL;  -- OLD records
+
+-- You may see the term "schema-on-read" noted in some articles and posts as a great benefit Snowflake is able to provide. In a sense, you are seeing schema-on-read in action, here, because we can load anything we want into a VARIANT column, and parse it out (read it) differently over time. The change in the columns included (the schema difference in the two data loads) doesn't break anything because we are reading the structure after the load, not before or during the data load. 
+
+--looking for empty AGENT column
+select * 
+from ags_game_audience.raw.LOGS
+where agent is null;
+
+--looking for non-empty IP_ADDRESS column
+select 
+RAW_LOG:ip_address::text as IP_ADDRESS
+,*
+from ags_game_audience.raw.LOGS
+where RAW_LOG:ip_address::text is not null;
+
+CREATE or replace VIEW AGS_GAME_AUDIENCE.RAW.LOGS as 
+select 
+  raw_log:ip_address::text as ip_address,
+  raw_log:user_event::text as user_event,
+  raw_log:user_login::text as user_login,
+  raw_log:datetime_iso8601::TIMESTAMP_NTZ as datetime_iso8601,
+  raw_log as raw_log, 
+  from 
+AGS_GAME_AUDIENCE.RAW.game_logs where ip_address is not NULL;
+
+select count(*) from AGS_GAME_AUDIENCE.RAW.LOGS;
+
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+   'DNGW02' as step
+   ,( select sum(tally) from(
+        select (count(*) * -1) as tally
+        from ags_game_audience.raw.logs 
+        union all
+        select count(*) as tally
+        from ags_game_audience.raw.game_logs)     
+     ) as actual
+   ,250 as expected
+   ,'View is filtered' as description
+); 
+
+select parse_ip('198.160.0.04','inet');
+
+select parse_ip('107.217.231.17','inet');
+select parse_ip('107.217.231.17','inet'):host; -- Just return the host from Json object
+select parse_ip('107.217.231.17','inet'):family;
+select parse_ip('100.41.16.160','inet'):ipv4;
+
+
+--Look up Kishore and Prajina's Time Zone in the IPInfo share using his headset's IP Address with the PARSE_IP function.
+select start_ip, end_ip, start_ip_int, end_ip_int, city, region, country, timezone
+from IPINFO_GEOLOC.demo.location
+where parse_ip('100.41.16.160', 'inet'):ipv4 --Kishore's Headset's IP Address
+BETWEEN start_ip_int AND end_ip_int;
+
+select start_ip, end_ip, start_ip_int, end_ip_int, city, region, country, timezone
+from IPINFO_GEOLOC.demo.location
+where parse_ip('27.4.42.232', 'inet'):ipv4 --Kishore's Headset's IP Address
+BETWEEN start_ip_int AND end_ip_int;
+
+
+--Join the log and location tables to add time zone to each row using the PARSE_IP function.
+select logs.*
+       , loc.city
+       , loc.region
+       , loc.country
+       , loc.timezone
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+join IPINFO_GEOLOC.demo.location loc
+where parse_ip(logs.ip_address, 'inet'):ipv4 
+BETWEEN start_ip_int AND end_ip_int;
+
+select *
+from table(snowflake.information_schema.query_history())
+order by start_time
+;
+
+select count(*)
+from table(snowflake.information_schema.query_history())
+;
+
+select *
+from table(snowflake.information_schema.query_history(result_limit=>10000))
+;
+
+--Use two functions supplied by IPShare to help with an efficient IP Lookup Process!
+SELECT logs.ip_address
+, logs.user_login
+, logs.user_event
+, logs.datetime_iso8601
+, city
+, region
+, country
+, timezone 
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+JOIN IPINFO_GEOLOC.demo.location loc 
+ON IPINFO_GEOLOC.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND IPINFO_GEOLOC.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int;
+
+
+--Use two functions supplied by IPShare to help with an efficient IP Lookup Process!
+SELECT logs.ip_address
+, logs.user_login
+, logs.user_event
+, logs.datetime_iso8601
+, city
+, region
+, country
+, timezone as lcl_timezone
+, CONVERT_TIMEZONE('UTC', lcl_timezone, logs.datetime_iso8601) as GAME_EVENT_LTZ
+, DAYNAME (GAME_EVENT_LTZ) DOW_NAME 
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+JOIN IPINFO_GEOLOC.demo.location loc 
+ON IPINFO_GEOLOC.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND IPINFO_GEOLOC.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int;
+
+--a Look Up table to convert from hour number to "time of day name"
+create table ags_game_audience.raw.time_of_day_lu
+(  hour number
+   ,tod_name varchar(25)
+);
+
+--insert statement to add all 24 rows to the table
+insert into ags_game_audience.raw.time_of_day_lu
+values
+(6,'Early morning'),
+(7,'Early morning'),
+(8,'Early morning'),
+(9,'Mid-morning'),
+(10,'Mid-morning'),
+(11,'Late morning'),
+(12,'Late morning'),
+(13,'Early afternoon'),
+(14,'Early afternoon'),
+(15,'Mid-afternoon'),
+(16,'Mid-afternoon'),
+(17,'Late afternoon'),
+(18,'Late afternoon'),
+(19,'Early evening'),
+(20,'Early evening'),
+(21,'Late evening'),
+(22,'Late evening'),
+(23,'Late evening'),
+(0,'Late at night'),
+(1,'Late at night'),
+(2,'Late at night'),
+(3,'Toward morning'),
+(4,'Toward morning'),
+(5,'Toward morning');
+
+
+--Check your table to see if you loaded it properly
+select tod_name, listagg(hour,',') 
+from ags_game_audience.raw.time_of_day_lu
+group by tod_name;
+
+
+--Use two functions supplied by IPShare to help with an efficient IP Lookup Process!
+SELECT logs.ip_address
+, logs.user_login as GAMer_name
+, logs.user_event as game_event_name
+, logs.datetime_iso8601 as game_event_utc
+, city 
+, region
+, country
+, timezone as GAME_LTZ_NAME
+, CONVERT_TIMEZONE('UTC', GAME_LTZ_NAME, logs.datetime_iso8601) as GAME_EVENT_LTZ
+, DAYNAME (GAME_EVENT_LTZ) DOW_NAME 
+, todl.tod_name as tod
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+JOIN IPINFO_GEOLOC.demo.location loc 
+ON IPINFO_GEOLOC.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND IPINFO_GEOLOC.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int
+join ags_game_audience.raw.time_of_day_lu as todl
+on hour(GAME_EVENT_LTZ) = todl.hour;
+
+create schema ags_game_audience.enhanced;
+
+Create or replace Table ags_game_audience.enhanced.logs_enhanced 
+as Select 
+logs.ip_address
+, logs.user_login as GAMer_name
+, logs.user_event as game_event_name
+, logs.datetime_iso8601 as game_event_utc
+, city 
+, region
+, country
+, timezone as GAME_LTZ_NAME
+, CONVERT_TIMEZONE('UTC', GAME_LTZ_NAME, logs.datetime_iso8601) as GAME_EVENT_LTZ
+, DAYNAME (GAME_EVENT_LTZ) DOW_NAME 
+, todl.tod_name as tod_name
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+JOIN IPINFO_GEOLOC.demo.location loc 
+ON IPINFO_GEOLOC.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND IPINFO_GEOLOC.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int
+join ags_game_audience.raw.time_of_day_lu as todl
+on hour(GAME_EVENT_LTZ) = todl.hour;
+
+select * from ags_game_audience.enhanced.logs_enhanced ;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+  SELECT
+   'DNGW03' as step
+   ,( select count(*) 
+      from ags_game_audience.enhanced.logs_enhanced
+      where dow_name = 'Sat'
+      and tod_name = 'Early evening'   
+      and gamer_name like '%prajina'
+     ) as actual
+   ,2 as expected
+   ,'Playing the game on a Saturday evening' as description
+); 
+
+create or replace task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED
+	warehouse=COMPUTE_WH
+	schedule='5 minute'
+	as select 'Hello in 5 mins';
+    
+
+use role accountadmin;
+--You have to run this grant or you won't be able to test your tasks while in SYSADMIN role
+--this is true even if SYSADMIN owns the task!!
+grant execute task on account to role SYSADMIN;
+
+use role sysadmin; 
+--Now you should be able to run the task, even if your role is set to SYSADMIN
+execute task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--the SHOW command might come in handy to look at the task 
+show tasks in account;
+
+--you can also look at any task more in depth using DESCRIBE
+describe task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+EXECUTE TASK AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+create or replace task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED
+	warehouse=COMPUTE_WH
+	schedule='5 minute'
+	as
+    INSERT INTO AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED    -- Added to insert data into table
+    Select 
+logs.ip_address
+, logs.user_login as GAMer_name
+, logs.user_event as game_event_name
+, logs.datetime_iso8601 as game_event_utc
+, city 
+, region
+, country
+, timezone as GAME_LTZ_NAME
+, CONVERT_TIMEZONE('UTC', GAME_LTZ_NAME, logs.datetime_iso8601) as GAME_EVENT_LTZ
+, DAYNAME (GAME_EVENT_LTZ) DOW_NAME 
+, todl.tod_name as tod_name
+from AGS_GAME_AUDIENCE.RAW.LOGS logs
+JOIN IPINFO_GEOLOC.demo.location loc 
+ON IPINFO_GEOLOC.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND IPINFO_GEOLOC.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int
+join ags_game_audience.raw.time_of_day_lu as todl
+on hour(GAME_EVENT_LTZ) = todl.hour;
+
+-- 🥋 Executing the Task to TRY to Load More Rows
+
+--make a note of how many rows you have in the table -- 150
+select count(*)
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+--Run the task to load more rows
+execute task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--check to see how many rows were added (if any!)   -- 150 only
+select count(*)
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+--Run the task to load more rows
+execute task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--check to see how many rows were added (if any!)   -- 293 records now after insert used in task
+select count(*)
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+--first we dump all the rows out of the table
+truncate table ags_game_audience.enhanced.LOGS_ENHANCED;
+
+--then we put them all back in
+INSERT INTO ags_game_audience.enhanced.LOGS_ENHANCED (
+SELECT logs.ip_address 
+, logs.user_login as GAMER_NAME
+, logs.user_event as GAME_EVENT_NAME
+, logs.datetime_iso8601 as GAME_EVENT_UTC
+, city
+, region
+, country
+, timezone as GAMER_LTZ_NAME
+, CONVERT_TIMEZONE( 'UTC',timezone,logs.datetime_iso8601) as game_event_ltz
+, DAYNAME(game_event_ltz) as DOW_NAME
+, TOD_NAME
+from ags_game_audience.raw.LOGS logs
+JOIN ipinfo_geoloc.demo.location loc 
+ON ipinfo_geoloc.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+AND ipinfo_geoloc.public.TO_INT(logs.ip_address) 
+BETWEEN start_ip_int AND end_ip_int
+JOIN ags_game_audience.raw.TIME_OF_DAY_LU tod
+ON HOUR(game_event_ltz) = tod.hour);
+
+--Hey! We should do this every 5 minutes from now until the next millennium - Y3K!!!
+--Alexa, play Yeah by Usher!
+
+create table ags_game_audience.enhanced.LOGS_ENHANCED_UF 
+clone ags_game_audience.enhanced.LOGS_ENHANCED;
+
+-- Here's some merge code we can start with: 
+
+MERGE INTO ags_game_audience.ENHANCED.LOGS_ENHANCED e
+USING ags_game_audience.RAW.LOGS r
+ON r.user_login = e.GAMER_NAME
+ AND r.datetime_iso8601 = e.GAME_EVENT_UTC 
+ AND r.user_event = e.GAME_EVENT_NAME
+WHEN MATCHED THEN
+UPDATE SET IP_ADDRESS = 'Hey I updated matching rows!';
+
+-- All IP_ADDRESS is updated wrongly but we have cloned backup
+select * from ags_game_audience.ENHANCED.LOGS_ENHANCED;
+
+-- Insert merge 
+MERGE INTO ENHANCED.LOGS_ENHANCED e
+USING (
+
+    SELECT logs.ip_address 
+    , logs.user_login as GAMER_NAME
+    , logs.user_event as GAME_EVENT_NAME
+    , logs.datetime_iso8601 as GAME_EVENT_UTC
+    , city
+    , region
+    , country
+    , timezone as GAMER_LTZ_NAME
+    , CONVERT_TIMEZONE( 'UTC',timezone,logs.datetime_iso8601) as game_event_ltz
+    , DAYNAME(game_event_ltz) as DOW_NAME
+    , TOD_NAME
+    from ags_game_audience.raw.LOGS logs
+    JOIN ipinfo_geoloc.demo.location loc 
+    ON ipinfo_geoloc.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+    AND ipinfo_geoloc.public.TO_INT(logs.ip_address) 
+    BETWEEN start_ip_int AND end_ip_int
+    JOIN ags_game_audience.raw.TIME_OF_DAY_LU tod
+    ON HOUR(game_event_ltz) = tod.hour
+) r --we'll put our fancy select here
+ON r.GAMER_NAME = e.GAMER_NAME
+and r.GAME_EVENT_UTC = e.game_event_utc
+and r.GAME_EVENT_NAME = e.game_event_name
+WHEN NOT MATCHED THEN
+insert (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns
+values (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns (but we can mark as coming from the r select)
+;
+
+truncate table AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+-- Creaet a task on above merge 
+
+create or replace task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED
+	warehouse=COMPUTE_WH
+	schedule='5 minute'
+	as
+    -- Insert merge 
+MERGE INTO ENHANCED.LOGS_ENHANCED e
+USING (
+
+    SELECT logs.ip_address 
+    , logs.user_login as GAMER_NAME
+    , logs.user_event as GAME_EVENT_NAME
+    , logs.datetime_iso8601 as GAME_EVENT_UTC
+    , city
+    , region
+    , country
+    , timezone as GAMER_LTZ_NAME
+    , CONVERT_TIMEZONE( 'UTC',timezone,logs.datetime_iso8601) as game_event_ltz
+    , DAYNAME(game_event_ltz) as DOW_NAME
+    , TOD_NAME
+    from ags_game_audience.raw.LOGS logs
+    JOIN ipinfo_geoloc.demo.location loc 
+    ON ipinfo_geoloc.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+    AND ipinfo_geoloc.public.TO_INT(logs.ip_address) 
+    BETWEEN start_ip_int AND end_ip_int
+    JOIN ags_game_audience.raw.TIME_OF_DAY_LU tod
+    ON HOUR(game_event_ltz) = tod.hour
+) r --we'll put our fancy select here
+ON r.GAMER_NAME = e.GAMER_NAME
+and r.GAME_EVENT_UTC = e.game_event_utc
+and r.GAME_EVENT_NAME = e.game_event_name
+WHEN NOT MATCHED THEN
+insert (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns
+values (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns (but we can mark as coming from the r select)
+;
+
+EXECUTE TASK AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--  Try executing multiple times to see the impact on the table
+
+--Testing cycle for MERGE. Use these commands to make sure the Merge works as expected
+
+--Write down the number of records in your table 
+select * from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;  -- 142
+
+--Run the Merge a few times. No new rows should be added at this time 
+EXECUTE TASK AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--Check to see if your row count changed 
+select * from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;   -- 142
+
+--Insert a test record into your Raw Table 
+--You can change the user_event field each time to create "new" records 
+--editing the ip_address or datetime_iso8601 can complicate things more than they need to 
+--editing the user_login will make it harder to remove the fake records after you finish testing 
+INSERT INTO ags_game_audience.raw.game_logs 
+select PARSE_JSON('{"datetime_iso8601":"2025-01-01 00:00:00.000", "ip_address":"196.197.196.255", "user_event":"fake event", "user_login":"fake user"}');
+
+--After inserting a new row, run the Merge again 
+EXECUTE TASK AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED;
+
+--Check to see if any rows were added 
+select * from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;   -- 143 one record added to the target table also
+
+--When you are confident your merge is working, you can delete the raw records 
+delete from ags_game_audience.raw.game_logs where raw_log like '%fake user%';
+
+--You should also delete the fake rows from the enhanced table
+delete from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED
+where gamer_name = 'fake user';
+
+--Row count should be back to what it was in the beginning
+select * from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;   -- 142 back to normal
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DNGW04' as step
+ ,( select count(*)/iff (count(*) = 0, 1, count(*))
+  from table(ags_game_audience.information_schema.task_history
+              (task_name=>'LOAD_LOGS_ENHANCED'))) as actual
+ ,1 as expected
+ ,'Task exists and has been run at least once' as description 
+ ); 
+
+ create table AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS like AGS_GAME_AUDIENCE.RAW.GAME_LOGS;
+ 
+copy into AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS 
+from @UNI_KISHORE_PIPELINE
+file_format = AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS;
+
+select count(*) from AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS;   -- 600
+
+create or replace task AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES
+	warehouse=COMPUTE_WH
+	as copy into AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS 
+from @UNI_KISHORE_PIPELINE
+file_format = AGS_GAME_AUDIENCE.RAW.FF_JSON_LOGS;
+
+--Ingest new files from new Stage - newfiles created every 5 mins
+EXECUTE TASK AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES;
+
+select count(*) from AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS;   -- 610  10 records from new file is loaded during execute task
+
+CREATE or replace VIEW AGS_GAME_AUDIENCE.RAW.PL_LOGS as 
+select 
+  raw_log:ip_address::text as ip_address,
+  raw_log:user_event::text as user_event,
+  raw_log:user_login::text as user_login,
+  raw_log:datetime_iso8601::TIMESTAMP_NTZ as datetime_iso8601,
+  raw_log as raw_log, 
+  from 
+AGS_GAME_AUDIENCE.RAW.pl_game_logs where 
+raw_log:agent::text is NULL;
+
+select * from AGS_GAME_AUDIENCE.RAW.PL_LOGS;
+
+-- Merge data from the new stage 
+-- Insert merge 
+MERGE INTO ENHANCED.LOGS_ENHANCED e
+USING (
+
+    SELECT pl_logs.ip_address 
+    , pl_logs.user_login as GAMER_NAME
+    , pl_logs.user_event as GAME_EVENT_NAME
+    , pl_logs.datetime_iso8601 as GAME_EVENT_UTC
+    , city
+    , region
+    , country
+    , timezone as GAMER_LTZ_NAME
+    , CONVERT_TIMEZONE( 'UTC',timezone,pl_logs.datetime_iso8601) as game_event_ltz
+    , DAYNAME(game_event_ltz) as DOW_NAME
+    , TOD_NAME
+    from ags_game_audience.raw.PL_LOGS pl_logs
+    JOIN ipinfo_geoloc.demo.location loc 
+    ON ipinfo_geoloc.public.TO_JOIN_KEY(pl_logs.ip_address) = loc.join_key
+    AND ipinfo_geoloc.public.TO_INT(pl_logs.ip_address) 
+    BETWEEN start_ip_int AND end_ip_int
+    JOIN ags_game_audience.raw.TIME_OF_DAY_LU tod
+    ON HOUR(game_event_ltz) = tod.hour
+) r --we'll put our fancy select here
+ON r.GAMER_NAME = e.GAMER_NAME
+and r.GAME_EVENT_UTC = e.game_event_utc
+and r.GAME_EVENT_NAME = e.game_event_name
+WHEN NOT MATCHED THEN
+insert (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns
+values (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns (but we can mark as coming from the r select)
+;
+
+truncate table AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+You can also resume and suspend them using worksheet code. 
+
+--Turning on a task is done with a RESUME command
+alter task AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES resume;
+alter task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED resume;
+
+--Turning OFF a task is done with a SUSPEND command
+alter task AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES suspend;
+alter task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED suspend;
+
+--Step 1 - how many files in the bucket?
+list @AGS_GAME_AUDIENCE.RAW.UNI_KISHORE_PIPELINE;  -- 61 files @3:14  -- 66 files @3:18 -- 66 files @3:38
+
+--Step 2 - number of rows in raw table (should be file count x 10)
+select count(*) from AGS_GAME_AUDIENCE.RAW.PL_GAME_LOGS;   -- 610 @3:14  -- 660 @3:18 -- 670 @3:38
+
+--Step 3 - number of rows in raw view (should be file count x 10)
+select count(*) from AGS_GAME_AUDIENCE.RAW.PL_LOGS;     -- 610 @3:14  -- 660 @3:18  -- 670 @3:38
+
+--Step 4 - number of rows in enhanced table (should be file count x 10 but fewer rows is okay because not all IP addresses are available from the IPInfo share)
+select count(*) from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;   -- 142 @3:14
+
+use role accountadmin;
+grant EXECUTE MANAGED TASK on account to SYSADMIN;  -- Grant to use Serverless in scheduling
+
+--switch back to sysadmin
+use role sysadmin;
+
+-- USER_TASK_MANAGED_INITIAL_WAREHOUSE_SIZE = 'XSMALL'
+-- NOTE: This line REPLACES the WAREHOUSE line in the task. Do not use it in addition to a warehouse line. Replace the warehouse line with the line above. 
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DNGW05' as step
+ ,(
+   select max(tally) from (
+       select CASE WHEN SCHEDULED_FROM = 'SCHEDULE' 
+                         and STATE= 'SUCCEEDED' 
+              THEN 1 ELSE 0 END as tally 
+   from table(ags_game_audience.information_schema.task_history (task_name=>'GET_NEW_FILES')))
+  ) as actual
+ ,1 as expected
+ ,'Task succeeds from schedule' as description
+ ); 
+
+
+   SELECT 
+    METADATA$FILENAME as log_file_name            --new metadata column
+  , METADATA$FILE_ROW_NUMBER as log_file_row_id   --new metadata column
+  , current_timestamp(0) as load_ltz              --new local time of load
+  , get($1,'datetime_iso8601')::timestamp_ntz as DATETIME_ISO8601
+  , get($1,'user_event')::text as USER_EVENT
+  , get($1,'user_login')::text as USER_LOGIN
+  , get($1,'ip_address')::text as IP_ADDRESS    
+  FROM @AGS_GAME_AUDIENCE.RAW.UNI_KISHORE_PIPELINE
+  (file_format => 'AGS_GAME_AUDIENCE.RAW.ff_json_logs');
+
+  -- User create table as with select query
+  create table AGS_GAME_AUDIENCE.RAW.ED_PIPELINE_LOGS as 
+    SELECT 
+    METADATA$FILENAME as log_file_name            --new metadata column
+  , METADATA$FILE_ROW_NUMBER as log_file_row_id   --new metadata column
+  , current_timestamp(0) as load_ltz              --new local time of load
+  , get($1,'datetime_iso8601')::timestamp_ntz as DATETIME_ISO8601
+  , get($1,'user_event')::text as USER_EVENT
+  , get($1,'user_login')::text as USER_LOGIN
+  , get($1,'ip_address')::text as IP_ADDRESS    
+  FROM @AGS_GAME_AUDIENCE.RAW.UNI_KISHORE_PIPELINE
+  (file_format => 'AGS_GAME_AUDIENCE.RAW.ff_json_logs');
+
+-- copy paste from the Database tab  
+  create or replace TABLE AGS_GAME_AUDIENCE.RAW.ED_PIPELINE_LOGS (
+	LOG_FILE_NAME VARCHAR(100),
+	LOG_FILE_ROW_ID NUMBER(18,0),
+	LOAD_LTZ TIMESTAMP_LTZ(0),
+	DATETIME_ISO8601 TIMESTAMP_NTZ(9),
+	USER_EVENT VARCHAR(25),
+	USER_LOGIN VARCHAR(100),
+	IP_ADDRESS VARCHAR(100)
+);
+
+truncate table ED_PIPELINE_LOGS;
+
+--reload the table using your COPY INTO
+COPY INTO ED_PIPELINE_LOGS
+FROM (
+    SELECT 
+    METADATA$FILENAME as log_file_name 
+  , METADATA$FILE_ROW_NUMBER as log_file_row_id 
+  , current_timestamp(0) as load_ltz 
+  , get($1,'datetime_iso8601')::timestamp_ntz as DATETIME_ISO8601
+  , get($1,'user_event')::text as USER_EVENT
+  , get($1,'user_login')::text as USER_LOGIN
+  , get($1,'ip_address')::text as IP_ADDRESS    
+  FROM @AGS_GAME_AUDIENCE.RAW.UNI_KISHORE_PIPELINE
+)
+file_format = (format_name = ff_json_logs);
+
+
+CREATE OR REPLACE PIPE PIPE_GET_NEW_FILES
+auto_ingest=true
+aws_sns_topic='arn:aws:sns:us-west-2:321463406630:dngw_topic'
+AS 
+COPY INTO ED_PIPELINE_LOGS
+FROM (
+    SELECT 
+    METADATA$FILENAME as log_file_name 
+  , METADATA$FILE_ROW_NUMBER as log_file_row_id 
+  , current_timestamp(0) as load_ltz 
+  , get($1,'datetime_iso8601')::timestamp_ntz as DATETIME_ISO8601
+  , get($1,'user_event')::text as USER_EVENT
+  , get($1,'user_login')::text as USER_LOGIN
+  , get($1,'ip_address')::text as IP_ADDRESS    
+  FROM @AGS_GAME_AUDIENCE.RAW.UNI_KISHORE_PIPELINE
+)
+file_format = (format_name = ff_json_logs);
+
+truncate table AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;
+
+select count(*) from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED;  -- set to empty table by 7:09 - Next run scheduled by 7:13
+
+create or replace task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED
+	warehouse=COMPUTE_WH
+    schedule='5 minute'
+	-- after AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES
+	as MERGE INTO ENHANCED.LOGS_ENHANCED e
+USING (
+
+    SELECT logs.ip_address 
+    , logs.user_login as GAMER_NAME
+    , logs.user_event as GAME_EVENT_NAME
+    , logs.datetime_iso8601 as GAME_EVENT_UTC
+    , city
+    , region
+    , country
+    , timezone as GAMER_LTZ_NAME
+    , CONVERT_TIMEZONE( 'UTC',timezone,logs.datetime_iso8601) as game_event_ltz
+    , DAYNAME(game_event_ltz) as DOW_NAME
+    , TOD_NAME
+    from ags_game_audience.raw.ED_PIPELINE_LOGS logs
+    JOIN ipinfo_geoloc.demo.location loc 
+    ON ipinfo_geoloc.public.TO_JOIN_KEY(logs.ip_address) = loc.join_key
+    AND ipinfo_geoloc.public.TO_INT(logs.ip_address) 
+    BETWEEN start_ip_int AND end_ip_int
+    JOIN ags_game_audience.raw.TIME_OF_DAY_LU tod
+    ON HOUR(game_event_ltz) = tod.hour
+) r --we'll put our fancy select here
+ON r.GAMER_NAME = e.GAMER_NAME
+and r.GAME_EVENT_UTC = e.game_event_utc
+and r.GAME_EVENT_NAME = e.game_event_name
+WHEN NOT MATCHED THEN
+insert (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME) --list of columns
+values (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME, GAME_EVENT_UTC, CITY, REGION, COUNTRY, GAME_EVENT_LTZ, DOW_NAME, TOD_NAME);
+
+-- Use this command if your Snowpipe seems like it is stalled out:
+ALTER PIPE ags_game_audience.raw.PIPE_GET_NEW_FILES REFRESH;
+
+--Use this command if you want to check that your pipe is running:
+
+select parse_json(SYSTEM$PIPE_STATUS( 'ags_game_audience.raw.PIPE_GET_NEW_FILES' ));
+
+select count(*) from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED; -- set as empty table @7:09 - Next run scheduled by 7:13 -- 482 by 7:14
+
+--create a stream that will keep track of changes to the table
+create or replace stream ags_game_audience.raw.ed_cdc_stream 
+on table AGS_GAME_AUDIENCE.RAW.ED_PIPELINE_LOGS;
+
+--look at the stream you created
+show streams; 
+show streams in account;
+show functions;
+
+--check to see if any changes are pending (expect FALSE the first time you run it)
+--after the Snowpipe loads a new file, expect to see TRUE
+select system$stream_has_data('ed_cdc_stream');
+
+-- View our stream data
+--query the stream
+select * 
+from ags_game_audience.raw.ed_cdc_stream;    -- only 10 records for latest file is present in stream
+
+--check to see if any changes are pending
+select system$stream_has_data('ed_cdc_stream');
+
+--if your stream remains empty for more than 10 minutes, make sure your PIPE is running
+select SYSTEM$PIPE_STATUS('PIPE_GET_NEW_FILES');
+
+--if you need to pause or unpause your pipe
+alter pipe PIPE_GET_NEW_FILES set pipe_execution_paused = true;
+alter pipe PIPE_GET_NEW_FILES set pipe_execution_paused = false;
+
+--make a note of how many rows are in the stream
+select * 
+from ags_game_audience.raw.ed_cdc_stream; 
+
+ 
+--process the stream by using the rows in a merge 
+MERGE INTO AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED e
+USING (
+        SELECT cdc.ip_address 
+        , cdc.user_login as GAMER_NAME
+        , cdc.user_event as GAME_EVENT_NAME
+        , cdc.datetime_iso8601 as GAME_EVENT_UTC
+        , city
+        , region
+        , country
+        , timezone as GAME_LTZ_NAME
+        , CONVERT_TIMEZONE( 'UTC',timezone,cdc.datetime_iso8601) as game_event_ltz
+        , DAYNAME(game_event_ltz) as DOW_NAME
+        , TOD_NAME
+        from ags_game_audience.raw.ed_cdc_stream cdc
+        JOIN ipinfo_geoloc.demo.location loc 
+        ON ipinfo_geoloc.public.TO_JOIN_KEY(cdc.ip_address) = loc.join_key
+        AND ipinfo_geoloc.public.TO_INT(cdc.ip_address) 
+        BETWEEN start_ip_int AND end_ip_int
+        JOIN AGS_GAME_AUDIENCE.RAW.TIME_OF_DAY_LU tod
+        ON HOUR(game_event_ltz) = tod.hour
+      ) r
+ON r.GAMER_NAME = e.GAMER_NAME
+AND r.GAME_EVENT_UTC = e.GAME_EVENT_UTC
+AND r.GAME_EVENT_NAME = e.GAME_EVENT_NAME 
+WHEN NOT MATCHED THEN 
+INSERT (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME
+        , GAME_EVENT_UTC, CITY, REGION
+        , COUNTRY, GAME_LTZ_NAME, GAME_EVENT_LTZ
+        , DOW_NAME, TOD_NAME)
+        VALUES
+        (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME
+        , GAME_EVENT_UTC, CITY, REGION
+        , COUNTRY, GAME_LTZ_NAME, GAME_EVENT_LTZ
+        , DOW_NAME, TOD_NAME);
+ 
+--Did all the rows from the stream disappear? 
+select * 
+from ags_game_audience.raw.ed_cdc_stream; 
+
+
+--Create a new task that uses the MERGE you just tested
+create or replace task AGS_GAME_AUDIENCE.RAW.CDC_LOAD_LOGS_ENHANCED
+	USER_TASK_MANAGED_INITIAL_WAREHOUSE_SIZE='XSMALL'
+	SCHEDULE = '5 minutes'
+	as 
+MERGE INTO AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED e
+USING (
+        SELECT cdc.ip_address 
+        , cdc.user_login as GAMER_NAME
+        , cdc.user_event as GAME_EVENT_NAME
+        , cdc.datetime_iso8601 as GAME_EVENT_UTC
+        , city
+        , region
+        , country
+        , timezone as GAME_LTZ_NAME
+        , CONVERT_TIMEZONE( 'UTC',timezone,cdc.datetime_iso8601) as game_event_ltz
+        , DAYNAME(game_event_ltz) as DOW_NAME
+        , TOD_NAME
+        from ags_game_audience.raw.ed_cdc_stream cdc
+        JOIN ipinfo_geoloc.demo.location loc 
+        ON ipinfo_geoloc.public.TO_JOIN_KEY(cdc.ip_address) = loc.join_key
+        AND ipinfo_geoloc.public.TO_INT(cdc.ip_address) 
+        BETWEEN start_ip_int AND end_ip_int
+        JOIN AGS_GAME_AUDIENCE.RAW.TIME_OF_DAY_LU tod
+        ON HOUR(game_event_ltz) = tod.hour
+      ) r
+ON r.GAMER_NAME = e.GAMER_NAME
+AND r.GAME_EVENT_UTC = e.GAME_EVENT_UTC
+AND r.GAME_EVENT_NAME = e.GAME_EVENT_NAME 
+WHEN NOT MATCHED THEN 
+INSERT (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME
+        , GAME_EVENT_UTC, CITY, REGION
+        , COUNTRY, GAME_LTZ_NAME, GAME_EVENT_LTZ
+        , DOW_NAME, TOD_NAME)
+        VALUES
+        (IP_ADDRESS, GAMER_NAME, GAME_EVENT_NAME
+        , GAME_EVENT_UTC, CITY, REGION
+        , COUNTRY, GAME_LTZ_NAME, GAME_EVENT_LTZ
+        , DOW_NAME, TOD_NAME);
+        
+--Resume the task so it is running
+alter task AGS_GAME_AUDIENCE.RAW.CDC_LOAD_LOGS_ENHANCED resume;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DNGW06' as step
+ ,(
+   select CASE WHEN pipe_status:executionState::text = 'RUNNING' THEN 1 ELSE 0 END 
+   from(
+   select parse_json(SYSTEM$PIPE_STATUS( 'ags_game_audience.raw.PIPE_GET_NEW_FILES' )) as pipe_status)
+  ) as actual
+ ,1 as expected
+ ,'Pipe exists and is RUNNING' as description
+ ); 
+
+ --if you need to pause or unpause your pipe
+alter pipe PIPE_GET_NEW_FILES set pipe_execution_paused = true;
+--Turning OFF a task is done with a SUSPEND command
+alter task AGS_GAME_AUDIENCE.RAW.GET_NEW_FILES suspend;
+alter task AGS_GAME_AUDIENCE.RAW.LOAD_LOGS_ENHANCED suspend;
+
+create schema AGS_GAME_AUDIENCE.CURATED;
+
+-- Dashboard queries
+select 'Welcome to Gamer Dashboard';
+
+-- Count number of players from Each City
+select distinct gamer_name, city
+from ags_game_audience.enhanced.logs_enhanced_uf;
+
+-- Graph number of players from Denver by time of day
+select tod_name as time_of_day
+           , count(*) as tally
+     from ags_game_audience.enhanced.logs_enhanced_uf where city='Denver'
+     group by  tod_name
+     order by tally desc;     
+
+
+
+
+--the ListAgg function can put both login and logout into a single column in a single row
+-- if we don't have a logout, just one timestamp will appear
+select GAMER_NAME
+      , listagg(GAME_EVENT_LTZ,' / ') as login_and_logout
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED 
+group by gamer_name;
+
+
+ -- 🥋 Windowed Data for Calculating Time in Game Per Player
+ select GAMER_NAME
+       ,game_event_ltz as login 
+       ,lead(game_event_ltz) 
+                OVER (
+                    partition by GAMER_NAME 
+                    order by GAME_EVENT_LTZ
+                ) as logout
+       ,coalesce(datediff('mi', login, logout),0) as game_session_length
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED
+order by game_session_length desc;
+
+ -- 🥋 Code for the Heatgrid
+
+ --We added a case statement to bucket the session lengths
+select case when game_session_length < 10 then '< 10 mins'
+            when game_session_length < 20 then '10 to 19 mins'
+            when game_session_length < 30 then '20 to 29 mins'
+            when game_session_length < 40 then '30 to 39 mins'
+            else '> 40 mins' 
+            end as session_length
+            ,tod_name
+from (
+select GAMER_NAME
+       , tod_name
+       ,game_event_ltz as login 
+       ,lead(game_event_ltz) 
+                OVER (
+                    partition by GAMER_NAME 
+                    order by GAME_EVENT_LTZ
+                ) as logout
+       ,coalesce(datediff('mi', login, logout),0) as game_session_length
+from AGS_GAME_AUDIENCE.ENHANCED.LOGS_ENHANCED_UF)
+where logout is not null;
+
+select GRADER(step, (actual = expected), actual, expected, description) as graded_results from
+(
+SELECT
+'DNGW07' as step
+ ,( select count(*)/count(*) from snowflake.account_usage.query_history
+    where query_text like '%case when game_session_length < 10%'
+  ) as actual
+ ,1 as expected
+ ,'Curated Data Lesson completed' as description
+ ); 
+
+
+
+Streamlit Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Import python packages
+import streamlit as st
+from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.functions import col
+
+# Write directly to the app
+st.title("Zean's Amazing Athleisure Catalog")
+
+# Get the current credentials
+session = get_active_session()
+
+table_colors = session.sql("select color_or_style from catalog_for_website")
+pd_colors = table_colors.to_pandas()
+
+# Oyt the list of colors into a drop list selector 
+option = st.selectbox('Pick a sweatsuit color or style:', pd_colors)
+
+product_caption = 'Our warm, comfortable, ' + option + ' sweatsuit!'
+
+# use the color selected to go back and get all the info from the database
+table_prod_data = session.sql("select file_name, price, size_list, upsell_product_desc, file_url from catalog_for_website where color_or_style = '" + option + "';")
+pd_prod_data = table_prod_data.to_pandas() 
+
+df_sel = table_prod_data.filter(col('color_or_style')==option)
+
+#st.write(pd_prod_data)
+#st.write(type(pd_prod_data))
+
+# assign each column of the row returned to its own variable 
+price = '$' + str(pd_prod_data['PRICE'].iloc[0])+'0'
+file_name = pd_prod_data['FILE_NAME'].iloc[0]
+size_list = pd_prod_data['SIZE_LIST'].iloc[0]
+upsell = pd_prod_data['UPSELL_PRODUCT_DESC'].iloc[0]
+url = pd_prod_data['FILE_URL'].iloc[0]
+
+file_link="https://sjb46229.snowflakecomputing.com/api/files/ZENAS_ATHLEISURE_DB/PRODUCTS/SWEATSUITS/"+file_name
+
+# display the info on the page
+st.write(file_name)
+st.write(file_link)
+st.write(url)
+
+#st.image(image=file_name, width=400, caption=product_caption)
+st.image(image=url, width=400, caption=product_caption)
+st.markdown('**Price:** '+ price)
+st.markdown('**Sizes Available:** ' + size_list)
+st.markdown('**Also Consider:** ' + upsell)
+
+st.stop()

@@ -1,0 +1,127 @@
+points to care
+~~~~~~~~~~~~~~~
+1) add the Code with the ppt
+2) Add the content on the Security 
+3) Remove Media API - topic
+4) Locatoin serviecs / Gmap - make it one
+4) concentrate on services AIDL, 
+5) Remove Other topics (Bluetooth/Wi-Fi)
+6) how to use DDMS/ - debugging
+7) Threads and process (User thread, etc) – Handlers and loopers 
+8) Creating first Android application - Cover structure of APK (
+9) Use of images (copyright issues)
+10) User version 2.3
+11) new feature in 3.0 ()
+12)
+~~~~~~~~~~~~~~~
+
+
+Introduction to Android 
+~~~~~~~~~~~~~~~
+• Overview of Android and Android SDK 
+• History of Android
+• Android features
+Android Architecture overview
+• Introduction to OS layers
+• Linux kernel
+• Libraries
+• Android Runtime
+• Application framework
+Setup of Android Development environment
+• System requirements
+• Eclipse and SDK installation, AVD creation
+• Creating first Android application
+• Project Structure
+Android Application Fundamentals
+• Android application building blocks
+• Activating components
+• Shutting down components
+• LifeCycle of Application
+• Development tools, Manifest File
+• LifeCycle of Activity
+User Interface 
+• View Hierarchy and Layouts
+• UI Events
+• Building Menus
+• Notifying users
+• Creating dialogs
+• Graphics & Animations
+Main Building Blocks
+• Activity
+• Intents
+• Services
+• Content Providers
+• Broadcast Receivers 
+Resources 
+• Overview of Android Resources
+• Creating Resources 
+• Using Resources 
+• Drawable Resources 
+• Animation Resources
+Data Storage
+• Shared Preferences
+• Internal Storage (Files)
+• External Storage(SD Card)
+• SQLite Databases
+Android Media API 
+• Playing audio/video 
+• Media recording
+Other topics
+• Blue tooth
+• WiFi
+• Camera
+• TelephonyManager
+• Location Services
+• Deploying Android Application on Device / Emulator
+• Google Maps
+
+
+
+
+
+
+
+Introduction to Android 
+ Android is a software stack with a package on your mobile and Set of Development tools.
+ Phone has OS, App framework, Android Runtime, Linux Kernal (Drivers). Dev tools (SDK) has API (Java), command line tools, Emulators, Debugging tools.
+
+History of Android
+ --- xxx ----
+
+Features of Android
+ Highly reusable components (API)
+ Optimized Dalvik Virtual machine (Linux kernal)
+ Integrated Browser (WebKit engine) - Support for HTML 5
+ 2D Graphics (SGL engine) & 3D graphics with support for OpenGL ES 1.0 specification.
+ SQLite (Open source project for relational like Data storage)
+ Telephony (GSM, EDGE, 3G, WiFi)
+ Camera, Compass, NFC, accelerometer GPS (Hardware dependent)
+ 
+Android Architecture
+
+Linux kernal
+ Linux 2.6 is used for all system level support. all the functionality such as security, process management, driver model, network stack and memory management is handled by kernal.
+
+Libraries
+ Set of C/C++ libraries used by various components of system. can be used thru API by the developers. 
+
+ --- xxx ----
+
+Android Runtime
+ Every app runs in its own process, with its own instance of Dalvik VM. Many Dalvik VM's can run efficiently in device. VM can run the .dex files which are like .class files. Java class files are converted into .dex files by the "dx" tool. Dalvik uses linux kernal for multi threading, low-level memory management, system calls, etc.
+
+Application framework
+ In built apps and apps developed by us are given same level of access and priority. All the resources available for the inbuilt app is given to our app also. We can replace the components that are part of core applications (subject to security enforeced by framework).
+ Below form the base (and available) for all applications. 
+ 
+ Views - like lists, girds, text boxes, embeddable web browser
+ Content providers - 
+ Resource managers - providing access to non-code resources like localize strings, graphics, layout files
+ Notification manager - used by all apps to send notification / custom alerts in status bar
+ Activity manager - Manages app life cycle, provides a common navigation backstack
+
+Applicatoins 
+ In built (core apps) appliations mail client, contacts, maps, calender. 
+
+
+

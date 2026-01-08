@@ -1,0 +1,16 @@
+-- Create user with IDENTICAL privileges to root
+CREATE USER IF NOT EXISTS 'intuser'@'%' IDENTIFIED BY 'pintuser';
+
+-- Grant ALL privileges on ALL databases
+GRANT ALL PRIVILEGES ON *.* TO 'intuser'@'%' WITH GRANT OPTION;
+
+-- Reload privileges
+FLUSH PRIVILEGES;
+
+-- Verify
+SELECT User, Host FROM mysql.user WHERE User='intuser';
+SHOW GRANTS FOR 'intuser'@'%';
+
+
+
+

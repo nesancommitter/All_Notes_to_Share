@@ -1,0 +1,41 @@
+use database interview;
+
+
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (1, 'CEO', 1, 'CEO', NULL, '2004-01-01', 5000000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (2, 'CXO', 1, 'CXO', 1, '2014-01-01', 3000000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (11, 'Ramesh', 100, 'SM_Admin', 2, '2016-01-01', 2000000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (22, 'Suresh', 200, 'SM_HR', 2, '2015-01-01', 2100000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (33, 'emp03', 300, 'SM_Media', 2, '2014-01-01', 2200000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (44, 'emp04', 400, 'SM_Sales', 2, '2004-01-01', 2300000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (55, 'emp05', 500, 'SM_Projects', 2, '2004-02-01', 2500000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (110, 'emp06', 100, 'Adminstaff', 11, '2022-01-01', 1500000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (210, 'emp07', 200, 'HR recruitment', 22, '2016-01-01', 1700000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (211, 'emp08', 200, 'HR Payroll', 22, '2022-01-01', 1600000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (310, 'emp09', 300, 'Digital marketing', 33, '2012-01-01', 1750000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (311, 'emp10', 300, 'Media rep', 33, '2020-01-01', 1650000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (312, 'emp11', 300, 'Publishing', 33, '2024-01-01', 1550000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (410, 'emp12', 400, 'Sale1', 44, '2006-01-01', 2300000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (411, 'Ramesh', 400, 'Sale2', 44, '2013-01-01', 1780000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (412, 'Suresh', 400, 'Sale3', 44, '2022-01-01', 1680000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (413, 'emp15', 400, 'Sale4', 44, '2024-01-01', 1580000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (510, 'emp16', 500, 'Proj_1_lead', 55, '2004-01-01', 2000000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (511, 'emp17', 500, 'Proj_2_lead', 55, '2006-01-01', 2700000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (520, 'Ramesh', 500, 'Dev', 510, '2016-01-01', 2150000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (521, 'emp19', 500, 'Dev', 511, '2017-01-01', 2750000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (522, 'emp20', 500, 'Dev', 511, '2018-01-01', 1000000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (523, 'emp21', 500, 'Tester', 510, '2016-01-01', 1100000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (524, 'emp22', 500, 'Tester', 511, '2025-01-01', 1200000, 'F');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (1001, 'emp23', NULL, 'Housekeeping', 11, '2025-01-01', 120000, 'M');
+INSERT INTO employees (emp_id, emp_name, dept_id, job_title, manager_id, join_date, salary, gender) VALUES (1002, 'emp24', NULL, 'Housekeeping', 11, '2025-01-01', 110000, 'F');
+
+
+
+INSERT INTO departments (dept_id, dept_name) VALUES (1, 'Management');
+INSERT INTO departments (dept_id, dept_name) VALUES (100, 'Administration');
+INSERT INTO departments (dept_id, dept_name) VALUES (200, 'HR');
+INSERT INTO departments (dept_id, dept_name) VALUES (300, 'Media');
+INSERT INTO departments (dept_id, dept_name) VALUES (400, 'Sales');
+INSERT INTO departments (dept_id, dept_name) VALUES (500, 'Projects');
+INSERT INTO departments (dept_id, dept_name) VALUES (999, 'Future');
+
+

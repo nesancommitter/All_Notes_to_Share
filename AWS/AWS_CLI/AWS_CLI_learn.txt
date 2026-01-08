@@ -1,0 +1,1866 @@
+## from the container prompt once check aws CLI is workiing with --version command 
+
+(mypyvenv) root@ubundockhost:~/.ssh# aws --version
+aws-cli/2.32.17 Python/3.13.11 Linux/6.6.87.2-microsoft-standard-WSL2 exe/x86_64.ubuntu.24
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+## Login with AWS CLI to start using AWS CLI
+
+## Create access key and the secret key for AWS IAM user iamnesan from the AWS console 
+
+##Configure the AWS CLI 
+(mypyvenv) root@ubundockhost:/# aws configure
+AWS Access Key ID [None]: (sample_key)
+AWS Secret Access Key [None]: (sample_secret)
+Default region name [None]: ap-south-1
+Default output format [None]: text
+
+## Enable AWS CLI command history globally
+(mypyvenv) root@ubundockhost:~/.cache/pip# aws configure set cli_history enabled
+
+# AWS CLI history only check the history of aws commands
+(mypyvenv) root@ubundockhost:~/.cache/pip# aws history list
+f85ef52f-772c-43f3-8d93-694d706c7e4b  2025-12-22 01:23:14 PM  ec2 describe-instances                            0
+(mypyvenv) root@ubundockhost:~/.cache/pip# date
+Mon Dec 22 13:23:46 IST 2025
+
+##Verify which account is configured with below command 
+H:\All_Notes_from_learning>aws configure list
+      Name                    Value             Type    Location
+      ----                    -----             ----    --------
+   profile                <not set>             None    None
+access_key     ****************BGOQ shared-credentials-file
+secret_key     ****************6Hdy shared-credentials-file
+    region               ap-south-1      config-file    ~/.aws/config
+
+Above is the default AWS profile that will be used - you need to set different profiles if you want to use for other purposes
+
+## Create another profile named AWS-Mumbai-dev-CLI
+H:\>aws configure --profile AWS-Mumbai-dev-CLI
+AWS Access Key ID [None]: (sample_key)
+AWS Secret Access Key [None]: (sample_secret)
+Default region name [None]: ap-south-1
+Default output format [None]: text
+
+# Set the environment varialbe to use the new profile 
+setx AWS_PROFILE "AWS-Mumbai-dev-CLI"
+
+# Test the new profile is working good 
+C:\Users\ADMIN\.aws>aws ec2 describe-regions --profile AWS-Mumbai-dev-CLI
+REGIONS ec2.ap-south-1.amazonaws.com    opt-in-not-required     ap-south-1
+REGIONS ec2.eu-north-1.amazonaws.com    opt-in-not-required     eu-north-1
+REGIONS ec2.eu-west-3.amazonaws.com     opt-in-not-required     eu-west-3
+REGIONS ec2.eu-west-2.amazonaws.com     opt-in-not-required     eu-west-2
+REGIONS ec2.eu-west-1.amazonaws.com     opt-in-not-required     eu-west-1
+REGIONS ec2.ap-northeast-3.amazonaws.com        opt-in-not-required     ap-northeast-3
+REGIONS ec2.ap-northeast-2.amazonaws.com        opt-in-not-required     ap-northeast-2
+REGIONS ec2.ap-northeast-1.amazonaws.com        opt-in-not-required     ap-northeast-1
+REGIONS ec2.ca-central-1.amazonaws.com  opt-in-not-required     ca-central-1
+REGIONS ec2.sa-east-1.amazonaws.com     opt-in-not-required     sa-east-1
+REGIONS ec2.ap-southeast-1.amazonaws.com        opt-in-not-required     ap-southeast-1
+REGIONS ec2.ap-southeast-2.amazonaws.com        opt-in-not-required     ap-southeast-2
+REGIONS ec2.eu-central-1.amazonaws.com  opt-in-not-required     eu-central-1
+REGIONS ec2.us-east-1.amazonaws.com     opt-in-not-required     us-east-1
+REGIONS ec2.us-east-2.amazonaws.com     opt-in-not-required     us-east-2
+REGIONS ec2.us-west-1.amazonaws.com     opt-in-not-required     us-west-1
+REGIONS ec2.us-west-2.amazonaws.com     opt-in-not-required     us-west-2
+
+# install these three Chrome Extensions from chrome extension marketplace
+Chrome Web Store → Search & Install:
+✅ "AWS Extend Switch Roles" 
+✅ "AWS SSO Extender" 
+✅ "SessionBox" (for profile isolation)
+
+## Create the aws sso profile - Fix SSO Config (Run ONCE)
+C:\Users\ADMIN\.aws>aws configure sso --profile AWS-Mumbai-dev-SSO
+SSO session name (Recommended): AWS-Mumbai-SSO-Session
+SSO start URL [None]: https://d-9f676da734.awsapps.com/start
+SSO region [None]: ap-south-1
+SSO registration scopes [sso:account:access]: sso:account:access
+Attempting to open your default browser.
+If the browser does not open, open the following URL:
+
+https://oidc.ap-south-1.amazonaws.com/authorize?response_type=code&client_id=8_z5u6_evWmYuXOJKk5ZhWFwLXNvdXRoLTE&redirect_uri=http%3A%2F%2F127.0.0.1%3A52815%2Foauth%2Fcallback&state=100f8944-27cf-445e-b588-9e8f5000c313&code_challenge_method=S256&scopes=sso%3Aaccount%3Aaccess&code_challenge=c7UO7ccc_YmLEIqBmm-97pH8pK3ff8nbq6OvRgCGEMk
+The only AWS account available to you is: 059290164282
+Using the account ID 059290164282
+The only role available to you is: PermSetIDCUserFullAccess
+Using the role name "PermSetIDCUserFullAccess"
+Default client Region [None]: ap-south-1
+CLI default output format (json if not specified) [None]: text
+To use this profile, specify the profile name using --profile, as shown:
+
+aws sts get-caller-identity --profile AWS-Mumbai-dev-SSO
+
+## Check with login
+C:\Users\ADMIN\.aws>aws sso login --profile AWS-Mumbai-dev-SSO
+Attempting to open your default browser.
+If the browser does not open, open the following URL:
+
+https://oidc.ap-south-1.amazonaws.com/authorize?response_type=code&client_id=8_z5u6_evWmYuXOJKk5ZhWFwLXNvdXRoLTE&redirect_uri=http%3A%2F%2F127.0.0.1%3A53035%2Foauth%2Fcallback&state=f048b2e4-b048-4986-bed6-19c10d6427d2&code_challenge_method=S256&scopes=sso%3Aaccount%3Aaccess&code_challenge=BBWMInZvZmkYg1U_r7a4LLEASieQHrZWgQGna1S08c0
+Successfully logged into Start URL: https://d-9f676da734.awsapps.com/start
+
+Browser is open use the IDCUser and password to authenticate. 
+## SSO configuration creates a file C:\Users\ADMIN\.aws\config File and the login command creates temporary tokens in C:\Users\ADMIN\.aws\sso\cache folder as json files like(85ccbf930efece2cd4f28c87d5d0ac89efe78b6a.json) with below details
+
+"startUrl": "https://d-9f676da734.awsapps.com/start", "region": "ap-south-1", "accessToken": xyz "expiresAt": "2025-12-23T07:16:19Z", "clientId": xyz  "clientSecret": xyz "registrationExpiresAt": "2026-03-22T14:51:59Z", "refreshToken": 
+
+To find all the catchfiles validity - expiry time of the tokens in cache json files
+(mypyvenv) root@ubundockhost:/# cat /host_aws/sso/cache/*.json | jq .expiresAt
+"2025-12-23T09:14:20Z"
+"2026-03-22T14:51:59Z"
+
+## Check the account used for AWS-Mumbai-dev-SSO
+C:\Users\ADMIN\.aws>aws sts get-caller-identity --profile AWS-Mumbai-dev-SSO
+059290164282    arn:aws:sts::059290164282:assumed-role/AWSReservedSSO_PermSetIDCUserFullAccess_397e679e0e4df416/IDCUser AROAQ3TPYDQ5JYYUWB7X2:IDCUser
+
+## Now Create a simple batch file name AWS_SSO_Login_launcher.bat
+@echo off
+echo Logging into AWS Mumbai...
+aws sso login --profile AWS-Mumbai-dev-SSO
+timeout /t 6 /nobreak 
+REM start chrome.exe "https://ap-south-1.console.aws.amazon.com/cloudshell/home?region=ap-south-1#" --profile-directory="Default"
+start chrome.exe "https://ap-south-1.console.aws.amazon.com/cloudshell/home?region=ap-south-1#"
+echo 🟠 Mumbai CloudShell opened! Type 'll'
+
+## Whenever you need the cloudshell to be open quickly just double click the batch file it opens the cloudshell in chrome browser.
+
+# Pre-login with SSO (persists 8-12hrs)
+aws sso login --profile AWS-Mumbai-dev-SSO
+
+## Verify the setup
+(mypyvenv) root@ubundockhost:/# cat ~/.aws/credentials
+[default]
+aws_access_key_id = (sample_key)
+aws_secret_access_key = (sample_secret)
+
+(mypyvenv) root@ubundockhost:/# cat ~/.aws/config
+[default]
+region = ap-south-1
+output = text
+
+While we can use both the key based access or SSO based access for AWS access from CLI or boto3 programing API acccess, its always advicable to use the SSO based access method over key based for below reasons.
+
+"Use IAM Identity Center (SSO) for interactive CLI access"
+"Long-term access keys only for automated systems (CI/CD)"
+
+In Key based if the Key is leaked then its a breach - because key is permenant access to AWS account until the ksy is revoked.
+But in case of SSO a temporary token is generated for access and the token expires in fixed time period the session may last for max 12 hours based on setting entered during Enabling SSO logins in the IAM identity Center.
+
+Before using SSO session in Boto3 perform SSO login in AWS CLI, because Boto3 CANNOT directly perform aws sso login - It requires CLI or subprocess call first.
+# aws sso login --profile AWS-Mumbai-dev-SSO
+
+## Use the SSO login with boto3 
+import boto3
+session = boto3.Session(profile_name='AWS-Mumbai-dev-SSO')
+s3 = session.client('s3')
+ec2 = session.resource('ec2', region_name='ap-south-1')
+instance = ec2.Instance('i-0ca210a013f899c31')
+print(instance.state) 
+{'Code': 80, 'Name': 'stopped'}
+
+response = s3.list_buckets()
+buckets = response['Buckets']
+print(buckets)
+
+[{'Name': 'learn-glue-csv-etl-bucket', 'CreationDate': datetime.datetime(2025, 12, 1, 18, 45, 17, tzinfo=tzutc()), 'BucketArn': 'arn:aws:s3:::learn-glue-csv-etl-bucket'}]
+
+location = s3.get_bucket_location(Bucket='learn-glue-csv-etl-bucket')
+print(location)
+{'ResponseMetadata': {'RequestId': 'M2WTZDZNPVNBBRD8', 'HostId': '78xxQYaA5uGKjcOkjCYV1V9TJEYv2L9HeNkrRwsqeUxJQlAPOhJjSFWTSXkh4W7M237dhpgVbQM=', 'HTTPStatusCode': 200, 'HTTPHeaders': {'x-amz-id-2': '78xxQYaA5uGKjcOkjCYV1V9TJEYv2L9HeNkrRwsqeUxJQlAPOhJjSFWTSXkh4W7M237dhpgVbQM=', 'x-amz-request-id': 'M2WTZDZNPVNBBRD8', 'date': 'Mon, 22 Dec 2025 20:42:55 GMT', 'content-type': 'application/xml', 'transfer-encoding': 'chunked', 'server': 'AmazonS3'}, 'RetryAttempts': 0}, 'LocationConstraint': 'ap-south-1'}
+
+
+## Use the Key login with boto3 
+import boto3
+s3key = boto3.client('s3',
+    aws_access_key_id='(sample_key)',
+    aws_secret_access_key='(sample_secret)')
+
+ec2key = boto3.resource('ec2',
+    aws_access_key_id='(sample_key)',      
+    aws_secret_access_key='(sample_secret)',  
+    region_name='ap-south-1'
+)
+
+keyinstance = ec2key.Instance('i-0ca210a013f899c31')
+print(keyinstance.state) 
+{'Code': 80, 'Name': 'stopped'}
+
+keyresponse = s3key.list_buckets()
+keybuckets = response['Buckets']
+print(keybuckets)
+
+[{'Name': 'learn-glue-csv-etl-bucket', 'CreationDate': datetime.datetime(2025, 12, 1, 18, 45, 17, tzinfo=tzutc()), 'BucketArn': 'arn:aws:s3:::learn-glue-csv-etl-bucket'}]
+
+
+## We can also create a session using keys and then use the session to create other resource objects instead of reusing the keys multiple times 
+## Create single session using keys
+import boto3
+
+# Create ONE session → Reuse for ALL services
+keysession = boto3.Session(
+    aws_access_key_id='(sample_key)',
+    aws_secret_access_key='(sample_secret)',
+    region_name='ap-south-1'
+)
+
+# Same session → Different services
+s3keysess = keysession.client('s3')           # Global (no region override)
+ec2keysess = keysession.client('ec2')         # ap-south-1
+lambda_client = keysession.client('lambda')
+
+
+Why Boto3 Can't SSO Login -- Becuase AWS SSO login = Browser-based authentication But Boto3 = API calls only (no browser control). to overcome this we can use subprocess to first run sso login as os command and then create session.
+
+Boto3 CANNOT directly perform aws sso login - It requires CLI or subprocess call first.
+
+import boto3
+import subprocess
+import sys
+from botocore.exceptions import NoCredentialsError
+
+def sso_login(profile_name='AWS-Mumbai-dev-SSO'):
+    """Perform aws sso login programmatically"""
+    try:
+        # Test if SSO credentials exist
+        session = boto3.Session(profile_name=profile_name)
+        sts = session.client('sts')
+        sts.get_caller_identity()
+        print(f"✅ Already logged in: {profile_name}")
+        return session
+    except NoCredentialsError:
+        print(f"🔐 Performing SSO login for {profile_name}...")
+        result = subprocess.run(['aws', 'sso', 'login', '--profile', profile_name], 
+                              capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print("✅ SSO login successful!")
+            return boto3.Session(profile_name=profile_name)
+        else:
+            print(f"❌ SSO login failed: {result.stderr}")
+            sys.exit(1)
+
+# Usage
+session = sso_login('AWS-Mumbai-dev-SSO')
+s3 = session.client('s3')
+ec2 = session.client('ec2', region_name='ap-south-1')
+
+print("🟠 S3 Buckets:", len(s3.list_buckets()['Buckets']))
+
+
+## confirm the “login” works
+(mypyvenv) root@ubundockhost:/# aws sts get-caller-identity
+059290164282    arn:aws:iam::059290164282:user/iamnesan AIDAQ3TPYDQ5MISEGZBOJ
+
+(mypyvenv) root@ubundockhost:/# aws sts get-caller-identity --output table
+--------------------------------------------------------------------------------------
+|                                  GetCallerIdentity                                 |
++--------------+-------------------------------------------+-------------------------+
+|    Account   |                    Arn                    |         UserId          |
++--------------+-------------------------------------------+-------------------------+
+|  059290164282|  arn:aws:iam::059290164282:user/iamnesan  |  AIDAQ3TPYDQ5MISEGZBOJ  |
++--------------+-------------------------------------------+-------------------------+
+
+(mypyvenv) root@ubundockhost:/# aws sts get-caller-identity --output json
+{
+    "UserId": "AIDAQ3TPYDQ5MISEGZBOJ",
+    "Account": "059290164282",
+    "Arn": "arn:aws:iam::059290164282:user/iamnesan"
+}
+
+## Create usergroup in console and grant all the Admin privilages for users with policy AdministratorAccess
+## Add the user iamnesan to this group so can use all AWS admin commands in CLI
+user group : fulladmingrp
+Group poilcy : AdministratorAccess
+
+## AWS Account commands
+
+(mypyvenv) root@ubundockhost:/# aws account get-account-information
+2021-11-26T16:24:36+00:00       059290164282    nesan.committer
+
+(mypyvenv) root@ubundockhost:/# aws account get-contact-information
+CONTACTINFORMATION      95, S2, Sai kuddil, Avvai Nagar, West St,       Choolaimedu     Chennai IN      Sivanesan G     +919176675528   600094  Tamilnadu
+
+(mypyvenv) root@ubundockhost:/# aws account list-regions
+REGIONS af-south-1      DISABLED
+REGIONS ap-east-1       DISABLED
+REGIONS ap-east-2       DISABLED
+REGIONS ap-northeast-1  ENABLED_BY_DEFAULT
+REGIONS ap-northeast-2  ENABLED_BY_DEFAULT
+REGIONS ap-northeast-3  ENABLED_BY_DEFAULT
+REGIONS ap-south-1      ENABLED_BY_DEFAULT
+REGIONS ap-south-2      DISABLED
+REGIONS ap-southeast-1  ENABLED_BY_DEFAULT
+REGIONS ap-southeast-2  ENABLED_BY_DEFAULT
+REGIONS ap-southeast-3  DISABLED
+REGIONS ap-southeast-4  DISABLED
+REGIONS ap-southeast-5  DISABLED
+REGIONS ap-southeast-6  DISABLED
+REGIONS ap-southeast-7  DISABLED
+REGIONS ca-central-1    ENABLED_BY_DEFAULT
+REGIONS ca-west-1       DISABLED
+REGIONS eu-central-1    ENABLED_BY_DEFAULT
+REGIONS eu-central-2    DISABLED
+REGIONS eu-north-1      ENABLED_BY_DEFAULT
+REGIONS eu-south-1      DISABLED
+REGIONS eu-south-2      DISABLED
+REGIONS eu-west-1       ENABLED_BY_DEFAULT
+REGIONS eu-west-2       ENABLED_BY_DEFAULT
+REGIONS eu-west-3       ENABLED_BY_DEFAULT
+REGIONS il-central-1    DISABLED
+REGIONS me-central-1    DISABLED
+REGIONS me-south-1      DISABLED
+REGIONS mx-central-1    DISABLED
+REGIONS sa-east-1       ENABLED_BY_DEFAULT
+REGIONS us-east-1       ENABLED_BY_DEFAULT
+REGIONS us-east-2       ENABLED_BY_DEFAULT
+REGIONS us-west-1       ENABLED_BY_DEFAULT
+REGIONS us-west-2       ENABLED_BY_DEFAULT
+
+(mypyvenv) root@ubundockhost:/# aws account get-alternate-contact --alternate-contact-type="BILLING"
+
+An error occurred (ResourceNotFoundException) when calling the GetAlternateContact operation: No contact of the inputted alternate contact type found.
+
+Other Account sub-command options 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+accept-primary-email-update
+delete-alternate-contact
+disable-region
+enable-region
+get-gov-cloud-account-information
+get-primary-email
+get-region-opt-status
+put-account-name
+put-alternate-contact
+put-contact-information
+start-primary-email-update
+
+## AWS S3 commands
+
+aws s3 <Command> [<Arg> ...]
+
+Availabe commands 
+~~~~~~~~~~~~~~~~~~~~~~
+cp
+ls
+mb
+mv
+presign
+rb
+rm
+sync
+website
+
+## List the S3 buckets available in AWS account
+(mypyvenv) root@ubundockhost:/# aws s3 ls
+2025-12-02 00:15:17 learn-glue-csv-etl-bucket
+
+(mypyvenv) root@ubundockhost:/# aws s3api list-buckets --output table
+--------------------------------------------------------------------------------------------------------
+|                                              ListBuckets                                             |
++--------------------------------------------------------+---------------------------------------------+
+|  Prefix                                                |  None                                       |
++--------------------------------------------------------+---------------------------------------------+
+||                                               Buckets                                              ||
+|+----------------------------------------+-----------------------------+-----------------------------+|
+||                BucketArn               |        CreationDate         |            Name             ||
+|+----------------------------------------+-----------------------------+-----------------------------+|
+||  arn:aws:s3:::learn-glue-csv-etl-bucket|  2025-12-01T18:45:17+00:00  |  learn-glue-csv-etl-bucket  ||
+|+----------------------------------------+-----------------------------+-----------------------------+|
+||                                                Owner                                               ||
+|+------+---------------------------------------------------------------------------------------------+|
+||  ID  |  427dcf9dbe2b1d3fd55fd91ea16255ae25a5895407ef2e5cfa08a747cddf53b3                           ||
+|+------+---------------------------------------------------------------------------------------------+|
+
+## List all objects in bucket
+(mypyvenv) root@ubundockhost:/# aws s3 ls s3://learn-glue-csv-etl-bucket/
+                           PRE athena/
+                           PRE processedData/
+                           PRE rawData/
+                           PRE scriptLocation/
+                           PRE tmpDir/
+						   
+(mypyvenv) root@ubundockhost:/# aws s3 ls s3://learn-glue-csv-etl-bucket --recursive --human-readable --summarize
+2025-12-02 00:18:10    0 Bytes athena/
+2025-12-02 00:17:39    0 Bytes processedData/
+2025-12-02 00:17:08    0 Bytes rawData/
+2025-12-02 00:22:41    0 Bytes rawData/customers/
+2025-12-02 00:23:13   20.8 KiB rawData/customers/customers.csv
+2025-12-02 00:23:27    0 Bytes rawData/orders/
+2025-12-02 00:23:50    6.7 MiB rawData/orders/orders.csv
+2025-12-02 00:17:50    0 Bytes scriptLocation/
+2025-12-02 00:18:01    0 Bytes tmpDir/
+
+Total Objects: 9
+   Total Size: 6.7 MiB
+
+## Make a new bucket
+(mypyvenv) root@ubundockhost:/# aws s3 mb s3://learn-new-bucket --region us-east-1
+make_bucket: learn-new-bucket
+
+## Check if the new bucket is created
+(mypyvenv) root@ubundockhost:/# aws s3api list-buckets --query 'Buckets[].[Name,Region,CreationDate]' --output table
+--------------------------------------------------------------------
+|                            ListBuckets                           |
++----------------------------+-------+-----------------------------+
+|  learn-glue-csv-etl-bucket |  None |  2025-12-01T18:45:17+00:00  |
+|  learn-new-bucket          |  None |  2025-12-16T20:55:35+00:00  |
++----------------------------+-------+-----------------------------+
+
+## Remove the new bucket
+(mypyvenv) root@ubundockhost:/# aws s3 rb s3://learn-new-bucket
+remove_bucket: learn-new-bucket
+
+(mypyvenv) root@ubundockhost:/# aws s3api list-buckets --query 'Buckets[].{Name:Name,Region:LocationConstraint,Created:CreationDate}' --output table
+----------------------------------------------------------------------
+|                             ListBuckets                            |
++----------------------------+-----------------------------+---------+
+|           Created          |            Name             | Region  |
++----------------------------+-----------------------------+---------+
+|  2025-12-01T18:45:17+00:00 |  learn-glue-csv-etl-bucket  |  None   |
++----------------------------+-----------------------------+---------+
+
+Copy files - objects
+~~~~~~~~~~~~~
+aws s3 cp file.txt s3://my-bucket/          # Upload local file
+aws s3 cp s3://my-bucket/file.txt .         # Download
+aws s3 cp s3://src-bucket s3://dest-bucket --recursive  # Bucket-to-bucket
+
+Move files - objects
+~~~~~~~~~~~~~
+aws s3 mv file.txt s3://my-bucket/newname.txt
+aws s3 mv s3://my-bucket/old/ s3://my-bucket/new/ --recursive
+
+sync folders or buckets - objects
+~~~~~~~~~~~~~
+aws s3 sync ./local-dir s3://my-bucket/      # Upload changes only
+aws s3 sync s3://my-bucket/ ./local-dir/     # Download changes only
+aws s3 sync s3://src-bucket s3://dest-bucket --delete  # Mirror + delete extras
+
+## presign – Generate pre-signed URLs -- Generates a URL which can be used to access the File in S3 bucket
+## Using the output URL can directly download the S3 file 
+
+(mypyvenv) root@ubundockhost:/# aws s3 presign s3://learn-glue-csv-etl-bucket/rawData/customers/customers.csv --expires-in 3600   # 1-hour public link
+
+https://learn-glue-csv-etl-bucket.s3.ap-south-1.amazonaws.com/rawData/customers/customers.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=(sample_key)%2F20251216%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20251216T211402Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=23880b32aa94663d610e23ee5557fb4c629831c9d196097030cf5de5dd0bd4a3
+
+
+## Try to download all the contents from the s3://learn-glue-csv-etl-bucket/ into local folder
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Data_for_learning/Learn_glue# aws s3 sync s3://learn-glue-csv-etl-bucket/ .
+download: s3://learn-glue-csv-etl-bucket/rawData/customers/customers.csv to rawData/customers/customers.csv
+download: s3://learn-glue-csv-etl-bucket/rawData/orders/orders.csv to rawData/orders/orders.csv
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Data_for_learning/Learn_glue# ll
+total 0
+drwxr-xr-x 1 root root 512 Dec 17 02:50 ./
+drwxr-xr-x 1 root root 512 Dec 17 02:49 ../
+drwxr-xr-x 1 root root 512 Dec 17 02:50 rawData/
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning/All_Data_for_learning/Learn_glue# ls -laR
+.:
+total 0
+drwxr-xr-x 1 root root 512 Dec 17 02:50 .
+drwxr-xr-x 1 root root 512 Dec 17 02:49 ..
+drwxr-xr-x 1 root root 512 Dec 17 02:50 rawData
+
+./rawData:
+total 0
+drwxr-xr-x 1 root root 512 Dec 17 02:50 .
+drwxr-xr-x 1 root root 512 Dec 17 02:50 ..
+drwxr-xr-x 1 root root 512 Dec 17 02:50 customers
+drwxr-xr-x 1 root root 512 Dec 17 02:50 orders
+
+./rawData/customers:
+total 24
+drwxr-xr-x 1 root root   512 Dec 17 02:50 .
+drwxr-xr-x 1 root root   512 Dec 17 02:50 ..
+-rw-r--r-- 1 root root 21249 Dec  2 00:23 customers.csv
+
+./rawData/orders:
+total 6880
+drwxr-xr-x 1 root root     512 Dec 17 02:50 .
+drwxr-xr-x 1 root root     512 Dec 17 02:50 ..
+-rw-r--r-- 1 root root 7043334 Dec  2 00:23 orders.csv
+
+(mypyvenv) root@ubundockhost:/# aws s3 ls s3://learn-glue-csv-etl-bucket --recursive --human-readable --summarize
+2025-12-02 00:18:10    0 Bytes athena/
+2025-12-02 00:17:39    0 Bytes processedData/
+2025-12-02 00:17:08    0 Bytes rawData/
+2025-12-02 00:22:41    0 Bytes rawData/customers/
+2025-12-02 00:23:13   20.8 KiB rawData/customers/customers.csv
+2025-12-02 00:23:27    0 Bytes rawData/orders/
+2025-12-02 00:23:50    6.7 MiB rawData/orders/orders.csv
+2025-12-02 00:17:50    0 Bytes scriptLocation/
+2025-12-02 00:18:01    0 Bytes tmpDir/
+
+All files in the S3 bucket are copied to local folder 
+
+## Sync between two S3 buckets
+(mypyvenv) root@ubundockhost:/mnt/hdrive# aws s3 mb s3://learn-new-bucket  --region us-east-1
+make_bucket: learn-new-bucket
+
+(mypyvenv) root@ubundockhost:/mnt/hdrive# aws s3 sync s3://learn-glue-csv-etl-bucket s3://learn-new-bucket
+copy: s3://learn-glue-csv-etl-bucket/rawData/customers/customers.csv to s3://learn-new-bucket/rawData/customers/customers.csv
+copy: s3://learn-glue-csv-etl-bucket/rawData/orders/orders.csv to s3://learn-new-bucket/rawData/orders/orders.csv
+
+# Disable + delete a bucket and all its contents
+(mypyvenv) root@ubundockhost:/mnt/hdrive# aws s3 rb s3://learn-new-bucket/ --force
+delete: s3://learn-new-bucket/rawData/orders/orders.csv
+delete: s3://learn-new-bucket/rawData/customers/customers.csv
+remove_bucket: learn-new-bucket
+
+Free tier: In your first year of opening an AWS account, you get 750 hours per month of t2.micro instance usage (or t3.micro where t2.micro isn't available) when used with free tier AMIs, 750 hours per month of public IPv4 address usage, 30 GiB of EBS storage, 2 million I/Os, 1 GB of snapshots, and 100 GB of bandwidth to the internet. Data transfer charges are not included as part of the free tier allowance.
+
+EC2 Instance
+~~~~~~~~~~~~~~~~~~~ 
+Name tag : MyT2MicroEC2Instance
+AMI ID   : ami-087d1c9a513324697
+Image    : Canonical, Ubuntu, 22.04, amd64 jammy image
+
+Root device type : ebs
+
+CLI commands to create another instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+aws ec2 create-security-group --group-name 'launch-wizard-1' --description 'launch-wizard-1 created 2025-12-18T10:18:24.245Z' --vpc-id 'vpc-0ae69c7f10392542d' 
+
+aws ec2 authorize-security-group-ingress --group-id 'sg-preview-1' --ip-permissions '{"IpProtocol":"tcp","FromPort":22,"ToPort":22,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":443,"ToPort":443,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":80,"ToPort":80,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' 
+
+aws ec2 run-instances --image-id 'ami-087d1c9a513324697' --instance-type 't2.micro' --key-name 'ubuntu-dev-key' --block-device-mappings '{"DeviceName":"/dev/sda1","Ebs":{"Encrypted":false,"DeleteOnTermination":true,"SnapshotId":"snap-0747e885ea38fd708","VolumeSize":8,"VolumeType":"gp2"}}' --network-interfaces '{"AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-preview-1"]}' --credit-specification '{"CpuCredits":"standard"}' --tag-specifications '{"ResourceType":"instance","Tags":[{"Key":"Name","Value":"MyT2MicroEC2Instance"}]}' --metadata-options '{"HttpEndpoint":"enabled","HttpPutResponseHopLimit":2,"HttpTokens":"required"}' --private-dns-name-options '{"HostnameType":"ip-name","EnableResourceNameDnsARecord":true,"EnableResourceNameDnsAAAARecord":false}' --count '1' 
+
+Python SDK Code to create another instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import boto3
+import botocore.exceptions
+
+ec2_client = boto3.client('ec2')
+
+ec2_client.create_security_group(
+    "group_name": "launch-wizard-1",
+    "description": "launch-wizard-1 created 2025-12-18T10:18:24.245Z",
+    "vpc_id": "vpc-0ae69c7f10392542d"
+)
+
+ec2_client.authorize_security_group_ingress(
+    "group_id": "sg-preview-1",
+    "ip_permissions": [{"ip_protocol": "tcp", "from_port": 22, "to_port": 22, "ip_ranges": [{"cidr_ip": "0.0.0.0/0"}]}, {"ip_protocol": "tcp", "from_port": 443, "to_port": 443, "ip_ranges": [{"cidr_ip": "0.0.0.0/0"}]}, {"ip_protocol": "tcp", "from_port": 80, "to_port": 80, "ip_ranges": [{"cidr_ip": "0.0.0.0/0"}]}]
+)
+
+ec2_client.run_instances(
+    "max_count": 1,
+    "min_count": 1,
+    "image_id": "ami-087d1c9a513324697",
+    "instance_type": "t2.micro",
+    "key_name": "ubuntu-dev-key",
+    "ebs_optimized": false,
+    "block_device_mappings": [{"device_name": "/dev/sda1", "ebs": {"encrypted": false, "delete_on_termination": true, "snapshot_id": "snap-0747e885ea38fd708", "volume_size": 8, "volume_type": "gp2"}}],
+    "network_interfaces": [{"associate_public_ip_address": true, "device_index": 0, "groups": ["sg-preview-1"]}],
+    "credit_specification": {"cpu_credits": "standard"},
+    "tag_specifications": [{"resource_type": "instance", "tags": [{"key": "Name", "value": "MyT2MicroEC2Instance"}]}],
+    "metadata_options": {"http_endpoint": "enabled", "http_put_response_hop_limit": 2, "http_tokens": "required"},
+    "private_dns_name_options": {"hostname_type": "ip-name", "enable_resource_name_dns_arecord": true, "enable_resource_name_dns_aaaarecord": false}
+)
+
+Steps to launch EC2 instance of type t3.nano with standard free ubuntu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lauch an amazon t3.nano Ec2 instance, with ubuntu standard free edtion of AMI and run bash on it, network configurations required so that i can access that EC2 instance with a terminal command prompt and use it for my developement of some shell scripts
+
+1) Access EC2 Console: Log into AWS Console, navigate to EC2 (select your preferred region), and click "Launch Instance."
+
+2) Name and AMI: Enter name "Ubuntu" under Quick Start, select "Ubuntu Server 22.04 LTS (HVM), SSD Volume Type" (free tier eligible, ~64-bit x86).
+
+3) Instance Type: Choose "t2.micro" (2 vCPU, 0.5 GiB RAM, burstable).
+
+4) Key Pair: Create new RSA key pair (e.g., "ubuntu-dev-key"), download ubuntu-dev-key.pem securely.
+
+5) Network Settings: Create/edit security group named "ubuntu-ssh-dev":
+   Allow SSH (TCP port 22) from "My IP" or "Anywhere-IPv4" (0.0.0.0/0) for terminal access.
+   Enable "Auto-assign Public IP."
+
+6) Storage: Default 8 GiB gp3 (free tier covers up to 30 GiB).
+
+7 Launch: Click "Launch instance"; wait for "Running" status and note Public IPv4 address.
+
+Successfully initiated launch of instance (i-0ca210a013f899c31)
+
+Instance Details :
+Instance Name : MyT2MicroEC2Instance
+Instance ID : i-0ca210a013f899c31
+Instance ARN : arn:aws:ec2:ap-south-1:059290164282:instance/i-0ca210a013f899c31
+Availability zone    : ap-south-1b
+Availability zone ID : aps1-az3
+AMI ID      : ami-087d1c9a513324697
+AMI NAME    : ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251015
+AMI Location  : amazon/ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251015
+key pair assigned at launch : ubuntu-dev-key
+Virtualization type : hvm
+Reservation : r-0b6acd38bdd551784
+Launched time : Thu Dec 18 2025 19:28:09 GMT+0530 (India Standard Time) (5 minutes)
+Key Pair assigned at launch : ubuntu-dev-key
+
+Security Details of Instance :
+Security groups : sg-0c26df42a644f5844   (newly created during instance launch)
+
+Sec group rule IDs :
+sgr-0e8f0f261ee31a0bd : Port 80  - TCP : Inbound
+sgr-01d972b163d8e34ec : Port 443 - TCP : Inbound 
+sgr-008f358c03d2b17bc : Port 22  - TCP : Inbound
+
+sgr-0a191d066c6c6ac11 : All      - All : Outbound
+
+Networking Details of Instance :
+VPC ID      : vpc-0ae69c7f10392542d
+Subnet ID   : subnet-0db05d46d110c0385
+
+Public IP4  : 35.154.129.53
+Private IP4 : 172.31.6.167
+Public DNS  : ec2-35-154-129-53.ap-south-1.compute.amazonaws.com
+Private IP DNS : ip-172-31-6-167.ap-south-1.compute.internal
+Auto assigned IP : 35.154.129.53
+IPv4-only IP based name A record only : ec2-35-154-129-53.ap-south-1.compute.amazonaws.com
+Private hostname type IP name: ip-172-31-6-167.ap-south-1.compute.internal
+Network Interface ID : eni-00fa92ee800b7abf9
+
+Storage Details of Instance :
+Root device name : /dev/sda1
+Root device type : EBS
+
+Volume ID : vol-0407391eba392c23c
+Volume type : gp2
+volume size : 8 GiB
+volume iops : 100
+volume snapshot ID : snap-0747e885ea38fd708    -- this is not snapshot taken by you, its existing snapshot with which volume is created
+Volume availablity zone : aps1-az3 (ap-south-1b)
+Attached resources : i-0ca210a013f899c31 (MyT2MicroEC2Instance): /dev/sda1 
+
+Instance Tags :
+ALLInstances:EC2 instance to learn
+NAME:MyT2MicroEC2Instance
+
+Cost for this EBS volume is 
+8 GB × $0.115/GB-month = $0.92 per month in ap-south-1 region - So take snapshot of the data and delete the volume. 
+
+You can absolutely create a EBS volume without any snapshot—this creates a blank, empty volume ready for formatting.
+
+Now just connect to EC2 instance with browser interface itself : Browser-Based Access
+In AWS console Navigate to the EC2 dashboard, select your instance, click "Connect", choose "EC2 Instance Connect", and hit "Connect" to open a shell. This method done need the key pair file.
+
+
+## In the host PC run the Powershell as Adminstrator find the current user in PC and set the key file readonly permission only to current user
+
+## in powershell 
+## Find the current user (admin user as you run the cmd as adminstrator)
+PS C:\WINDOWS\system32> h:
+PS H:\> cd .\All_Notes_from_learning\
+PS H:\All_Notes_from_learning>
+PS H:\All_Notes_from_learning> hostname
+DESKTOP-O8I6CUH
+PS H:\All_Notes_from_learning> $env:USERNAME   ## check correct user name (admin user as we run powershell as admin)
+ADMIN
+
+admin is the user name of the administrator user in the host now give grant and inheritance permission to admin user to the key file on host (local PC) systems
+
+### Now try to connect to the EC2 instance from local PC using the ubuntu-dev-key.pem the key file we generated in the command shell use below command
+### before trying ssh - Set the permission to key file, only the current user must have only readonly permission to the file no other users must have any other permissions
+
+## Check the ubuntu-dev-key.pem key file is available in host PC
+H:\All_Notes_from_learning>dir ubuntu-dev-key.pem
+ Volume in drive H is new2TB_H
+ Volume Serial Number is 0C24-5CB1
+
+ Directory of H:\All_Notes_from_learning
+
+18-12-2025  07:18 PM             1,674 ubuntu-dev-key.pem
+               1 File(s)          1,674 bytes
+               0 Dir(s)  499,701,334,016 bytes free
+
+## To use the key file only the current admin user in the host system must have read only access to the key file, no inheritace permissions must be present to any other users who inherit from Admin user 
+
+## This is the current permission of the key file check with command 
+## Check the current permissions present in the Key file
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem"
+ubuntu-dev-key.pem BUILTIN\Administrators:(F)
+                  NT AUTHORITY\SYSTEM:(F)
+                  NT AUTHORITY\Authenticated Users:(M)
+                  BUILTIN\Users:(RX)
+
+# Remove ALL permissions first
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem" /remove:g "Everyone" /remove:g "Authenticated Users" /remove:g "Users"
+processed file: ubuntu-dev-key.pem
+Successfully processed 1 files; Failed processing 0 files
+
+## Check the current permissions present in the Key file 
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem"
+ubuntu-dev-key.pem BUILTIN\Administrators:(F)
+                  NT AUTHORITY\SYSTEM:(F)
+				  
+## Add permission to user 
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem" /grant:r "ADMIN:(R)"
+processed file: ubuntu-dev-key.pem	
+
+## Check the current permissions present in the Key file 
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem"
+ubuntu-dev-key.pem DESKTOP-O8I6CUH\ADMIN:(R)
+                  BUILTIN\Administrators:(F)
+                  NT AUTHORITY\SYSTEM:(F)			  
+
+# Remove ALL inherited permissions for any users - For safty purpose
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem" /inheritance:r
+processed file: ubuntu-dev-key.pem
+Successfully processed 1 files; Failed processing 0 files
+
+## Check the current permissions present in the Key file 
+PS H:\All_Notes_from_learning> icacls "ubuntu-dev-key.pem"
+ubuntu-dev-key.pem DESKTOP-O8I6CUH\ADMIN:(R)
+                  BUILTIN\Administrators:(F)
+                  NT AUTHORITY\SYSTEM:(F)
+
+## Connect to your EC2 instance shell with the SSH command as shown below
+## Run the ssh command 
+ 
+ssh -i C:\path\to\my-key.pem ubuntu@ec2-public_ip   ## Sample
+
+PS H:\All_Notes_from_learning> ssh -i H:\All_Notes_from_learning\ubuntu-dev-key.pem ubuntu@35.154.129.53
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.8.0-1040-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Dec 18 21:02:08 UTC 2025
+
+  System load:  0.0               Processes:             102
+  Usage of /:   23.3% of 7.57GB   Users logged in:       1
+  Memory usage: 21%               IPv4 address for eth0: 172.31.6.167
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+New release '24.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Last login: Thu Dec 18 20:46:17 2025 from 60.243.93.138
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntu@ip-172-31-6-167:~$       ## Notice here the Host name connected to is ip-172-31-6-167 that is same as hostname in the EC2 instance
+
+## Try ping command to the same local IP address of the EC2 instance
+ubuntu@ip-172-31-6-167:~$ ping 172.31.6.167
+PING 172.31.6.167 (172.31.6.167) 56(84) bytes of data.
+64 bytes from 172.31.6.167: icmp_seq=1 ttl=64 time=0.015 ms
+64 bytes from 172.31.6.167: icmp_seq=2 ttl=64 time=0.025 ms
+64 bytes from 172.31.6.167: icmp_seq=3 ttl=64 time=0.026 ms
+64 bytes from 172.31.6.167: icmp_seq=4 ttl=64 time=0.023 ms
+^C
+--- 172.31.6.167 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3062ms
+rtt min/avg/max/mdev = 0.015/0.022/0.026/0.004 ms
+ubuntu@ip-172-31-6-167:~$ 
+
+## check history command 
+ubuntu@ip-172-31-6-167:~$ history
+    1  exit
+    2  ll
+    3  ps -ef
+    4  history
+
+From the AWS console EC2 connect shell run 
+
+ubuntu@ip-172-31-6-167:~$ sudo touch /test_root_persistent.txt && echo "Root EBS test - $(date)" | sudo tee /test_root_persistent.txt
+Root EBS test - Thu Dec 18 22:31:29 UTC 2025
+
+## Check file is created in / folder
+ubuntu@ip-172-31-6-167:~$ ll /test_root_persistent.txt
+-rw-r--r-- 1 root root 45 Dec 18 22:31 /test_root_persistent.txt
+
+## Check file contents
+ubuntu@ip-172-31-6-167:~$ cat /test_root_persistent.txt
+Root EBS test - Thu Dec 18 22:31:29 UTC 2025
+
+## To access the volume from the EC2 shell
+## Check all the mount points 
+
+ubuntu@ip-172-31-6-167:~$ lsblk
+NAME     MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+loop0      7:0    0 27.6M  1 loop /snap/amazon-ssm-agent/11797
+loop1      7:1    0 63.8M  1 loop /snap/core20/2669
+loop2      7:2    0 73.9M  1 loop /snap/core22/2133
+loop3      7:3    0 50.8M  1 loop /snap/snapd/25202
+loop4      7:4    0 91.4M  1 loop /snap/lxd/35819
+loop5      7:5    0 27.8M  1 loop /snap/amazon-ssm-agent/12322
+xvda     202:0    0    8G  0 disk 
+├─xvda1  202:1    0  7.9G  0 part /
+├─xvda14 202:14   0    4M  0 part 
+└─xvda15 202:15   0  106M  0 part /boot/efi
+ubuntu@ip-172-31-6-167:~$ 
+
+## List partitions shows xvda1 as ext4
+ubuntu@ip-172-31-6-167:/dev$ lsblk -f
+NAME     FSTYPE FSVER LABEL           UUID                                 FSAVAIL FSUSE% MOUNTPOINTS
+loop0                                                                            0   100% /snap/amazon-ssm-agent/11797
+loop1                                                                            0   100% /snap/core20/2669
+loop2                                                                            0   100% /snap/core22/2133
+loop3                                                                            0   100% /snap/snapd/25202
+loop4                                                                            0   100% /snap/lxd/35819
+loop5                                                                            0   100% /snap/amazon-ssm-agent/12322
+xvda                                                                                      
+├─xvda1  ext4   1.0   cloudimg-rootfs e8a6017f-cb50-4c7f-bbbf-f53a9bf75b6c    5.8G    24% /
+├─xvda14                                                                                  
+└─xvda15 vfat   FAT32 UEFI            9AAC-4756                              98.3M     6% /boot/efi
+ubuntu@ip-172-31-6-167:/dev$ 
+
+## Check raw device information
+ubuntu@ip-172-31-6-167:/dev$ sudo fdisk -l /dev/xvda
+Disk /dev/xvda: 8 GiB, 8589934592 bytes, 16777216 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 4B3383BE-9D3E-44BE-99B0-DB92483E39B7
+
+Device       Start      End  Sectors  Size Type
+/dev/xvda1  227328 16777182 16549855  7.9G Linux filesystem
+/dev/xvda14   2048    10239     8192    4M BIOS boot
+/dev/xvda15  10240   227327   217088  106M EFI System
+
+Partition table entries are not in disk order.
+
+## Free space summary
+ubuntu@ip-172-31-6-167:/dev$ df -hT
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/root      ext4   7.6G  1.8G  5.8G  24% /
+tmpfs          tmpfs  479M     0  479M   0% /dev/shm
+tmpfs          tmpfs  192M  856K  191M   1% /run
+tmpfs          tmpfs  5.0M     0  5.0M   0% /run/lock
+/dev/xvda15    vfat   105M  6.1M   99M   6% /boot/efi
+tmpfs          tmpfs   96M  4.0K   96M   1% /run/user/1000
+ubuntu@ip-172-31-6-167:/dev$ 
+
+Your root is fully accessible but very small (just 8G total). To grow it later: Resize EBS volume in AWS console, then sudo resize2fs /dev/xvda1 (for ext4) and verify with df -h. Data persists across stops/starts.
+
+From the console select instance under Instance State -> Stop instance 
+
+Stopping your instance allows you to reduce costs, modify settings, and troubleshoot problems.
+After you stop the instance, you are no longer charged usage or data transfer fees for it. However, you will still be billed for associated Elastic IP addresses and EBS volumes.
+
+AWS EC2 - subcommands and categories - There are more than 700 subcommands in aws ec2 but below are high level categories AWS EC2 CLI subcommands are grouped into logical categories for managing resources like instances, volumes, and networking.
+
+Instance Management : Commands to launch, stop, start, reboot, and describe EC2 instances (e.g., run-instances, stop-instances, describe-instances).
+Volume Management   : Handles EBS volumes: attach, detach, create, delete, and resize (e.g., create-volume, attach-volume, describe-volumes).
+Snapshot Management : Creates, deletes, and manages EBS snapshots for backups (e.g., create-snapshot, describe-snapshots, delete-snapshot).
+Network Management  : Manages VPCs, subnets, security groups, and network interfaces (e.g., describe-security-groups, create-network-interface).
+Image Management    : Works with AMIs: register, describe, copy, and deregister (e.g., describe-images, register-image).
+Key Management      : Handles key pairs for SSH access (e.g., create-key-pair, delete-key-pair, describe-key-pairs).
+
+## Enable the SSH connect from Docker container and start using ASW cli commands from docker container 
+## Use the same keyfile generated while creating the EC2 instance - 
+## First copy the file into user home .ssh folder
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# cp siva-test-key.pem ~/.ssh
+(mypyvenv) root@ubundockhost:/mnt/hdrive/All_Notes_from_learning# cd ~/.ssh/
+
+## Change permissions so only this user can read this file
+(mypyvenv) root@ubundockhost:~/.ssh# chmod 400 ~/.ssh/siva-test-key.pem
+
+ssh -i ~/.ssh/siva-test-key.pem ubuntu@your-ec2-public-ip ## Sample command
+ 
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -i ~/.ssh/siva-test-key.pem ubuntu@35.154.129.53    ## Note still EC2 instance is not started
+ssh: connect to host 35.154.129.53 port 22: Connection refused
+
+## With AWS cli start the aws ec2 instance 
+                                     aws ec2 start-instances --instance-ids <Instance_ID>
+(mypyvenv) root@ubundockhost:~/.ssh# aws ec2 start-instances --instance-ids i-0ca210a013f899c31
+STARTINGINSTANCES       i-0ca210a013f899c31
+CURRENTSTATE    0       pending
+PREVIOUSSTATE   80      stopped
+
+## Check the status of EC2 instance 
+(mypyvenv) root@ubundockhost:~/.ssh# aws ec2 describe-instances --instance-ids i-0ca210a013f899c31 --query 'Reservations[*].Instances[*].State.Name' --output text
+running
+
+(mypyvenv) root@ubundockhost:~/.ssh# aws ec2 describe-instance-status --instance-ids i-0ca210a013f899c31
+INSTANCESTATUSES        ap-south-1b     aps1-az3        i-0ca210a013f899c31
+INSTANCESTATE   16      running
+INSTANCESTATUS  ok
+DETAILS reachability    passed
+OPERATOR        False
+SYSTEMSTATUS    ok
+DETAILS reachability    passed
+(mypyvenv) root@ubundockhost:~/.ssh#
+
+## Check all the details of the EC2 instance 
+(mypyvenv) root@ubundockhost:~/.ssh# aws ec2 describe-instances --instance-ids i-0ca210a013f899c31
+RESERVATIONS    059290164282    r-0b6acd38bdd551784
+INSTANCES       0       x86_64  uefi-preferred  0fa8a49b-fe64-4081-80ca-7188a52db419    legacy-bios     False   True    xen     ami-087d1c9a513324697   i-0ca210a013f899c31     t2.micro     ubuntu-dev-key   2025-12-19T06:39:03+00:00       Linux/UNIX      ip-172-31-6-167.ap-south-1.compute.internal     172.31.6.167    ec2-13-203-105-74.ap-south-1.compute.amazonaws.com      13.203.105.74 /dev/sda1       ebs     True            subnet-0db05d46d110c0385        RunInstances    2025-12-18T13:58:09+00:00       hvm     vpc-0ae69c7f10392542d
+BLOCKDEVICEMAPPINGS     /dev/sda1
+EBS     2025-12-18T13:58:10+00:00       True    attached        vol-0407391eba392c23c
+CAPACITYRESERVATIONSPECIFICATION        open
+CPUOPTIONS      1       1
+ENCLAVEOPTIONS  False
+HIBERNATIONOPTIONS      False
+MAINTENANCEOPTIONS      default default
+METADATAOPTIONS enabled disabled        2       required        disabled        applied
+MONITORING      disabled
+NETWORKINTERFACES               interface       0a:c3:d3:f3:68:7b       eni-00fa92ee800b7abf9   059290164282    ip-172-31-6-167.ap-south-1.compute.internal     172.31.6.167    True    in-usesubnet-0db05d46d110c0385        vpc-0ae69c7f10392542d
+ASSOCIATION     amazon  ec2-13-203-105-74.ap-south-1.compute.amazonaws.com      13.203.105.74
+ATTACHMENT      2025-12-18T13:58:09+00:00       eni-attach-0efb390b0bdff5e8f    True    0       0       attached
+GROUPS  sg-0c26df42a644f5844    launch-wizard-1
+OPERATOR        False
+PRIVATEIPADDRESSES      True    ip-172-31-6-167.ap-south-1.compute.internal     172.31.6.167
+ASSOCIATION     amazon  ec2-13-203-105-74.ap-south-1.compute.amazonaws.com      13.203.105.74
+NETWORKPERFORMANCEOPTIONS       default
+OPERATOR        False
+PLACEMENT       ap-south-1b     aps1-az3                default
+PRIVATEDNSNAMEOPTIONS   False   True    ip-name
+SECURITYGROUPS  sg-0c26df42a644f5844    launch-wizard-1
+STATE   16      running
+TAGS    Name    MyT2MicroEC2Instance
+
+## Now that the EC2 instance is restarted the public IP of the instance will change Get the current public IP of the instance
+(mypyvenv) root@ubundockhost:~/.ssh# aws ec2 describe-instances --instance-ids i-0ca210a013f899c31 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text
+13.203.105.74
+
+## Now that the instance is running try to connect to instance with ssh from withing the container using the new public IP of EC2 instance
+(mypyvenv) root@ubundockhost:~/.ssh# ssh -v -i ~/.ssh/siva-test-key.pem ubuntu@13.203.105.74
+The authenticity of host '13.203.105.74 (13.203.105.74)' can't be established.
+ED25519 key fingerprint is SHA256:H5ExdytoxM3yWt3fc281v3GGtebRJ5Q2TL/tPDO5z/Q.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '13.203.105.74' (ED25519) to the list of known hosts.
+Authenticated to 13.203.105.74 ([13.203.105.74]:22) using "publickey".
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.8.0-1040-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Fri Dec 19 06:54:03 UTC 2025
+
+  System load:  0.23              Processes:             104
+  Usage of /:   30.3% of 7.57GB   Users logged in:       0
+  Memory usage: 25%               IPv4 address for eth0: 172.31.6.167
+  Swap usage:   0%
+
+ * Ubuntu Pro delivers the most comprehensive open source security and
+   compliance features.
+
+   https://ubuntu.com/aws/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+41 updates can be applied immediately.
+31 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '24.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Last login: Thu Dec 18 22:29:06 2025 from 13.233.177.3
+ubuntu@ip-172-31-6-167:~$
+ubuntu@ip-172-31-6-167:~$
+
+## Wow from within our Docker container we are able to connect to and work on the EC2 instance that is running on Mumbai availablity zone
+## Check history shows all the old commands that were run previously when instance was invoked before
+ubuntu@ip-172-31-6-167:~$ history
+    1  exit
+    2  ll
+    3  ps -ef
+    4  history
+    5  ping 172.31.6.167
+    6  exit
+    7  Test-NetConnection localhost -Port 2222
+    8  exit
+
+## Try to check the files we created yesterday in the volume check if they are present as the instance is restarted now 
+## Wow can find the file as is and the last edit timestamp is yesterday Dec 18 and the current time in EC2 instance is Dec 19
+ubuntu@ip-172-31-6-167:~$ pwd
+/home/ubuntu
+ubuntu@ip-172-31-6-167:/$ cd /
+ubuntu@ip-172-31-6-167:/$ ll test_*
+-rw-r--r-- 1 root root 45 Dec 18 22:31 test_root_persistent.txt
+ubuntu@ip-172-31-6-167:/$ cat test_root_persistent.txt
+Root EBS test - Thu Dec 18 22:31:29 UTC 2025
+ubuntu@ip-172-31-6-167:/$
+ubuntu@ip-172-31-6-167:/$ date
+Fri Dec 19 06:59:54 UTC 2025
+
+## Above time is in UTC format convert that to IST to see if the time in the EC2 instance is corret as per IST
+ubuntu@ip-172-31-6-167:/$ TZ=Asia/Kolkata date "+%Y-%m-%d %T IST"
+2025-12-19 12:31:49 IST
+
+## List all the users in the AWS EC2 instance 
+ubuntu@ip-172-31-6-167:/$ getent passwd | cut -d: -f1
+root
+daemon
+bin
+sys
+
+## Switch to root user with sudo su command 
+ubuntu@ip-172-31-6-167:/$ sudo su
+root@ip-172-31-6-167:/#
+
+## Find all the currently logged in users
+root@ip-172-31-6-167:/# who
+ubuntu   pts/0        2025-12-19 06:54 (60.243.93.138)
+ubuntu   pts/1        2025-12-19 07:55 (60.243.93.138)
+
+## Find from which IP these two users have logged in they both are logged in from IP 60.243.93.138 - So reverse lookup that IP to find hostname/geolocation
+root@ip-172-31-6-167:/# nslookup 60.243.93.138
+138.93.243.60.in-addr.arpa      name = 93.243.60.138.hathway.com.
+
+Or use Dig
+root@ip-172-31-6-167:/# dig -x 60.243.93.138 +short
+93.243.60.138.hathway.com.
+
+## Confirm the login is via SSH 
+root@ip-172-31-6-167:/# ss -tnp | grep :22
+ESTAB 0      68      172.31.6.167:22   60.243.93.138:62716 users:(("sshd",pid=1739,fd=4),("sshd",pid=1652,fd=4))
+
+## Find the session details for user ubuntu
+
+root@ip-172-31-6-167:/# w ubuntu
+ 09:15:33 up  2:35,  2 users,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+ubuntu   pts/0    60.243.93.138    06:54    0.00s  0.04s  0.01s sshd: ubuntu [priv]
+ubuntu   pts/1    60.243.93.138    07:55    0.00s  0.00s  0.00s sudo su
+
+## Notice that one of the session is show because we used sudo su command to login as root - Now logout of root with exit and try the same command to find all sessions for ubuntu user
+
+root@ip-172-31-6-167:/# exit
+exit
+ubuntu@ip-172-31-6-167:/$            ## Prompt changed to ubuntu user as we exit from sudo su for root user
+
+## Now you can see only one session is active for ubuntu user with tty pts/0
+
+ubuntu@ip-172-31-6-167:/$ w ubuntu
+ 09:16:56 up  2:37,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+ubuntu   pts/0    60.243.93.138    06:54    0.00s  0.04s  0.00s w ubuntu
+ubuntu@ip-172-31-6-167:/$
+
+## Now try to ping the IP from which the SSH connection is established 60.243.93.138
+ubuntu@ip-172-31-6-167:/$ ping -c 4 60.243.93.138
+PING 60.243.93.138 (60.243.93.138) 56(84) bytes of data.
+64 bytes from 60.243.93.138: icmp_seq=1 ttl=56 time=21.6 ms
+64 bytes from 60.243.93.138: icmp_seq=2 ttl=56 time=21.8 ms
+64 bytes from 60.243.93.138: icmp_seq=3 ttl=56 time=21.6 ms
+64 bytes from 60.243.93.138: icmp_seq=4 ttl=56 time=21.7 ms
+
+--- 60.243.93.138 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+rtt min/avg/max/mdev = 21.568/21.659/21.828/0.105 ms
+
+In this case the IP 60.243.93.138 is the dynamic IP assigned to the windows PC from which SSH connection is established. In fact the SSH command is run from within the Docker container executing in the PC. This dynamic IP is assigned by Hathway to the host PC. To ensure this open powershell and check what is the dynamic IP assinged by hathway to my PC.
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\ADMIN> Invoke-RestMethod http://ifconfig.me/ip
+60.243.93.138
+PS C:\Users\ADMIN> nslookup myip.opendns.com resolver1.opendns.com
+Server:  dns.sse.cisco.com
+Address:  208.67.222.222
+
+Non-authoritative answer:
+Name:    myip.opendns.com
+Address:  60.243.93.138
+
+PS C:\Users\ADMIN>
+
+Invoke-RestMethod = PowerShell's equivalent of curl/wget
+http://ifconfig.me/ip = Free public IP lookup service you can open this in chrome to find your public IP at anytime.
+
+## Customize and some AWS commands with standard instance ID always and with aliases --
+  -- Check .bash_aliases for all customizations
+
+To find which partition your AWS account belongs to Run aws sts get-caller-identity to get your account details, then check the ARN prefix of the returned UserId or Arn field (e.g., "arn:aws:iam::123456789012:user/name" confirms "aws" partition). For non-standard partitions, the prefix changes to "arn:aws-cn:", "arn:aws-us-gov:", etc.
+
+H:\All_Notes_from_learning>aws sts get-caller-identity
+059290164282    arn:aws:iam::059290164282:user/iamnesan AIDAQ3TPYDQ5MISEGZBOJ
+
+## Check the same with python awscli library boto3 for this to work you need to have done the aws config to use your account as default by boto3 same as the aws cli will also use the details you configured with aws config.
+
+(mypyvenv) root@ubundockhost:~/.cache/pip# python3 -c "import boto3; print(boto3.client('sts').meta.partition)"
+aws
+
+from console create a HDD EBS volume and attach to exisitng EC2 instance.
+
+in EC2 dashboard -> Create volume
+
+Volume ID : vol-0b1c3b240042817af
+Volume type : Cold HDD (sc1)
+Size : 125 GB
+Availablity zone : aps1-az3 ap-south-1b
+
+Tag 
+VOLEBSHDD:EBSHDD
+
+Monthly cost is : 125 GB × $0.0174/GB-month = $2.175 per month
+
+## Pricing for EBS is based on allcation and not based on usage to just delete the EBS volume as soon as possible. 
+
+
+Select the volume -> Action -> Attach - Select instance to attach and device name in the instace for this volume.
+
+/dev/xvdbb - device name in the EC2 instance. -> Now start the instance and connect via ssh and try to check if volume is available.
+
+(mypyvenv) root@ubundockhost:~/.cache/pip# awinststart
+Starting instance i-0ca210a013f899c31...
+
+(mypyvenv) root@ubundockhost:~/.cache/pip# awinstssh
+Instance i-0ca210a013f899c31 :: Public IP: 13.126.241.214
+The authenticity of host '13.126.241.214 (13.126.241.214)' can't be established.
+
+ubuntu@ip-172-31-6-167:~$ cd /dev/xvdbb    ## Cant access it as such
+-bash: cd: /dev/xvdbb: Not a directory
+
+## # List disks
+ubuntu@ip-172-31-6-167:/$ lsblk
+NAME     MAJ:MIN   RM  SIZE RO TYPE MOUNTPOINTS
+loop0      7:0      0 27.6M  1 loop /snap/amazon-ssm-agent/11797
+loop1      7:1      0 63.8M  1 loop /snap/core20/2669
+loop2      7:2      0 27.8M  1 loop /snap/amazon-ssm-agent/12322
+loop3      7:3      0 73.9M  1 loop /snap/core22/2133
+loop4      7:4      0   74M  1 loop /snap/core22/2163
+loop5      7:5      0 63.8M  1 loop /snap/core20/2686
+loop6      7:6      0 91.4M  1 loop /snap/lxd/35819
+loop7      7:7      0 50.9M  1 loop /snap/snapd/25577
+loop8      7:8      0 91.4M  1 loop /snap/lxd/36918
+loop9      7:9      0 50.8M  1 loop /snap/snapd/25202
+xvda     202:0      0    8G  0 disk
+├─xvda1  202:1      0  7.9G  0 part /
+├─xvda14 202:14     0    4M  0 part
+└─xvda15 202:15     0  106M  0 part /boot/efi
+xvdbb    202:13568  0  125G  0 disk  
+
+# Format (one-time) with ext4 filesystem
+ubuntu@ip-172-31-6-167:/$ sudo mkfs -t ext4 /dev/xvdbb
+mke2fs 1.46.5 (30-Dec-2021)
+Creating filesystem with 32768000 4k blocks and 8192000 inodes
+Filesystem UUID: 464dce5f-c241-488b-a147-0b8146dd8ae4
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+        4096000, 7962624, 11239424, 20480000, 23887872
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (131072 blocks):
+
+## Create mount point and mount that disk 
+# Mount
+ubuntu@ip-172-31-6-167:/$ sudo mkdir /volhdd
+ubuntu@ip-172-31-6-167:/$ sudo mount /dev/xvdbb /volhdd
+
+## Check if you can enter that folder now
+ubuntu@ip-172-31-6-167:/$ cd /volhdd
+ubuntu@ip-172-31-6-167:/volhdd$ ll
+total 24
+drwxr-xr-x  3 root root  4096 Dec 21 18:12 ./
+drwxr-xr-x 20 root root  4096 Dec 21 18:13 ../
+drwx------  2 root root 16384 Dec 21 18:12 lost+found/
+ubuntu@ip-172-31-6-167:/volhdd$
+
+# Auto-mount on reboot
+echo '/dev/xvdf /data ext4 defaults,nofail 0 2' | sudo tee -a /etc/fstab
+
+## Now check the disk and the mountpoint in lsblk - size is also 125 GB
+ubuntu@ip-172-31-6-167:/volhdd$ lsblk
+NAME     MAJ:MIN   RM  SIZE RO TYPE MOUNTPOINTS
+loop0      7:0      0 27.6M  1 loop /snap/amazon-ssm-agent/11797
+loop1      7:1      0 63.8M  1 loop /snap/core20/2669
+loop2      7:2      0 27.8M  1 loop /snap/amazon-ssm-agent/12322
+loop3      7:3      0 73.9M  1 loop /snap/core22/2133
+loop4      7:4      0   74M  1 loop /snap/core22/2163
+loop5      7:5      0 63.8M  1 loop /snap/core20/2686
+loop6      7:6      0 91.4M  1 loop /snap/lxd/35819
+loop7      7:7      0 50.9M  1 loop /snap/snapd/25577
+loop8      7:8      0 91.4M  1 loop /snap/lxd/36918
+loop9      7:9      0 50.8M  1 loop /snap/snapd/25202
+xvda     202:0      0    8G  0 disk
+├─xvda1  202:1      0  7.9G  0 part /
+├─xvda14 202:14     0    4M  0 part
+└─xvda15 202:15     0  106M  0 part /boot/efi
+xvdbb    202:13568  0  125G  0 disk /volhdd
+
+## As of now the ownership of the created folder /volhdd is with root user
+ubuntu@ip-172-31-6-167:/volhdd$ ls -l /volhdd
+total 16
+drwx------ 2 root root 16384 Dec 21 18:12 lost+found
+ubuntu@ip-172-31-6-167:/volhdd$
+
+3rd column (root) = User owner
+4th column (root) = Group owner
+
+## once the volume is mounted you need to give permissions to userid in the EC2 instance in this case ubuntu user id
+# Change ownership to ubuntu user (recommended)
+ubuntu@ip-172-31-6-167:/volhdd$ whoami
+ubuntu
+
+ubuntu@ip-172-31-6-167:/volhdd$ sudo chown -R ubuntu:ubuntu /volhdd
+
+## Check again both user owner and group owner is changed to ubuntu
+ubuntu@ip-172-31-6-167:/volhdd$ ls -l /volhdd
+total 16
+drwx------ 2 ubuntu ubuntu 16384 Dec 21 18:12 lost+found
+ubuntu@ip-172-31-6-167:/volhdd$
+
+# get Filesystem type + usage and size 
+ubuntu@ip-172-31-6-167:/volhdd$ df -hT /volhdd
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/xvdbb     ext4  123G   24K  117G   1% /volhdd
+
+# Block device details
+ubuntu@ip-172-31-6-167:/volhdd$ sudo fdisk -l /dev/xvdbb
+Disk /dev/xvdbb: 125 GiB, 134217728000 bytes, 262144000 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+## Test the file created during last time EC2 instance was started is present in EBS volume  test_root_persistent.txt file was created on 18 Dec this is still present on 22 Dec in 3 days the EC2 instance was stopped and started multiple times.
+
+ubuntu@ip-172-31-6-167:/$ ll test_root_persistent.txt
+-rw-r--r-- 1 root root 45 Dec 18 22:31 test_root_persistent.txt
+ubuntu@ip-172-31-6-167:/$ cat test_root_persistent.txt
+Root EBS test - Thu Dec 18 22:31:29 UTC 2025
+ubuntu@ip-172-31-6-167:/$
+
+## Delete the HDD volume that is created now points to note are 
+NEVER delete EBS volume without:
+   - Unmounting filesystem
+   - Detaching from instance
+   - Taking snapshot backup first!
+
+RECOMMENDED: Snapshot before deletion
+aws ec2 create-snapshot --volume-id vol-1234567890abcdef0 --description "Backup before delete"
+
+## Create a file before creating snapshot to check file is restored when volume is restored from snapshot from S3
+ubuntu@ip-172-31-6-167:/volhdd$ echo "This file is created before taking snapshot - and deletion of the EBS volume volHDD" > filebeforesnapdel.txt
+ubuntu@ip-172-31-6-167:/volhdd$ cat filebeforesnapdel.txt
+This file is created before taking snapshot - and deletion of the EBS volume volHDD
+ubuntu@ip-172-31-6-167:/volhdd$ ll
+total 28
+drwxr-xr-x  3 ubuntu ubuntu  4096 Dec 21 19:13 ./
+drwxr-xr-x 20 root   root    4096 Dec 21 18:13 ../
+-rw-rw-r--  1 ubuntu ubuntu    84 Dec 21 19:13 filebeforesnapdel.txt
+drwx------  2 ubuntu ubuntu 16384 Dec 21 18:12 lost+found/
+ubuntu@ip-172-31-6-167:/volhdd$
+
+## Find the volume ID and other details
+H:\All_Notes_from_learning>aws ec2 describe-volumes
+VOLUMES ap-south-1b     aps1-az3        2025-12-18T13:58:10.353Z        False   100     False   8       snap-0747e885ea38fd708  in-use  vol-0407391eba392c23c   gp2
+ATTACHMENTS     2025-12-18T13:58:10.000Z        True    /dev/sda1       i-0ca210a013f899c31     attached        vol-0407391eba392c23c
+OPERATOR        False
+VOLUMES ap-south-1b     aps1-az3        2025-12-21T17:56:00.492Z        False           False   125             in-use  vol-0b1c3b240042817af   sc1
+ATTACHMENTS     2025-12-21T18:01:23.000Z        False   /dev/xvdbb      i-0ca210a013f899c31     attached        vol-0b1c3b240042817af
+OPERATOR        False
+TAGS    VOLEBSHDD       EBSHDD
+
+##First take snapshot - and then check the snapshot file is present in S3 vol-0b1c3b240042817af
+H:\All_Notes_from_learning>aws ec2 create-snapshot --volume-id vol-0b1c3b240042817af --description "Backup before delete"
+Backup before delete    False   059290164282            snap-07806f6b519030c62  2025-12-21T19:21:03.093Z        pending vol-0b1c3b240042817af   125
+
+## Ensure to see the snapshot of created and is present in S3 bucket
+H:\All_Notes_from_learning>aws ec2 describe-snapshots --snapshot-ids snap-07806f6b519030c62
+SNAPSHOTS       2025-12-21T19:24:06.690Z        Backup before delete    False   2679635968      059290164282    100%    snap-07806f6b519030c62  2025-12-21T19:21:03.093Z        completed
+        standard        standard        vol-0b1c3b240042817af   125
+
+EBS snapshots are stored in AWS-internal S3 buckets that are not visible to users. You interact with snapshots only through EC2 APIs/Console there is no direct access to the snapshot file. Snapshots use Proprietary format incremental block-level storage (changed blocks only) with internal metadata—not its not simple files in S3. AWS prevents direct S3 access to protect snapshot integrity and prevent tampering. 
+
+AWS EBS snapshots are billed based on storage size × time retained, using two tiers (Standard or Archive tire) with no charges for creation time. Here's the breakdown for your 125 GB snapshot:
+
+Standard Tire (defalut)
+**Storage Cost**: $0.05 per GB-month (most regions)
+**Your 125 GB snapshot**: $6.25 per month ($0.05 × 125 GB)
+
+**Time-Based Examples**:
+- 1 month: $6.25
+- 6 months: $37.50
+- 1 year: $75.00
+
+Archive Tier (Cheaper, Long-term)
+**Storage Cost**: $0.0125 per GB-month
+**Your 125 GB**: $1.56 per month
+
+**BUT**:
+- 90-day minimum retention
+- Restore fee: $0.03/GB ($3.75 for 125 GB one-time)
+
+## Now as the snapshot is taken create another file aftersnap.txt to see if file goes missing when volume is restored from snapshot.
+ubuntu@ip-172-31-6-167:/volhdd$ echo "This file is created after taking snapshot - and before deletion of the EBS volume volHDD" > aftersnap.txt
+ubuntu@ip-172-31-6-167:/volhdd$ cat aftersnap.txt
+This file is created after taking snapshot - and before deletion of the EBS volume volHDD
+ubuntu@ip-172-31-6-167:/volhdd$ ll
+total 32
+drwxr-xr-x  3 ubuntu ubuntu  4096 Dec 21 19:36 ./
+drwxr-xr-x 20 root   root    4096 Dec 21 18:13 ../
+-rw-rw-r--  1 ubuntu ubuntu    90 Dec 21 19:36 aftersnap.txt
+-rw-rw-r--  1 ubuntu ubuntu    84 Dec 21 19:13 filebeforesnapdel.txt
+drwx------  2 ubuntu ubuntu 16384 Dec 21 18:12 lost+found/
+ubuntu@ip-172-31-6-167:/volhdd$
+
+## Now start the deletion of the volume 
+## Check which processes are using it
+ubuntu@ip-172-31-6-167:/volhdd$ sudo lsof /volhdd
+COMMAND  PID   USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+bash     803 ubuntu  cwd    DIR 202,13568     4096    2 /volhdd
+sudo    1619   root  cwd    DIR 202,13568     4096    2 /volhdd
+sudo    1620   root  cwd    DIR 202,13568     4096    2 /volhdd
+lsof    1621   root  cwd    DIR 202,13568     4096    2 /volhdd
+lsof    1622   root  cwd    DIR 202,13568     4096    2 /volhdd
+ubuntu@ip-172-31-6-167:/volhdd$
+
+## unmount the volume
+ubuntu@ip-172-31-6-167:/volhdd$ sudo umount /volhdd
+umount: /volhdd: target is busy.        ## unmount failed because we are in that folder so bash is using that folder
+ubuntu@ip-172-31-6-167:/volhdd$ cd ..
+ubuntu@ip-172-31-6-167:/$ sudo umount /volhdd
+ubuntu@ip-172-31-6-167:/$
+
+# Ensure no processes using it
+ubuntu@ip-172-31-6-167:/$ sudo lsof /volhdd
+ubuntu@ip-172-31-6-167:/$
+
+## Detach volume from EC2 instance 
+H:\All_Notes_from_learning>aws ec2 detach-volume --volume-id vol-0b1c3b240042817af
+2025-12-21T18:01:23.000Z        /dev/xvdbb      i-0ca210a013f899c31     detaching       vol-0b1c3b240042817af
+
+## Check it he detach is successful after sometime - its in available state now to attach to other EC2 instance
+H:\All_Notes_from_learning>aws ec2 describe-volumes --volume-ids vol-0b1c3b240042817af
+VOLUMES ap-south-1b     aps1-az3        2025-12-21T17:56:00.492Z        False   False   125             available       vol-0b1c3b240042817af   sc1
+OPERATOR        False
+TAGS    VOLEBSHDD       EBSHDD
+
+##delete the volume 
+H:\All_Notes_from_learning>aws ec2 delete-volume --volume-id vol-0b1c3b240042817af
+
+## when described again it says volume dont exists
+H:\All_Notes_from_learning>aws ec2 describe-volumes --volume-ids vol-0b1c3b240042817af
+
+An error occurred (InvalidVolume.NotFound) when calling the DescribeVolumes operation: The volume 'vol-0b1c3b240042817af' does not exist.
+
+## Now try to restore the Volume from snapshot and the mount the volume in EC2 instance and mount it to check the files.
+
+## Check snapshot status 
+H:\All_Notes_from_learning>aws ec2 describe-snapshots --snapshot-ids snap-07806f6b519030c62
+SNAPSHOTS       2025-12-21T19:24:06.690Z        Backup before delete    False   2679635968      059290164282    100%    snap-07806f6b519030c62  2025-12-21T19:21:03.093Z        completed
+        standard        standard        vol-0b1c3b240042817af   125
+
+## Create New Volume from Snapshot - The volume size must be same or more than the snapshot size however snapshot can be now restored to SSD gp3 type even though snapshot was taken from voulme storage type HDD 
+## Find availablity zone of EC2 instance 
+H:\All_Notes_from_learning>aws ec2 describe-instances --instance-ids i-0ca210a013f899c31 --query Reservations[0].Instances[0].Placement.AvailabilityZone
+ap-south-1b
+
+you can restore a snapshot from any storage type (HDD, SSD, etc.) to ANY other storage type during restore. The snapshot is storage-type agnostic.
+
+## Create volume in that availablity zone - Volume is created with gp3 (SSD) and of size 125 GB 
+H:\All_Notes_from_learning>aws ec2 create-volume --snapshot-id snap-07806f6b519030c62 --availability-zone ap-south-1b --volume-type gp3 --tag-specifications ResourceType=volume,Tags=[{Key=Name,Value=restored-hdd-vol}]
+ap-south-1b     aps1-az3        2025-12-21T19:58:52.000Z        False   3000    False   125     snap-07806f6b519030c62  creating        125     vol-0948e06cf8e3b6c9c   gp3
+TAGS    Name    restored-hdd-vol
+
+## Attache volume to EC2 instance 
+H:\All_Notes_from_learning>aws ec2 attach-volume --volume-id vol-0948e06cf8e3b6c9c --instance-id i-0ca210a013f899c31 --device /dev/xvdbb
+2025-12-21T20:00:58.371Z        /dev/xvdbb      i-0ca210a013f899c31     attaching       vol-0948e06cf8e3b6c9c
+
+## Check from withing the EC2 instance the volume is added and present
+ubuntu@ip-172-31-6-167:/$ lsblk
+NAME     MAJ:MIN   RM  SIZE RO TYPE MOUNTPOINTS
+loop0      7:0      0 27.6M  1 loop /snap/amazon-ssm-agent/11797
+loop1      7:1      0 63.8M  1 loop /snap/core20/2669
+loop2      7:2      0 27.8M  1 loop /snap/amazon-ssm-agent/12322
+loop3      7:3      0 73.9M  1 loop /snap/core22/2133
+loop4      7:4      0   74M  1 loop /snap/core22/2163
+loop5      7:5      0 63.8M  1 loop /snap/core20/2686
+loop6      7:6      0 91.4M  1 loop /snap/lxd/35819
+loop7      7:7      0 50.9M  1 loop /snap/snapd/25577
+loop8      7:8      0 91.4M  1 loop /snap/lxd/36918
+loop9      7:9      0 50.8M  1 loop /snap/snapd/25202
+xvda     202:0      0    8G  0 disk
+├─xvda1  202:1      0  7.9G  0 part /
+├─xvda14 202:14     0    4M  0 part
+└─xvda15 202:15     0  106M  0 part /boot/efi
+xvdbb    202:13568  0  125G  0 disk
+ubuntu@ip-172-31-6-167:/$
+
+## Try to find the file system of volume now - By default it has come as ext4 filesystem which we set earlier for volume before snapshot
+ubuntu@ip-172-31-6-167:/$ df -hT /volhdd
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/root      ext4  7.6G  2.7G  5.0G  36% /
+ubuntu@ip-172-31-6-167:/$
+
+## Mount and check for the files only the before snapshot file is present that means we lost the aftersnap.txt file as we deleted volume without taking snapshot
+ubuntu@ip-172-31-6-167:/$ sudo mkdir -p /volhddnew
+ubuntu@ip-172-31-6-167:/$ sudo mount /dev/xvdbb /volhddnew
+ubuntu@ip-172-31-6-167:/$ cd /volhddnew/
+ubuntu@ip-172-31-6-167:/volhddnew$ ll
+total 28
+drwxr-xr-x  3 ubuntu ubuntu  4096 Dec 21 19:13 ./
+drwxr-xr-x 21 root   root    4096 Dec 21 20:05 ../
+-rw-rw-r--  1 ubuntu ubuntu    84 Dec 21 19:13 filebeforesnapdel.txt
+drwx------  2 ubuntu ubuntu 16384 Dec 21 18:12 lost+found/
+ubuntu@ip-172-31-6-167:/volhddnew$
+
+## Cleanup - again detach the volume and delete the EBS volume and also delete the snapshot
+ubuntu@ip-172-31-6-167:/$ sudo lsof /volhddnew
+ubuntu@ip-172-31-6-167:/$ sudo umount /volhddnew
+ubuntu@ip-172-31-6-167:/$ sudo lsof /volhddnew
+
+## Detach volume from EC2 instance 
+H:\All_Notes_from_learning>aws ec2 detach-volume --volume-id vol-0948e06cf8e3b6c9c
+2025-12-21T20:00:58.000Z        /dev/xvdbb      i-0ca210a013f899c31     detaching       vol-0948e06cf8e3b6c9c
+
+##delete the volume 
+H:\All_Notes_from_learning>aws ec2 delete-volume --volume-id vol-0948e06cf8e3b6c9c
+
+H:\All_Notes_from_learning>aws ec2 delete-snapshot --snapshot-id snap-07806f6b519030c62
+
+## Check both deletes are successful
+# Check volume gone
+H:\All_Notes_from_learning>aws ec2 describe-volumes --volume-ids vol-0948e06cf8e3b6c9c
+
+An error occurred (InvalidVolume.NotFound) when calling the DescribeVolumes operation: The volume 'vol-0948e06cf8e3b6c9c' does not exist.
+
+# Check snapshot gone
+H:\All_Notes_from_learning>aws ec2 describe-snapshots --snapshot-ids snap-07806f6b519030c62
+
+An error occurred (InvalidSnapshot.NotFound) when calling the DescribeSnapshots operation: The snapshot 'snap-07806f6b519030c62' does not exist.
+
+### EC2 CloudShell
+In every region from the AWS console you can get one cloudshell which is provided free for you to manage your AWS infra. Mostly it will be of linux version of Amazon developed from fedora. It comes with aws cli, python, and Docker preinstalled. you have a storage space of 1GB in the path /home/cloudshell-user other than this all the other space will be erases when the cloud shell gets terminated.
+
+cloud shell is active only for 20 minutes ideal time, it will be terminated even if any background processes are running. hohup or & process can be run but they will stop when the cloud shell is terminated. 
+
+Mostly importantly cloud shell is a docker image its not booted with systemd as init system (PID 1). Also docker is preinstalled in cloudshell. in cloudshell IAM permissions follow your login from console, no need of aws config setup. There is no cost for using he cloud shell, and internet external access is free from cloudshell but you cant access cloudshell host from outside using internet. its told sudo commands will not work in cloudshell but sudo su worked
+
+CloudShell is a containerized environment running on ECS/EC2 with Your 
+IAM user/role session → MDE controller.
+MDE Controller generates token → .mde_env_api_auth_token
+AWS CLI/SDK uses token → Gets STS credentials automatically to access your AWS account
+
+How it works - how you dont need aws configure in the cloud shell but it is automatically configured to be use aws cli
+Browser (your login) 
+    ↓ IAM session
+CloudShell Service 
+    ↓ Spins up container
+Controller Binary (port 1338) ← YOUR CURL TARGET
+    ↓ .mde_env_api_auth_token
+AWS STS API → IAM Credentials → AWS CLI works
+
+Your AWS CLI works because this token enables zero-config credential flow becase of this access token only. That means you dont need to do aws config in your cloud shell.
+
+## Below is the configured details you can check 
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $ aws sts get-caller-identity
+{
+    "UserId": "059290164282",
+    "Account": "059290164282",
+    "Arn": "arn:aws:iam::059290164282:root"
+}
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $ 
+
+## Manually get the token using IMDSv2 version 2
+
+~ $ curl -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" -X PUT "http://127.0.0.1:1338/latest/api/token"
+9pqV+FFu/aFIlR131HedntOUBt65vsTgcgKurAguD+Y=~ $ 
+
+1. -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"   -- Header: Requests token valid for 6 hours (21600 seconds)
+2. -X PUT "http://127.0.0.1:1338/latest/api/token     -- HTTP PUT method required by IMDSv2 token endpoint (http://127.0.0.1:1338/latest/api/token)
+
+IMDSv2 prevents token replay attacks by requiring a unique, time-bound session token for every metadata request, making stolen tokens useless.
+
+How Token Replay Attack (IMDSv1 Vulnerability) works
+
+IMDSv1 (Insecure method): IMDS Version 1
+1. Attacker exploits SSRF → GET http://169.254.169.254/latest/meta-data/iam/security-credentials/
+2. Gets IAM credentials → **Reuses same credentials anywhere** (works forever)
+
+IMDSv2 (Secure method)  : IMDS Version 2
+1. Legit app → PUT /latest/api/token → Gets SESSION_TOKEN (valid 6hrs)
+2. Legit app → GET /meta-data/... (with SESSION_TOKEN) → Gets IAM credentials
+3. Attacker steals SESSION_TOKEN → **Cannot reuse** (one-time use, expires)
+
+How IMDSv2 Stops Replay
+1. **Session Token Required**: Every metadata request needs unique token
+2. **Time-Limited**: Token expires (21600s = 6hrs max)
+3. **Instance-Bound**: Tokens don't work outside originating instance
+4. **PUT First**: Attacker can't SSRF a PUT request easily
+
+SSRF Attack Flow:
+~~~~~~~~~~~~~~~~~
+IMDSv1 ❌
+app → SSRF vuln → 169.254.169.254/iam/creds → STEAL CREDS → USE ANYWHERE
+
+IMDSv2 ✅
+app → SSRF vuln → 169.254.169.254 → "NEED TOKEN FIRST"
+attacker → Can't get token → BLOCKED
+
+Generate token manullay and use to to get security details
+cloudshell-user@ip-10-131-23-171 ~ $ TOKEN=$(curl -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" -X PUT "http://127.0.0.1:1338/latest/api/token")
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    44  100    44    0     0  41509      0 --:--:-- --:--:-- --:--:-- 44000
+cloudshell-user@ip-10-131-23-171 ~ $ echo $TOKEN
+D7XJ0yoFwRa9XGwiLzn9hbj2VSqOBGy6UOCWPiFl6bY=
+
+# Use token to get AWS identity
+cloudshell-user@ip-10-131-23-171 ~ $ curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://127.0.0.1:1338/latest/meta-data/iam/security-credentials/"
+Role
+
+# use token to get Instance Metadata: /latest/meta-data/ (standard EC2 metadata)
+cloudshell-user@ip-10-131-23-171 ~ $ curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://127.0.0.1:1338/latest/meta-data/"
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>404 - Not Found</title>
+ </head>
+ <body>
+  <h1>404 - Not Found</h1>
+ </body>
+</html>
+
+# this means there is webserver in cloud shell to provision the token for you in above command as it hits URL 127.0.0.1 
+The webserver is the AWS CloudShell controller binary (a custom Go application developed by AWS), not a standard webserver like nginx/Apache.
+Custom AWS binary (controller), written in Go, implements IMDSv2 protocol on non-standard port 1338 (containerized environment).
+
+# Binary location of the controller webserver
+ls -la /aws/mde/controller
+
+Controller Binary Listens on: 
+1. TCP: 127.0.0.1:1338 (IMDSv2 token endpoint)
+2. Unix Socket: /aws/mde/.controller/mde.sock (internal MDE communication)
+
+webserver serves 
+1. IMDSv2 Token Endpoint: PUT /latest/api/token (port 1338)
+2. IAM Credentials: GET /latest/meta-data/iam/security-credentials/ (with token)
+3. Instance Metadata: /latest/meta-data/ (standard EC2 metadata)
+
+## Check the controller process in cloud shell
+cloudshell-user@ip-10-131-23-171 ~ $ ps aux | grep controller
+cloudsh+     207  0.0  0.0   6556  2288 pts/1    S+   10:02   0:00 grep --color=auto controller
+cloudshell-user@ip-10-131-23-171 ~ $ ps aux 
+
+## check all the processes running in cloud shell
+cloudshell-user@ip-10-131-23-171 ~ $ ps aux 
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+cloudsh+       1  0.0  1.1 1018176 43336 ?       Ssl  09:28   0:00 node /var/lib/amazon/cloudshell/on-container-launch.js
+cloudsh+      15  0.0  0.0   7184  3280 ?        Ss   09:28   0:00 /bin/sh -c sudo dockerd 2>&1 | sudo tee --append /var/log/docker-daemon.log
+root          20  0.0  0.2  18952  8020 ?        S    09:28   0:00 sudo dockerd
+root          21  0.0  0.2  18952  8284 ?        S    09:28   0:00 sudo tee --append /var/log/docker-daemon.log
+root          26  0.0  0.0   7892  1336 ?        S    09:28   0:00 /usr/bin/coreutils --coreutils-prog-shebang=tee /usr/bin/tee --append /var/log/docker-daemon.log
+root          27  0.0  2.0 1984768 80604 ?       Sl   09:28   0:00 dockerd
+root          54  0.0  1.0 1791320 41196 ?       Ssl  09:28   0:01 containerd --config /var/run/docker/containerd/containerd.toml
+cloudsh+     165  0.0  0.0   4308  2828 pts/0    Ss+  09:28   0:00 tmux -l -2 -f /var/lib/amazon/cloudshell/tmux.conf new-session -A -D -s 12534af2-2e13-4043-8dca-9e10235c7a7a
+cloudsh+     172  0.0  0.0   4452  2856 ?        Rs   09:28   0:00 tmux -l -2 -f /var/lib/amazon/cloudshell/tmux.conf new-session -A -D -s 12534af2-2e13-4043-8dca-9e10235c7a7a
+cloudsh+     173  0.0  0.1   7580  4304 pts/1    Ss   09:28   0:00 -bash
+cloudsh+     208  0.0  0.0   7756  2936 pts/1    R+   10:03   0:00 ps aux
+cloudshell-user@ip-10-131-23-171 ~ $ 
+
+## check full netstat
+cloudshell-user@ip-10-131-23-171 / $ netstat
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  3      [ ]         STREAM     CONNECTED     73380    
+unix  3      [ ]         STREAM     CONNECTED     73381    
+unix  3      [ ]         STREAM     CONNECTED     74824    
+unix  3      [ ]         STREAM     CONNECTED     74008    /var/run/docker/containerd/containerd.sock
+unix  3      [ ]         STREAM     CONNECTED     74825    
+unix  3      [ ]         STREAM     CONNECTED     74006    /var/run/docker/containerd/containerd.sock
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+
+# Try to check the listening port
+cloudshell-user@ip-10-131-23-171 ~ $ netstat -tlnp | grep 1338
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+
+#try sudo su to get root access
+cloudshell-user@ip-10-131-23-171 ~ $ sudo su
+bash-5.2# 
+
+## Check kernal version of cloudshell
+~ $ uname -r
+6.1.158-180.294.amzn2023.x86_64
+
+~ $ uname -a
+Linux ip-10-135-32-212.ap-south-1.compute.internal 6.1.158-180.294.amzn2023.x86_64 #1 SMP PREEMPT_DYNAMIC Mon Dec  1 05:36:50 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+## Check the OS version of cloudshell 
+
+(mypyvenv) ~ $ cat /etc/os-release
+NAME="Amazon Linux"
+VERSION="2023"
+ID="amzn"
+ID_LIKE="fedora"
+VERSION_ID="2023"
+PLATFORM_ID="platform:al2023"
+PRETTY_NAME="Amazon Linux 2023.9.20251117"
+ANSI_COLOR="0;33"
+CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2023"
+HOME_URL="https://aws.amazon.com/linux/amazon-linux-2023/"
+DOCUMENTATION_URL="https://docs.aws.amazon.com/linux/"
+SUPPORT_URL="https://aws.amazon.com/premiumsupport/"
+BUG_REPORT_URL="https://github.com/amazonlinux/amazon-linux-2023"
+VENDOR_NAME="AWS"
+VENDOR_URL="https://aws.amazon.com/"
+SUPPORT_END="2029-06-30"
+(mypyvenv) ~ $ 
+
+#Get the host name of cloudshell 
+~ $ cat /etc/hostname 
+ip-10-135-32-212.ap-south-1.compute.internal
+
+~ $ cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.31.255.194  ip-10-135-32-212.ap-south-1.compute.internal ip-10-135-32-212
+
+ - 172.31.255.194 = CloudShell's private VPC IP
+ - ip-10-135-32-212.ap-south-1.compute.internal = Full AWS internal hostname
+ - 10-135-32-212 = Internal private IP mapping
+ - compute.internal = AWS EC2 domain
+ - ip-10-135-32-212 = Simplified hostname
+ 
+## Try to ping the IP 
+~ $ ping 172.31.255.194
+PING 172.31.255.194 (172.31.255.194) 56(84) bytes of data.
+64 bytes from 172.31.255.194: icmp_seq=1 ttl=127 time=0.036 ms
+64 bytes from 172.31.255.194: icmp_seq=2 ttl=127 time=0.050 ms
+64 bytes from 172.31.255.194: icmp_seq=2 ttl=127 time=0.050 ms
+^C
+--- 172.31.255.194 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2083ms
+rtt min/avg/max/mdev = 0.036/0.043/0.051/0.005 ms
+
+## Try to ping the next IP in series - This is also working that means another cloud shell is active 
+~ $ ping 172.31.255.193
+PING 172.31.255.193 (172.31.255.193) 56(84) bytes of data.
+64 bytes from 172.31.255.193: icmp_seq=1 ttl=127 time=0.085 ms
+64 bytes from 172.31.255.193: icmp_seq=2 ttl=127 time=0.070 ms
+64 bytes from 172.31.255.193: icmp_seq=3 ttl=127 time=0.054 ms
+^C
+--- 172.31.255.193 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2083ms
+rtt min/avg/max/mdev = 0.054/0.069/0.085/0.012 ms
+
+# Make the Cloud shell prompt colorful with user and host name
+~ $ export CLICOLOR=1
+~ $ RED="\[\033[0;31m\]"
+~ $ GREEN="\[\033[0;32m\]"
+~ $ YELLOW="\[\033[1;33m\]"
+~ $ BLUE="\[\033[0;34m\]"
+~ $ PURPLE="\[\033[0;35m\]"
+~ $ CYAN="\[\033[0;36m\]"
+~ $ WHITE="\[\033[1;37m\]"
+~ $ NC="\[\033[0m\]" # No Color
+
+~ $ PS1="$GREEN\u$NC@$BLUE\h$NC $YELLOW\w$NC $WHITE\$ $NC"
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $        ## Prompt changed to this 
+
+## Check explore internal AWS authentication token file
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $ cat ../.mde_env_api_auth_token 
+3NO+XMktxRCqJYBKJ9JhOvQ1og/tkadERdRlDD7S+gc=
+
+This token provides Temporary auth token for CloudShell's IMDSv2 credential service 
+The ../.mde_env_api_auth_token file in AWS CloudShell is an internal AWS authentication token file used by CloudShell's Managed Development Environment (MDE) controller for credential management.
+
+* CloudShell's controller process (runs on port 1338)
+* Fetches temporary AWS credentials from AWS control plane APIs
+* Powers AWS_CONTAINER_CREDENTIALS_FULL_URI environment variable
+
+## Sudo su is working in cloud shell
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $ sudo su
+bash-5.2# whoami
+root
+bash-5.2# 
+
+## Check all the environment variables in the cloud shell
+
+cloudshell-user@ip-10-135-32-212 $ env
+SHELL=/bin/bash
+AWS_CONTAINER_CREDENTIALS_FULL_URI=http://localhost:1338/latest/meta-data/container/security-credentials
+HISTCONTROL=ignoredups
+AWS_EXECUTION_ENV=CloudShell
+TMUX=/tmp/tmux-1000/default,177,0
+AWS_EC2_METADATA_DISABLED=true
+SYSTEMD_COLORS=false
+POWERSHELL_UPDATECHECK=off
+HISTSIZE=1000
+HOSTNAME=
+HISTTIMEFORMAT=[%F %T] 
+__MDE_ENV_API_AUTHORIZATION_TOKEN=3NO+XMktxRCqJYBKJ9JhOvQ1og/tkadERdRlDD7S+gc=
+AWS_DEFAULT_REGION=ap-south-1
+__MDE_ENVIRONMENT_API=http://localhost:1339
+EDITOR=/usr/bin/nano
+AWS_REGION=ap-south-1
+PWD=/aws/mde/ide-runtimes
+LOGNAME=cloudshell-user
+SET_DNF_REGION_SCRIPT=env | grep -m 1 AWS_REGION | grep -Eo '[a-z0-9-]*' | sudo tee /etc/dnf/vars/awsregion
+HOME=/home/cloudshell-user
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga=01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:
+VIRTUAL_ENV=/home/cloudshell-user/mypyvenv
+AWS_PAGER=less -K
+AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=true
+__MDE_ENV_API_AUTHORIZATION_TOKEN_FILE=/aws/mde/.mde_env_api_auth_token
+CLICOLOR=1
+AWS_CONTAINER_AUTHORIZATION_TOKEN=dXczPacsDGWAOGeOllqBmOh7hQWAfHTI+UDvfVsDY5I=
+TERM=screen-256color
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+USER=cloudshell-user
+TMUX_PANE=%0
+SHLVL=1
+__MDE_ENVIRONMENT_ID=e-645a989b39104556b243f9a2f58f46d6
+PS1=(mypyvenv) \[\033[0;32m\]\u\[\033[0m\]@\[\033[0;34m\]\h\[\033[0m\] \[\033[1;33m\]$ \[\033[0m\]
+NODE_PATH=/usr/lib/node_modules
+which_declare=declare -f
+LC_ALL=en_US.UTF-8
+PATH=/home/cloudshell-user/mypyvenv/bin:/home/cloudshell-user/.local/bin:/home/cloudshell-user/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/node_modules/aws-cdk/bin
+AWS_TOOLING_USER_AGENT=AWS-CloudShell/{{IMAGE_VERSION}}
+MAIL=/var/spool/mail/cloudshell-user
+OLDPWD=/home
+BASH_FUNC_which%%=() {  ( alias;
+ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot "$@"
+}
+_=/usr/bin/env
+(mypyvenv) cloudshell-user@ip-10-135-32-212 $ 
+
+
+EC2 Instance Store
+
+Your current ubuntu instance likely has instance store if lsblk shows nvmeXn1 or xvdb devices beyond root (/). 
+
+# Check for presence of Instance store this in cloud shell
+~ $ lsblk
+NAME          MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+loop0           7:0    0   1G  0 loop /home/cloudshell-user
+nvme0n1       259:0    0  30G  0 disk                   ## This is instance store with 30GB space 
+├─nvme0n1p1   259:1    0  30G  0 part /aws/mde/.mde_env_api_auth_token
+│                                     /aws/mde/credential-helper
+│                                     /aws/mde/mde
+│                                     /aws/mde/ide-runtimes
+├─nvme0n1p127 259:2    0   1M  0 part 
+└─nvme0n1p128 259:3    0  10M  0 part 
+nvme1n1       259:4    0  16G  0 disk /aws/mde/logs     ## This is instance store 16GB is provisioned but in cloudshell /home/cloudshell-user is only 1GB 
+                                      /etc/hosts
+                                      /etc/hostname
+                                      /etc/resolv.conf
+                                      /home
+                                      /root
+
+
+## Create a folder with some files in the EC2 instance and then backup the entire folder in an S3 bucket folder use the existing S3 bucket arn:aws:s3:::learn-glue-csv-etl-bucket
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Instance Management : Commands to launch, stop, start, reboot, and describe EC2 instances (e.g., run-instances, stop-instances, describe-instances).
+Volume Management   : Handles EBS volumes: attach, detach, create, delete, and resize (e.g., create-volume, attach-volume, describe-volumes).
+Snapshot Management : Creates, deletes, and manages EBS snapshots for backups (e.g., create-snapshot, describe-snapshots, delete-snapshot).
+Network Management  : Manages VPCs, subnets, security groups, and network interfaces (e.g., describe-security-groups, create-network-interface).
+Image Management    : Works with AMIs: register, describe, copy, and deregister (e.g., describe-images, register-image).
+Key Management      : Handles key pairs for SSH access (e.g., create-key-pair, delete-key-pair, describe-key-pairs).
+
+
+
+<dhyaneshwaran.kb@kotak.com>; 
+asmita.erande@kotak.com; 
+deepti.rawat@kotak.com
+
+nodalofficer@kotak.com
+
+
+Rs. 1260 - 6300 points
+Rs. 600  - 2995 points reimbursed 
+

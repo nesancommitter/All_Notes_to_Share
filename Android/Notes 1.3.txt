@@ -1,0 +1,320 @@
+points to care
+~~~~~~~~~~~~~~~
+1) add the Code with the ppt
+2) Add the content on the Security 
+3) Remove Media API - topic
+4) Locatoin serviecs / Gmap - make it one
+4) concentrate on services AIDL, 
+5) Remove Other topics (Bluetooth/Wi-Fi)
+6) how to use DDMS/ - debugging
+7) Threads and process (User thread, etc) – Handlers and loopers 
+8) Creating first Android application - Cover structure of APK (
+9) Use of images (copyright issues)
+10) User version 2.3
+11) new feature in 3.0 ()
+12)
+~~~~~~~~~~~~~~~
+
+
+Introduction to Android 
+~~~~~~~~~~~~~~~
+• Overview of Android and Android SDK 
+• History of Android
+• Android features
+Android Architecture overview
+• Linux kernel
+• Libraries
+• Android Runtime
+• Application framework
+• Applications
+Setup of Android Development environment
+• System requirements
+• Eclipse and SDK installation, AVD creation
+• Creating first Android application
+• Project Structure
+Android Application Fundamentals
+• Android application building blocks
+• API Levels
+• Activating components
+• Shutting down components
+• LifeCycle of Application
+• Development tools, Manifest File
+• LifeCycle of Application
+
+User Interface 
+• View Hierarchy and Layouts
+• UI Events
+• Building Menus
+• Notifying users
+• Creating dialogs
+• Graphics & Animations
+Main Building Blocks
+• Activity
+• Intents
+• Services
+• Content Providers
+• Broadcast Receivers 
+Resources 
+• Overview of Android Resources
+• Creating Resources 
+• Using Resources 
+• Drawable Resources 
+• Animation Resources
+Data Storage
+• Shared Preferences
+• Internal Storage (Files)
+• External Storage(SD Card)
+• SQLite Databases
+Android Media API 
+• Playing audio/video 
+• Media recording
+Other topics
+• Blue tooth
+• WiFi
+• Camera
+• TelephonyManager
+• Location Services
+• Deploying Android Application on Device / Emulator
+• Google Maps
+
+
+
+
+
+
+
+Introduction to Android
+~~~~~~~~~~~~~~~~~~~~~~~~ 
+ Android is a software stack with a package on your mobile and Set of Development tools.
+ Phone has OS, App framework, Android Runtime, Linux Kernal (Drivers). Dev tools (SDK) has API (Java), command line tools, Emulators, Debugging tools.
+
+History of Android
+ --- xxx ----
+
+Features of Android
+ Highly reusable components (API)
+ Optimized Dalvik Virtual machine (Linux kernal)
+ Integrated Browser (WebKit engine) - Support for HTML 5
+ 2D Graphics (SGL engine) & 3D graphics with support for OpenGL ES 1.0 specification.
+ SQLite (Open source project for relational like Data storage)
+ Telephony (GSM, EDGE, 3G, WiFi)
+ Camera, Compass, NFC, accelerometer GPS (Hardware dependent)
+ 
+Android Architecture
+~~~~~~~~~~~~~~~~~~~~~~~~
+Linux kernal
+ Linux 2.6 is used for all system level support. all the functionality such as security, process management, driver model, network stack and memory management is handled by kernal.
+
+Libraries
+ Set of C/C++ libraries used by various components of system. can be used thru API by the developers. 
+ ? A media library for playback of audio and video media
+ ? A surface manager to provide display management
+ ? Graphics libraries that include SGL and OpenGL for 2D and 3D graphics
+ ? SQLite for native database support
+ ? SSL andWebKit for integrated web browser and Internet security
+
+Android Runtime
+ Every app runs in its own process, with its own instance of Dalvik VM. Many Dalvik VM's can run efficiently in device. VM can run the .dex files which are like .class files. Java class files are converted into .dex files by the "dx" tool. Dalvik uses linux kernal for multi threading, low-level memory management, system calls, etc.
+
+Application framework
+ In built apps and apps developed by us are given same level of access and priority. All the resources available for the inbuilt app is given to our app also. We can replace the components that are part of core applications (subject to security enforeced by framework).
+ Below form the base (and available) for all applications. 
+ 
+ Views - like lists, girds, text boxes, embeddable web browser
+ Content providers - 
+ Resource managers - providing access to non-code resources like localize strings, graphics, layout files
+ Notification manager - used by all apps to send notification / custom alerts in status bar
+ Activity manager - Manages app life cycle, provides a common navigation backstack
+
+Applicatoins 
+ In built (core apps) appliations mail client, contacts, maps, calender. 
+
+Setup of Android Development environment
+~~~~~~~~~~~~~~~~~~~~~~~~
+System requirements
+ One of the great feature of android developement is it can be done in Windows XP/Vista/7 (32-bit & 64-Bit), Mac OS X 10.5.8 (x86 only) and Linux environment also.
+ Eclipse 3.5 or greater IDE + Eclipse JDT plugin
+ JDK 5 or 6 (6 is better)
+ Android Development tools plugin
+ With disk space for around 700 Mb for the SDK and tools alone.
+
+Eclipse and SDK installation, AVD creation
+ Install Eclipse
+ Install Android SDK 
+   - Starter package (has Only core tools) is used to download all the SDK components
+   - The location of the SDK directory will be required for setting up the ADT plugin and when SDK tools are used from command line.
+ Install ADT (Android Dev Tools) plug-in for Eclipse
+   - Helps you to quickly set up new Android projects, create an application UI, debug your applications using the Android SDK tools.
+ Adding Platforms and Other Components
+   - AVD manager is used to download required SDK components into Dev environment. SDK (Android platform versions, Add-ons, tools, Samples and documentation are separate installable components). SDK already installed has only latest version of SDK Tools. 
+   - You need atleast one android platform and associated platform tools.
+   - In Eclipse Window -> Android SDK and AVD manager
+   - or invoke SDK Manager.exe
+
+Types of Components offered
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ > SDK Tools - Used for debugging and testing the apps, present in <SDk>/tools/ directory.
+ > SDK Platform-tools - platform-dependent tools for developing and debugging your application, present in <sdk>/platform-tools/ directory.
+ > Android platforms - An SDK platform (contains fully compliant Android library, system image, sample code, and emulator skins) is available for every production Android platform deployable to Android-powered devices.
+ > USB Driver for Windows - driver files so that you can run and debug your applications on an actual device.
+ > Samples - Contains the sample code and apps available for each Android development platform. 
+ > Documentation - Local copy of the Documentaion of the framework
+
+
+xxx ->  http://developer.android.com/sdk/installing.html -> Next steps
+
+xxx ->  • Creating first Android application
+xxx ->  • Project Structure
+
+
+Android Application Fundamentals
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Built using Java code. Tools are used to compile the code and resources (icon, data, resources) into .apk (Android package) file for each application. Each install application is a different user (User ID is used by the system and is unknown to the application) by itself in the linux platform. Access to the files of the application are restricted using this user ID. Each process (application has its own process) has its own Virtual machine, so the applications code runs in isolation from other applications. Process is started with any of the app components need to be executed, and its shutdown when its no longer needed or to recover memory for other processes.
+
+ While it’s uncommon, it’s possible to force application components within the same application to run in different processes or to have multiple applications share the same process using the android:process attribute on the affected component nodes within the manifest.
+
+ Application cannot have access for parts of the system/other applications for which its not given permission. To make two applications share access same resources (files, etc) they both may be made to share the same User ID. Applications with same Usetr ID can also be made to run in the same Linux process and share same VM. Or an application can request permission to access device data such as the user's contacts, SMS messages, the mountable storage (SD card), camera, Bluetooth, and more. All application permissions must be granted by the user at install time.
+
+API Levels
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Different Android-powered devices often run different versions of the Android platform, such as Android 1.6 or Android 2.3. Each successive version often includes additional APIs not available in the previous version. In order to indicate which set of APIs are available, each platform version specifies an API Level (for example, Android 1.0 is API Level 1 and Android 2.3 is API Level 9).
+
+Android application building blocks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Application Components - Building blocks of app, each one is its own entity and plays a specific role. Each type has its own lifecycle.
+a) Activities - Single screen with a user interface. An app has many activities which are independent. An activity of one app can be invoked by another app with the owners permission. (Camera app can start the activity to compose new email which is an activity of the email client app). Subclass of the Activity class in SDK.
+b) Services - Runs in background, no user interface. e.g playing music in background, downloading a file in background. Subclass of the Service class in SDK.
+c) Content providers - Manages a shared set of app data. Data can be in file system, SQLite database, Web, SD card or any storage. Through Content provider, other apps can query/modify with permission. E.G Android provides Content provider that manages User's contact information, to read and write information about a particular person. Apps private data can also be shared using content providers. Subclass of the ContentProvider class in SDK, and must implement a set of standard set of APIs for other apps to perform transactions.
+d) Broadcast receivers - responds to system-wide broadcast announcements (such as screen is turned-off, battary is low, picture was captured. Apps can also initiate broadcasts (like somedata download is complete and it can be used by other apps). They can create a status bar notification to alert the user when a broadcast event occurs. Its just a gateway it dosenot do any work, it will trigger a service to perform a work based on the event. Subclass of the BroadcastReceiver class in SDK, each broadcast is delivered as an Intent object. 
+
+xxx -> Refine start
+
+A unique aspect of the Android system design is that any application can start another application’s component. For example, if you want the user to capture a photo with the device camera, there's probably another application that does that and your application can use it, instead of developing an activity to capture a photo yourself. You don't need to incorporate or even link to the code from the camera application. Instead, you can simply start the activity in the camera application that captures a photo. When complete, the photo is even returned to your application so you can use it. To the user, it seems as if the camera is actually a part of your application.
+
+When the system starts a component, it starts the process for that application (if it's not already running) and instantiates the classes needed for the component. For example, if your application starts the activity in the camera application that captures a photo, that activity runs in the process that belongs to the camera application, not in your application's process. Therefore, unlike applications on most other systems, Android applications don't have a single entry point (there's no main() function, for example).
+
+Because the system runs each application in a separate process with file permissions that restrict access to other applications, your application cannot directly activate a component from another application. The Android system, however, can. So, to activate a component in another application, you must deliver a message to the system that specifies your intent to start a particular component. The system then activates the component for you.
+
+xxx -> Refine end
+
+Activating components
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Activities, services, and broadcast receivers are activated by an asynchronous message called an intent. Intents (messengers that request an action from other components) bind individual components to each other at runtime. Object of Intent class. 
+ explicit Intent - defines a message to activate either a specific component. (using the component class name in the Intent)
+ implicit Intent - defines a message to activate either a specific type of component. 
+
+ For activities and services intent defines a message to perform (e.g view or send) and specify the URI if the data to act upon. In some case you may start an activity to receive a restul, even it will return the result in an intent only. (You may ask the user to select a contact, return intent contains URI pointing to selected contact).
+ For broadcast receivers it intent defines the announcement being broadcast. (Battery low broadcast just has a action string "battery is low").
+ 
+ Content providers are not activated by intent, they are activated with a request from a ContentResolver. 
+
+xxx -> Refine start
+
+The content resolver handles all direct transactions with the content provider so that the component that's performing transactions with the provider doesn't need to and instead calls methods on the ContentResolver object. This leaves a layer of abstraction between the content provider and the component requesting information (for security).
+
+There are separate methods for activiting each type of component:
+
+    You can start an activity (or give it something new to do) by passing an Intent to startActivity() or startActivityForResult() (when you want the activity to return a result).
+    You can start a service (or give new instructions to an ongoing service) by passing an Intent to startService(). Or you can bind to the service by passing an Intent to bindService().
+    You can initiate a broadcast by passing an Intent to methods like sendBroadcast(), sendOrderedBroadcast(), or sendStickyBroadcast().
+    You can perform a query to a content provider by calling query() on a ContentResolver.
+
+For more information about using intents, see the Intents and Intent Filters document. More information about activating specific components is also provided in the following documents: Activities, Services, BroadcastReceiver and Content Providers.
+
+xxx -> Refine end
+
+xstart -> http://developer.android.com/guide/topics/fundamentals.html
+
+
+xxx -> • Shutting down components
+xxx -> • LifeCycle of Application
+
+
+Development tools
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) SDK Tools - Platform independent. Comes with SDK starter package. 
+ a) android - used to manage AVDs, projects, and the components of the SDK.
+ b) ddms (Dalvik Debug Monitor Server) - to debug apps.
+ c) emulator - A QEMU-based device-emulation tool that you can use to design, debug, and test your applications in an actual Android run-time environment.
+ d) hierarchyviewer - Lets you debug and optimize an Android application's user interface.
+ e) 
+ 
+2) Platform tools - customized to support the features of the latest Android platform.
+
+
+
+xxx -> http://developer.android.com/guide/developing/tools/index.html
+
+
+Manifest File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Manifest file is used to make the android system know that these components exists in the application. Each application has AndroidManifest.xml, all components of the application should be decleared in this file. Should be in root of the app project directory.
+
+ 1) Identify any user premissions the app need. (internet access, read-access to user contacts, etc)
+ 2) Declares minimum API level required by the app, based on which APIs the app uses.
+ 3) Declares HW/SW features required by app (Cam, bluetooth, multitouch screen, etc).
+ 4) API libraries the app needs to be linked against (other than android framework libraries) like Google maps library.
+
+ Has application tag, and tag for each of the components (Activity, service, receiver and provider). Each tag has many attributes to specify a value to that attribute. Activites, Services and content providers that have in code but not declared in manifest are not visible to system, so we cant use it (can never be run). broadcast receivers can be either declared in manifest or created dynamically in code (using BroadcastReceiver objects are registering them to system by calling registerReceiver() method.)
+
+ File also has 
+  1) Declaration of component capabilities
+    Using intent actions we describe the type of action to be performed (optionally the data on which to perfrom the action) and allow the system to identify the component on the device that can perform the action and start it. If there are multiple components that can perform the action described in the action, then the user selects which one to use. (Like when you click on a link an intent will be issued with the uri and the user can choose the browser to be used to open the link, if there is more than one web browser app is in the device).
+    The system compares the intent received to the intent filters in the manifest file to identify the components that can respond to an intent amongst all the applications in the device.
+    If we declare <intent-filter> element as child of any component element, then that component gets the capability to respond to intents from other applications. 
+
+xxx -> Refine start
+
+For example, an email application with an activity for composing a new email might declare an intent filter in its manifest entry to respond to "send" intents (in order to send email). An activity in your application can then create an intent with the “send” action (ACTION_SEND), which the system matches to the email application’s “send” activity and launches it when you invoke the intent with startActivity().
+
+xxx -> Refine end
+  
+  2) Declaration of app requirements.
+    Challenge of android platform is variety of the devices available. To make sure the device has certain capability when the app is installed we define a profile for the types of devices supported by app along with software requirements in manifest file. This is mostly used by external services like Android market useful for users in filtering and serching apps that will suite their devices.
+    Like hardware needed for the App (Barcode scanner app needs a camera in device). The API level that is used by the app, if the device dose not support that API level then the app cannot be installed.
+    Important device characteristics
+   a) Screen size and density. specified in <supports-screens> element
+   b) Input configurations - If the app requires specific type of input hardware like tracker ball it should be declared in <uses-configuration> element
+   c) Device features - like Light sensor, proximity sensor, certain version of OpenGL, You should never assume that a certain feature is available on all Android-powered devices (other than the availability of the standard Android library), so you should declare any features used by your application with the <uses-feature> element.
+   d) Platform version - If you use any APIs that were added to the platform after version 1.0, you should declare the minimum API Level in which those APIs were introduced using the <uses-sdk> element.
+
+It's important that you declare all such requirements for your application, because, when you distribute your application on Android Market, Market uses these declarations to filter which applications are available on each device. As such, your application should be available only to devices that meet all your application requirements.
+
+Application resources
+~~~~~~~~~~~~~~~~~~~~~
+ Specifying application resources (icon, audio file, display style, layout of activity) in the manifest file makes it easy to update them various characteristics of the app without changing the code. Every resource that is used in the app is given a unique integer ID by the build tools, which can be used reference the resource from the app code or from other resources in XML. 
+ One of the most important aspects of providing resources separate from your source code is the ability for you to provide alternative resources for different device configurations. For example, by defining UI strings in XML, you can translate the strings into other languages and save those strings in separate files. Then, based on a language qualifier that you append to the resource directory's name (such as res/values-fr/ for French string values) and the user's language setting, the Android system applies the appropriate language strings to your UI.
+
+LifeCycle of Application
+~~~~~~~~~~~~~~~~~~~~~
+ App has limited control over its life cycles. App components listen to changes in app state and react accordingly, they should be prepared for untimely termination. Since the resources are limited in the mobile platform android will reclaim the resources from the applications when ever its needed for a high piority application. The priority of the hosted application is equal to its highest-proiority component.
+ If two applications have the same priority, the process that has been at a lower priority longest will be
+killed first. Process priority is also affected by interprocess dependencies; if an application has a dependency
+on a Service or Content Provider supplied by a second application, the secondary application
+will have at least as high a priority as the application it supports.
+ The priority of the components from the highest level to lowest level is presented below.
+ 1) Active processes are Activities, Broadcast Receivers executing onReceive event handler, Services executing onStart, onCreate or onDestroy event handlers and Running services that have been flagged to run in foreground.
+ 2) Visible processes : visible activities in the background of someother activity which is not directly interacting with user.
+ 3) Started services : Services without visible interface. They dont need to interact with user. 
+ 4) Background processes : process hosting activities that aren't visible and that don't any running services. They will be killed in last-seen-first-killed manner. 
+ 5) Empty processes : Android will retail an app in memory after the end of their lifecyclem, for system proformance. These are the one that are killed first when it needs resources. 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

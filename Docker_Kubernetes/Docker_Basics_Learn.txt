@@ -1,0 +1,410 @@
+Docker 
+~~~~~~~~~~~~~~~
+Setup WSL2 in windows - check for avaiability
+Install Docker desktop
+
+docker run -i -t ubuntu /bin/bash
+
+The following command runs an ubuntu container, attaches interactively to your local command-line session, and runs /bin/bash. When you run this command, the following happens (assuming you are using the default registry configuration):
+
+1) If you don't have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
+2) Docker creates a new container, as though you had run a docker container create command manually.
+3) Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or modify files and directories in its local filesystem.
+4) Docker creates a network interface to connect the container to the default network, since you didn't specify any networking options. This includes assigning an IP address to the container. By default, containers can connect to external networks using the host machine's network connection.
+5) Docker starts the container and executes /bin/bash. Because the container is running interactively and attached to your terminal (due to the -i and -t flags), you can provide input using your keyboard while Docker logs the output to your terminal.
+6) When you run exit to terminate the /bin/bash command, the container stops but isn't removed. You can start it again or remove it.
+
+Docker is written in the Go programming language and takes advantage of several features of the Linux kernel to deliver its functionality. Docker uses a technology called namespaces to provide the isolated workspace called the container. When you run a container, Docker creates a set of namespaces for that container. These namespaces provide a layer of isolation. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
+
+docker run --hostname=e54879df83af --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --network=bridge --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --runtime=runc -t -d ubuntu
+
+docker run -d -p 8080:80 docker/welcome-to-docker
+
+For this container, the frontend is accessible on port 8080. To open the website, visit http://localhost:8080 in your browser. If port is already in use then use any port in place of 8080.
+
+Develop with containers
+
+Clone and start a development project
+Make changes to the backend and frontend
+See the changes immediately
+
+git clone https://github.com/docker/getting-started-todo-app   # clone the project from Git
+cd getting-started-todo-app                                    # Move to folder 
+docker compose watch                                           # To start the project using the CLI, run the following command
+
+You will see an output that shows container images being pulled down, containers starting, and more. Open your browser to http://localhost to see the application up and running. The app is a simple to-do application, so feel free to add an item or two, mark some as done, or even delete an item.
+
+Now that the environment is up and running, what's actually in it? At a high-level, there are several containers (or processes) that each serve a specific need for the application:
+
+React frontend - a Node container that's running the React dev server, using Vite.
+Node backend - the backend provides an API that provides the ability to retrieve, create, and delete to-do items.
+MySQL database - a database to store the list of the items.
+phpMyAdmin - a web-based interface to interact with the database that is accessible at http://db.localhost.
+Traefik proxy - Traefik is an application proxy that routes requests to the right service. It sends all requests for localhost/api/* to the backend, requests for localhost/* to the frontend, and then requests for db.localhost to phpMyAdmin. This provides the ability to access all applications using port 80 (instead of different ports for each service).
+
+With this environment, you as the developer don’t need to install or configure any services, populate a database schema, configure database credentials, or anything. You only need Docker Desktop. The rest just works.
+
+Make changes to the app
+
+With this environment up and running, you’re ready to make a few changes to the application and see how Docker helps provide a fast feedback loop.
+
+The greeting at the top of the page is populated by an API call at /api/greeting. Currently, it always returns "Hello world!". You’ll now modify it to return one of three randomized messages (that you'll get to choose).
+
+1) Open the backend/src/routes/getGreeting.js file in a text editor. This file provides the handler for the API endpoint.
+2) Modify the variable at the top to an array of greetings. Feel free to use the following modifications or customize it to your own liking. Also, update the endpoint to send a random greeting from this list.
+
+const GREETINGS = [
+    "Whalecome!",
+    "All hands on deck!",
+    "Charting the course ahead!",
+];
+
+module.exports = async (req, res) => {
+    res.send({
+        greeting: GREETINGS[ Math.floor( Math.random() * GREETINGS.length )],
+    });
+};
+
+If you haven't done so yet, save the file. If you refresh your browser, you should see a new greeting. If you keep refreshing, you should see all of the messages appear. in http://localhost 
+
+Change the placeholder text
+
+When you look at the app, you'll see the placeholder text is simply "New Item". You’ll now make that a little more descriptive and fun. You’ll also make a few changes to the styling of the app too.
+
+1) Open the client/src/components/AddNewItemForm.jsx file. This provides the component to add a new item to the to-do list.
+2) Modify the placeholder attribute of the Form.Control element to whatever you'd like to display.
+
+<Form.Control
+    value={newItem}
+    onChange={(e) => setNewItem(e.target.value)}
+    type="text"
+    placeholder="What do you need to do?"
+    aria-label="New item"
+/>
+
+Change the background color
+
+1) Open the client/src/index.scss file.
+2) Adjust the background-color attribute to any color you'd like. The provided snippet is a soft blue to go along with Docker's nautical theme.
+
+body {
+    background-color: #99bbff;
+    margin-top: 50px;
+    font-family: 'Lato';
+}
+
+Before you move on, take a moment and reflect on what happened here. Within a few moments, you were able to:
+
+1) Start a complete development project with zero installation effort. The containerized environment provided the development environment, ensuring you have everything you need. You didn't have to install Node, MySQL, or any of the other dependencies directly on your machine. All you needed was Docker Desktop and a code editor.
+
+2) Make changes and see them immediately. This was made possible because 
+  a) the processes running in each container are watching and responding to file changes and 
+  b) the files are shared with the containerized environment.
+  
+Docker Desktop enables all of this and so much more. Once you start thinking with containers, you can create almost any environment and easily share it with your team. Now that the application has been updated, you’re ready to learn about packaging it as a container image and pushing it to a registry, specifically Docker Hub.
+
+Build and push your first image
+
+Now that you've updated the to-do list app, you’re ready to create a container image for the application and share it on Docker Hub. To do so, you will need to do the following:
+
+Sign in with your Docker account
+Create an image repository on Docker Hub
+Build the container image
+Push the image to Docker Hub
+
+Container images : If you’re new to container images, think of them as a standardized package that contains everything needed to run an application, including its files, configuration, and dependencies. These packages can then be distributed and shared with others.
+
+Docker Hub : To share your Docker images, you need a place to store them. This is where registries come in. While there are many registries, Docker Hub is the default and go-to registry for images. Docker Hub provides both a place for you to store your own images and to find images from others to either run or use as the bases for your own images.
+
+In Develop with containers, you used the following images that came from Docker Hub, each of which are Docker Official Images:
+
+node - provides a Node environment and is used as the base of your development efforts. This image is also used as the base for the final application image.
+mysql - provides a MySQL database to store the to-do list items
+phpmyadmin - provides phpMyAdmin, a web-based interface to the MySQL database
+traefik - provides Traefik, a modern HTTP reverse proxy and load balancer that routes requests to the appropriate container based on routing rules
+
+In this hands-on guide, you'll learn how to sign in to Docker Hub and push images to Docker Hub repository.
+
+Create an image repository
+
+Now that you have an account, you can create an image repository. Just as a Git repository holds source code, an image repository stores container images.
+
+https://hub.docker.com/repositories/nesancommitter
+
+Build and push the image
+
+Now that you have a repository, you are ready to build and push your image. An important note is that the image you are building extends the Node image, meaning you don't need to install or configure Node, yarn, etc. You can simply focus on what makes your application unique.
+
+What is an image/Dockerfile?
+
+Without going too deep yet, think of a container image as a single package that contains everything needed to run a process. In this case, it will contain a Node environment, the backend code, and the compiled React code.  Any machine that runs a container using the image, will then be able to run the application as it was built without needing anything else pre-installed on the machine. A Dockerfile is a text-based script that provides the instruction set on how to build the image. For this quick start, the repository already contains the Dockerfile.
+
+To get started, either clone or download the project as a ZIP file to your local machine.
+
+git clone https://github.com/docker/getting-started-todo-app
+
+And after the project is cloned, navigate into the new directory created by the clone:
+
+cd getting-started-todo-app
+
+Build the project by running the following command, swapping out DOCKER_USERNAME with your username.
+
+Check availabe image list before build
+
+H:\git_repo\docker\getting_started\getting-started-todo-app>docker image ls
+                                                                         i Info →   U  In Use
+IMAGE                                     ID             DISK USAGE   CONTENT SIZE   EXTRA
+docker/welcome-to-docker:latest           c4d56c24da4f       22.2MB         6.03MB    U
+getting-started-todo-app-backend:latest   f7c3b9d5162e       1.86GB          452MB    U
+getting-started-todo-app-client:latest    ef9fcbd95458       1.85GB          455MB    U
+mysql:9.3                                 b9d8b7ec6e6a       1.19GB          273MB    U
+phpmyadmin:latest                         7e7b72752f6d        821MB          197MB    U
+traefik:v3.6                              c5bd185c41ba        240MB         52.6MB    U
+ubuntu:latest                             c35e29c94501        119MB         31.7MB
+
+docker build -t <DOCKER_USERNAME>/getting-started-todo-app .
+
+H:\git_repo\docker\getting_started\getting-started-todo-app> docker build -t nesancommitter/todolist-app .       ## Build the app
+
+[+] Building 131.1s (23/23) FINISHED                                                                            docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                            0.1s
+ => => transferring dockerfile: 3.13kB                                                                                          0.0s
+ => [internal] load metadata for docker.io/library/node:22                                                                      1.9s
+ => [auth] library/node:pull token for registry-1.docker.io                                                                     0.0s
+ => [internal] load .dockerignore                                                                                               0.1s
+ => => transferring context: 52B                                                                                                0.1s
+ => [base 1/2] FROM docker.io/library/node:22@sha256:c8abd8da9cfddd2dfd2d5aa9ea2e54f9f70d3968ecf81bf5c2422594fa13fa83           0.0s
+ => => resolve docker.io/library/node:22@sha256:c8abd8da9cfddd2dfd2d5aa9ea2e54f9f70d3968ecf81bf5c2422594fa13fa83                0.0s
+ => [internal] load build context                                                                                               0.1s
+ => => transferring context: 240.65kB                                                                                           0.1s
+ => CACHED [base 2/2] WORKDIR /usr/local/app                                                                                    0.0s
+ => CACHED [client-base 1/5] COPY client/package.json client/package-lock.json ./                                               0.0s
+ => CACHED [client-base 2/5] RUN npm install                                                                                    0.0s
+ => CACHED [client-base 3/5] COPY client/.eslintrc.cjs client/index.html client/vite.config.js ./                               0.0s
+ => CACHED [client-base 4/5] COPY client/public ./public                                                                        0.0s
+ => [client-base 5/5] COPY client/src ./src                                                                                     0.1s
+ => CACHED [backend-dev 1/4] COPY backend/package.json backend/package-lock.json ./                                             0.0s
+ => CACHED [backend-dev 2/4] RUN npm install                                                                                    0.0s
+ => CACHED [backend-dev 3/4] COPY backend/spec ./spec                                                                           0.0s
+ => [backend-dev 4/4] COPY backend/src ./src                                                                                    0.0s
+ => [test 1/1] RUN npm run test                                                                                                 3.3s
+ => [client-build 1/1] RUN npm run build                                                                                        8.2s
+ => CACHED [final 1/4] COPY --from=test /usr/local/app/package.json /usr/local/app/package-lock.json ./                         0.0s
+ => [final 2/4] RUN npm ci --production &&     npm cache clean --force                                                        117.8s
+ => [final 3/4] COPY backend/src ./src                                                                                          0.1s
+ => [final 4/4] COPY --from=client-build /usr/local/app/dist ./src/static                                                       0.0s
+ => exporting to image                                                                                                          6.3s
+ => => exporting layers                                                                                                         4.0s
+ => => exporting manifest sha256:4f71ed0d9d4c5068666574d8430ab3ca7d3f732d4c82ddf2ac558de18034be07                               0.0s
+ => => exporting config sha256:98719f6769de5f9060844c48672a0d1c94d12eabbcf3345ee9fbc13d9b4ede23                                 0.0s
+ => => exporting attestation manifest sha256:86104efe3b0bcb85628f4948dff4a6ae12b88172334b4d76e0fc40bb9f1a2c2b                   0.0s
+ => => exporting manifest list sha256:a5a4cb00732691b111ddfdf79687991e10a95f4a1cce43c174d7f29ebb623d14                          0.0s
+ => => naming to docker.io/nesancommitter/todolist-app:latest                                                                   0.0s
+ => => unpacking to docker.io/nesancommitter/todolist-app:latest                                                                2.1s
+WARNING: current commit information was not captured by the build: git was not found in the system: exec: "git.exe": executable file not found in %PATH%
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/fi1n6ulrulhoo25tkyyum1s6t
+
+To verify the image exists locally, you can use the docker image ls command:
+
+H:\git_repo\docker\getting_started\getting-started-todo-app>docker image ls
+                                                                                                                                                                          i Info →   U  In Use
+IMAGE                                     ID             DISK USAGE   CONTENT SIZE   EXTRA
+docker/welcome-to-docker:latest           c4d56c24da4f       22.2MB         6.03MB    U
+getting-started-todo-app-backend:latest   f7c3b9d5162e       1.86GB          452MB    U
+getting-started-todo-app-client:latest    ef9fcbd95458       1.85GB          455MB    U
+mysql:9.3                                 b9d8b7ec6e6a       1.19GB          273MB    U
+nesancommitter/todolist-app:latest        a5a4cb007326       1.76GB          432MB            ## New image that is build now
+phpmyadmin:latest                         7e7b72752f6d        821MB          197MB    U
+traefik:v3.6                              c5bd185c41ba        240MB         52.6MB    U
+ubuntu:latest                             c35e29c94501        119MB         31.7MB
+
+To push the image, use the docker push command. Be sure to replace DOCKER_USERNAME with your username:
+
+docker push <DOCKER_USERNAME>/getting-started-todo-app
+
+H:\git_repo\docker\getting_started\getting-started-todo-app>docker push nesancommitter/todolist-app
+Using default tag: latest
+The push refers to repository [docker.io/nesancommitter/todolist-app]
+6ae8659f7a8d: Pushed
+c0c75e4760a2: Pushed
+7b2e0bbafa0f: Pushed
+a6e8ce4166d9: Pushed
+ed7a5775a04d: Pushed
+3f8ed1403610: Pushed
+e8d2a98f6bdf: Pushing [======================================>            ]  164.6MB/211.5MB
+92efd96750ec: Pushed
+09e87f8d9013: Pushed
+ea0029bd9432: Pushed
+908ed71b7c85: Pushed
+5c7975d105a9: Pushed
+c237534654fe: Pushed
+c8443a297fa4: Pushed
+latest: digest: sha256:a5a4cb00732691b111ddfdf79687991e10a95f4a1cce43c174d7f29ebb623d14 size: 856
+
+H:\git_repo\docker\getting_started\getting-started-todo-app>
+
+Before you move on, take a moment and reflect on what happened here. Within a few moments, you were able to build a container image that packages your application and push it to Docker Hub.
+
+Docker Hub is the go-to registry for finding trusted content. Docker provides a collection of trusted content, composed of Docker Official Images, Docker Verified Publishers, and Docker Sponsored Open Source Software, to use directly or as bases for your own images.
+
+Docker Hub provides a marketplace to distribute your own applications. Anyone can create an account and distribute images. While you are publicly distributing the image you created, private repositories can ensure your images are accessible to only authorized users.
+
+Images and image indexes are the foundation of container images within a repository.
+
+Image index (top): An image that points to multiple architecture-specific images (like AMD and ARM) allowing a single reference to work across different platforms.
+Images (bottom): Individual container images that contain the actual configuration and layers for a specific architecture and operating system.
+
+Image indexes sit at the top of the tree and reference one or more platform-specific images below them. This structure enables multi-architecture support through a single reference. It is important to note that images are not always referenced by an image index.
+
+What is a container?
+
+Imagine you're developing a killer web app that has three main components - a React frontend, a Python API, and a PostgreSQL database. If you wanted to work on this project, you'd have to install Node, Python, and PostgreSQL. How do you make sure you have the same versions as the other developers on your team? Or your CI/CD system? Or what's used in production?
+
+How do you ensure the version of Python (or Node or the database) your app needs isn't affected by what's already on your machine? How do you manage potential conflicts?
+
+What is a container? Simply put, containers are isolated processes for each of your app's components. Each component - the frontend React app, the Python API engine, and the database - runs in its own isolated environment, completely isolated from everything else on your machine. 
+
+Containers are:
+
+Self-contained. Each container has everything it needs to function with no reliance on any pre-installed dependencies on the host machine.
+Isolated. Since containers are run in isolation, they have minimal influence on the host and other containers, increasing the security of your applications.
+Independent. Each container is independently managed. Deleting one container won't affect any others.
+Portable. Containers can run anywhere! The container that runs on your development machine will work the same way in a data center or anywhere in the cloud!
+
+Containers versus virtual machines (VMs)
+
+Without getting too deep, a VM is an entire operating system with its own kernel, hardware drivers, programs, and applications. Spinning up a VM only to isolate a single application is a lot of overhead. whereas A container is simply an isolated process with all of the files it needs to run. If you run multiple containers, they all share the same kernel, allowing you to run more applications on less infrastructure.
+
+Using VMs and containers together
+
+Quite often, you will see containers and VMs used together. As an example, in a cloud environment, the provisioned machines are typically VMs. However, instead of provisioning one machine to run one application, a VM with a container runtime can run multiple containerized applications, increasing resource utilization and reducing costs.
+
+list all the running containers
+
+H:\git_repo\docker\getting_started\getting-started-todo-app>docker ps
+CONTAINER ID   IMAGE                              COMMAND                  CREATED       STATUS                    PORTS                                 NAMES
+d2018e90f987   getting-started-todo-app-backend   "docker-entrypoint.s…"   7 hours ago   Up 34 minutes                                                   getting-started-todo-app-backend-1
+b0c3826846b2   phpmyadmin                         "/docker-entrypoint.…"   7 hours ago   Up 34 minutes             80/tcp                                getting-started-todo-app-phpmyadmin-1
+ae1704f4a7e8   mysql:9.3                          "docker-entrypoint.s…"   7 hours ago   Up 34 minutes (healthy)   3306/tcp, 33060/tcp                   getting-started-todo-app-mysql-1
+ff5eed2764b1   traefik:v3.6                       "/entrypoint.sh --pr…"   7 hours ago   Up 34 minutes             0.0.0.0:80->80/tcp, [::]:80->80/tcp   getting-started-todo-app-proxy-1
+03d6ca72b6fd   getting-started-todo-app-client    "docker-entrypoint.s…"   7 hours ago   Up 34 minutes                                                   getting-started-todo-app-client-1
+
+Docker Learn commands and setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+account details
+
+docker     : https://app.docker.com/
+Docker hub : https://hub.docker.com/
+Hub home   : https://hub.docker.com/u/nesancommitter
+
+mailID : nesan.committer@gmail.com
+user name : nesancommitter
+
+Install Docker desktop
+Login docker desktop using docker username
+
+
+Usage:  docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Common Commands:
+  run         Create and run a new container from an image
+  exec        Execute a command in a running container
+  ps          List containers
+  build       Build an image from a Dockerfile
+  bake        Build from a file
+  pull        Download an image from a registry
+  push        Upload an image to a registry
+  images      List images
+  login       Authenticate to a registry
+  logout      Log out from a registry
+  search      Search Docker Hub for images
+  version     Show the Docker version information
+  info        Display system-wide information
+
+Management Commands:
+  ai*         Docker AI Agent - Ask Gordon
+  builder     Manage builds
+  buildx*     Docker Buildx
+  compose*    Docker Compose
+  container   Manage containers
+  context     Manage contexts
+  debug*      Get a shell into any image or container
+  desktop*    Docker Desktop commands
+  extension*  Manages Docker extensions
+  image       Manage images
+  init*       Creates Docker-related starter files for your project
+  manifest    Manage Docker image manifests and manifest lists
+  mcp*        Docker MCP Plugin
+  model*      Docker Model Runner
+  network     Manage networks
+  offload*    Docker Offload
+  plugin      Manage plugins
+  sandbox*    Docker Sandbox
+  sbom*       View the packaged-based Software Bill Of Materials (SBOM) for an image
+  scout*      Docker Scout
+  system      Manage Docker
+  volume      Manage volumes
+
+Swarm Commands:
+  swarm       Manage Swarm
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  import      Import the contents from a tarball to create a filesystem image
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  wait        Block until one or more containers stop, then print their exit codes
+
+Global Options:
+      --config string      Location of client config files (default
+                           "C:\\Users\\ADMIN\\.docker")
+  -c, --context string     Name of the context to use to connect to the
+                           daemon (overrides DOCKER_HOST env var and
+                           default context set with "docker context use")
+  -D, --debug              Enable debug mode
+  -H, --host string        Daemon socket to connect to
+  -l, --log-level string   Set the logging level ("debug", "info",
+                           "warn", "error", "fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default
+                           "C:\\Users\\ADMIN\\.docker\\ca.pem")
+      --tlscert string     Path to TLS certificate file (default
+                           "C:\\Users\\ADMIN\\.docker\\cert.pem")
+      --tlskey string      Path to TLS key file (default
+                           "C:\\Users\\ADMIN\\.docker\\key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Run 'docker COMMAND --help' for more information on a command.
+
+For more help on how to use Docker, head to https://docs.docker.com/go/guides/
+
+
+
+
